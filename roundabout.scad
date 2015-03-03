@@ -1,96 +1,164 @@
-use <trains/tracklib.scad>;
+use <../trains/tracklib.scad>;
 
+roundabout(); // show both
+
+/* Other sample instantiations */
 //roundabout(outer_piece=false); // 4/6 inner
 //roundabout(num=2, inner_piece=false); // 4 outer
 //roundabout(num=3, inner_piece=false); // 6 outer
 //roundabout(inner=95, outer_piece=false); // 8 inner
 //roundabout(num=4, inner=95, inner_piece=false); // 8 outer
-roundabout(); // show both
 
 // inner is "roundabout" diameter.
 // outer is the additional length of the
 // 'stubs' reaching out from the roundabout
-module roundabout(inner=80, outer=53.5, clearance=0.5, num=3, inner_piece=true, outer_piece=true, snap_fit=true) {
+module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
+                  inner_piece=true, outer_piece=true) {
+  // Dimensions
   total = inner + outer;
   base_height = 2.5;
   outer_rim = 10;
-  base_rim = 10;
+  base_rim = 8;
   hub_diam = 10;
   hub_ramp = 4;
   strut_width = num < 4 ? wood_width()/3 : wood_width()/4;
-  knob_height = 12;
+  guard_height = 5;
+  guard_width = 2;
+  knob_height = 14;
   knob_diam = 6;
-  res = 20; // knob resolution
+  res = 120; // rotating pieces resolution
+  knob_res = 25; // knob resolution
   snap_fit_height = 2;
+
+  // Outer piece
   if (outer_piece) {
-  difference() {
-    union() {
-      for (i = [0:num-1] ) {
-        rotate( [0, 0, i * 180 / num ]) {
-          wood_track_centered( total, false );
-        }
-      }
-      cylinder(h=wood_height(), d=inner+outer_rim*2);
-    }
-    for (i = [0:num-1] ) {
-      rotate( [0, 0, i * 180 / num ]) {
-        wood_rails_centered( total );
-        translate([-total/2,0,0]) wood_cutout();
-        translate([total/2,0,0]) rotate([0,0,180]) wood_cutout();
-      }
-    }
     difference() {
-      translate([0,0,base_height]) cylinder(h=wood_height(), d=inner+(clearance*2));
-      cylinder(h=wood_height()+base_height*2, d=hub_diam);
-      translate([0,0,base_height]) cylinder(h=hub_ramp, d1=hub_diam+hub_ramp*2, d2=hub_diam);
-    }
-    translate([0,0,-clearance]) difference() {
-      cylinder(h=wood_height()+clearance*2, d=inner-base_rim*2);
-      translate([0,0,-clearance]) {
-        cylinder(h=wood_height()+clearance*4, d=hub_diam+(hub_ramp*2)+base_rim);
-        for(i = [0:num-1] ) {
+      // Start with `num` tracks and a cylinder around them, then
+      // carve away stuff.
+      union() {
+        for ( i = [0:num-1] ) {
           rotate( [0, 0, i * 180 / num ]) {
-            cube(size=[inner,strut_width,2*(wood_height()+clearance*4)], center=true);
+            wood_track_centered( total, false );
+          }
+        }
+        cylinder(h=wood_height(), d=inner + outer_rim*2);
+      }
+      // Carve away the rails, and female connectors
+      for ( i = [0:num-1] ) {
+        rotate( [0, 0, i * 180 / num ]) {
+          wood_rails_centered( total );
+          translate([-total/2,0,0])
+            wood_cutout();
+          translate([total/2,0,0]) rotate([0,0,180])
+            wood_cutout();
+        }
+      }
+      // Carve away the central cutout (less the hub)
+      difference() {
+        union() {
+          translate([0, 0, base_height + clearance])
+            cylinder(h=wood_height(), d=inner + (clearance*2), $fn=res);
+          translate([0, 0, base_height])
+            cylinder(h=wood_height(), d=inner - (base_rim*2), $fn=res);
+        }
+        cylinder(h=wood_height() + base_height*2, d=hub_diam, $fn=res);
+        translate([0,0,base_height])
+          cylinder(h=hub_ramp, d1=hub_diam + hub_ramp*2, d2=hub_diam, $fn=res);
+      }
+      // Carve away the openings to the ground
+      // formed by adding back `cube` shaped struts.
+      translate([0,0,-clearance]) difference() {
+        // central cutout minus the base rim
+        cylinder(h=wood_height() + clearance*2,
+                 d=inner - base_rim*2, $fn=res);
+        translate([0, 0, -clearance]) {
+          // minus the hub (and a base_rim sized rim around it)
+          cylinder(h=( wood_height() + clearance*4 ),
+                   d=( hub_diam + (hub_ramp*2) + base_rim) );
+          // struts at each of the track locations
+          for ( i = [0:num-1] ) {
+            rotate( [0, 0, i * 180 / num ]) {
+              cube(size=[inner, strut_width, 2*(wood_height() + clearance*4)],
+                   center=true);
+            }
           }
         }
       }
     }
+    // add an extra "snap fit" widening of central shaft
+    if ( snap_fit ) {
+      translate([0, 0, wood_height() - snap_fit_height])
+        cylinder(h=snap_fit_height, d1=hub_diam, d2=hub_diam + clearance*2,
+                 $fn=res);
+    }
   }
-  // add an extra "snap fit" widening of central shaft
-  if (snap_fit) {
-    translate([0,0,wood_height()-snap_fit_height]) cylinder(h=snap_fit_height, d1=hub_diam, d2=hub_diam+clearance*2);
-  }
-  }
+
+  // Inner rotating piece
   if (inner_piece) {
-    translate([0,0,outer_piece ? 0 : -base_height+clearance]) {
+    // Put this piece flat on the xy plane if we're rendering it by itself.
+    translate([0, 0, outer_piece ? 0 : -(base_height + clearance)]) {
+      // Main cylinder body, minus rails and hub clearances
       difference() {
-        translate([0,0,base_height+clearance]) cylinder(h=wood_height()-(base_height+clearance), d=inner);
-        cylinder(h=wood_height()+clearance, d=hub_diam+clearance*2);
-        translate([0,0,base_height]) cylinder(h=hub_ramp, d1=hub_diam+hub_ramp*2+clearance*2, d2=hub_diam+clearance*2);
+        // Main body
+        translate([0, 0, base_height + clearance])
+          cylinder(h=wood_height() - (base_height + clearance),
+                   d=inner, $fn=res);
+        // Rails down the center
         wood_rails_centered(inner);
+        // Central hub
+        cylinder(h=wood_height() + clearance,
+                 d=hub_diam + clearance*2, $fn=res);
+        // Hub ramp (add extra clearance/10 height to ensure we punch through)
+        translate([0, 0, base_height + clearance - clearance/10])
+          cylinder(h=hub_ramp + clearance/10,
+                   d1=hub_diam + hub_ramp*2 + clearance*2,
+                   d2=hub_diam + clearance*2, $fn=res);
+        // Snap fit hub (add extra clearance/10 height to ensure we punch thru)
         if (snap_fit) {
-          translate([0,0,wood_height()-snap_fit_height]) {
-            cylinder(h=snap_fit_height, d1=hub_diam+clearance*2, d2=hub_diam+clearance*4);
-            translate([0,0,snap_fit_height]) cylinder(h=1, d=hub_diam+clearance*4);
+          translate([0, 0, wood_height() - snap_fit_height]) {
+            cylinder(h=snap_fit_height + clearance/10,
+                     d1=hub_diam + clearance*2,
+                     d2=hub_diam + clearance*4, $fn=res);
           }
+        }
+      }
+      // add a bit of "guard rail"
+      translate([0, 0, wood_height() - clearance]) {
+        difference() {
+          translate([0, 0, clearance/2]) // just ensure we sink into top
+            cylinder(h=guard_height + clearance/2, d=inner, $fn=res);
+          cylinder(h=guard_height + clearance*2, d=inner - guard_width*2, $fn=res);
+          // protect the track
+          cube([inner + clearance, wood_width() + clearance*2, 2*(guard_height + clearance*2)],
+               center=true);
         }
       }
       // now add knob
-      translate([0,inner/2 - knob_diam,wood_height()-clearance]) {
-        cylinder(h=knob_height+clearance,d=knob_diam,$fn=res);
-        cylinder(h=knob_diam,d1=knob_diam*2, d2=knob_diam, $fn=res);
-        translate([0,0,knob_height+clearance]) sphere(d=knob_diam, $fn=res);
+      translate([0, inner/2 - knob_diam, wood_height() - clearance]) {
+        // shaft
+        cylinder(h=knob_height + clearance, d=knob_diam, $fn=knob_res);
+        cylinder(h=guard_height + clearance, d=knob_diam*2, $fn=knob_res);
+        // ramp
+        translate([0, 0, guard_height+clearance])
+          cylinder(h=knob_diam/2, d1=knob_diam*2, d2=knob_diam, $fn=knob_res);
+        // round top
+        translate([0, 0, knob_height + clearance])
+          sphere(d=knob_diam, $fn=knob_res);
       }
     }
   }
 }
+
+// Helper function: center the wood_track() on the origin.
 module wood_track_centered(length=53.5, rails=true) {
-  translate([-length/2,-wood_width()/2,0]) {
+  translate([-length/2, -wood_width()/2, 0]) {
     wood_track(length, rails);
   }
 }
+
+// Helper function: center the wood_rails() on the origin.
 module wood_rails_centered(length=53.5, bevel_ends=true) {
-  translate([-length/2,-wood_width()/2,0]) {
+  translate([-length/2, -wood_width()/2, 0]) {
     wood_rails(length, bevel_ends);
   }
 }
