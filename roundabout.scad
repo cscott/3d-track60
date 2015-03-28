@@ -1,13 +1,35 @@
+/* Roundabout for brio-compatible trains */
+
+/* [Global] */
+
+// This design is composed of a number of separate printable parts:
+part = "6_assembled"; // [4_assembled:Four-way roundabout (assembly),46_inner:Four- or Six-way roundabout (inner piece),4_outer:Four-way roundabout (outer piece),6_assembled:Six-way roundabout (assembly),6_outer:Six-way roundabout (outer piece),8_assembled:Eight-way roundabout (assembly),8_inner:Eight-way roundabout (inner piece),8_outer:Eight-way roundabout (outer piece)]
+
+/* [Hidden] */
 use <../trains/tracklib.scad>;
 
-roundabout(); // show both
+demo(part);
 
-/* Other sample instantiations */
-//roundabout(outer_piece=false); // 4/6 inner
-//roundabout(num=2, inner_piece=false); // 4 outer
-//roundabout(num=3, inner_piece=false); // 6 outer
-//roundabout(inner=95, outer_piece=false); // 8 inner
-//roundabout(num=4, inner=95, inner_piece=false); // 8 outer
+// Sample instantiations
+module demo(part="6_assembled") {
+  if (part=="4_assembled") {
+    roundabout(num=2); // show both inner and outer for a 4-way roundabout
+  } else if (part=="6_assembled") {
+    roundabout(num=3); // show both inner and outer for a 6-way roundabout
+  } else if (part=="46_inner") {
+    roundabout(outer_piece=false); // inner for either 4- or 6-way
+  } else if (part=="4_outer") {
+    roundabout(num=2, inner_piece=false); // 4-way outer piece
+  } else if (part=="6_outer") {
+    roundabout(num=3, inner_piece=false); // 6-way outer piece
+  } else if (part=="8_assembled") {
+    roundabout(num=4, inner=95); // show both inner and outer for 8-way
+  } else if (part=="8_inner") {
+    roundabout(num=4, inner=95, outer_piece=false); // 8-way inner piece
+  } else if (part=="8_outer") {
+    roundabout(num=4, inner=95, inner_piece=false); // 8-way outer piece
+  }
+}
 
 // inner is "roundabout" diameter.
 // outer is the additional length of the
