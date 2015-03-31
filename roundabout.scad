@@ -23,11 +23,11 @@ module demo(part="6_assembled") {
   } else if (part=="6_outer") {
     roundabout(num=3, inner_piece=false); // 6-way outer piece
   } else if (part=="8_assembled") {
-    roundabout(num=4, inner=95); // show both inner and outer for 8-way
+    roundabout(num=4, inner=95, outer=46); // show both inner and outer for 8-way
   } else if (part=="8_inner") {
-    roundabout(num=4, inner=95, outer_piece=false); // 8-way inner piece
+    roundabout(num=4, inner=95, outer=46, outer_piece=false); // 8-way inner piece
   } else if (part=="8_outer") {
-    roundabout(num=4, inner=95, inner_piece=false); // 8-way outer piece
+    roundabout(num=4, inner=95, outer=46, inner_piece=false); // 8-way outer piece
   }
 }
 
