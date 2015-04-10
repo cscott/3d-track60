@@ -3,7 +3,7 @@
 /* [Global] */
 
 // This design is composed of a number of separate printable parts:
-part = "6_assembled"; // [4_assembled:Four-way roundabout (assembly),46_inner:Four- or Six-way roundabout (inner piece),4_outer:Four-way roundabout (outer piece),6_assembled:Six-way roundabout (assembly),6_outer:Six-way roundabout (outer piece),8_assembled:Eight-way roundabout (assembly),8_inner:Eight-way roundabout (inner piece),8_outer:Eight-way roundabout (outer piece)]
+part = "6_assembled"; // [4_assembled:Four-way roundabout (assembly),4_inner:Four-way roundabout (inner piece),4_outer:Four-way roundabout (outer piece),6_assembled:Six-way roundabout (assembly),6_inner:Six-way roundabout (inner piece),6_outer:Six-way roundabout (outer piece),8_assembled:Eight-way roundabout (assembly),8_inner:Eight-way roundabout (inner piece),8_outer:Eight-way roundabout (outer piece)]
 
 /* [Hidden] */
 use <../trains/tracklib.scad>;
@@ -16,10 +16,12 @@ module demo(part="6_assembled") {
     roundabout(num=2); // show both inner and outer for a 4-way roundabout
   } else if (part=="6_assembled") {
     roundabout(num=3); // show both inner and outer for a 6-way roundabout
-  } else if (part=="46_inner") {
-    roundabout(outer_piece=false); // inner for either 4- or 6-way
+  } else if (part=="4_inner") {
+    roundabout(num=2,outer_piece=false); // inner for 4-way
   } else if (part=="4_outer") {
     roundabout(num=2, inner_piece=false); // 4-way outer piece
+  } else if (part=="6_inner") {
+    roundabout(num=3,outer_piece=false); // inner for 6-way
   } else if (part=="6_outer") {
     roundabout(num=3, inner_piece=false); // 6-way outer piece
   } else if (part=="8_assembled") {
@@ -113,6 +115,10 @@ module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
         cylinder(h=snap_fit_height, d1=hub_diam, d2=hub_diam + clearance*2,
                  $fn=res);
     }
+    // Detents
+    roundabout_detents(num=num, base_height=base_height, base_rim=base_rim,
+                       inner=inner, clearance=clearance, res=res,
+                       inner_piece=false);
   }
 
   // Inner rotating piece
@@ -143,6 +149,10 @@ module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
                      d2=hub_diam + clearance*4, $fn=res);
           }
         }
+        // Detents
+        roundabout_detents(num=num, base_height=base_height, base_rim=base_rim,
+                           inner=inner, clearance=clearance, res=res,
+                           inner_piece=true);
       }
       // add a bit of "guard rail"
       translate([0, 0, wood_height() - clearance]) {
@@ -168,6 +178,21 @@ module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
           sphere(d=knob_diam, $fn=knob_res);
       }
     }
+  }
+}
+
+// Helper: detents
+module roundabout_detents(num, base_height, base_rim, inner, clearance, res, inner_piece) {
+  detent_height = clearance;
+  extra = inner_piece ? 2*clearance : 0;
+  translate([0,0,base_height+clearance])
+  difference() {
+    for ( i = [0:num-1] ) {
+      rotate( [0, 0, i * 180 / num ] )
+        rotate([0,90,0])
+        cylinder(d=2*detent_height + extra, h=inner + 2*clearance + 1, center=true, $fn=30);
+    }
+    cylinder(h=2*detent_height + extra + 1, d=inner - (base_rim*2) - extra, center=true, $fn=res);
   }
 }
 
