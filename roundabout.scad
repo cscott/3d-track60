@@ -183,16 +183,23 @@ module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
 
 // Helper: detents
 module roundabout_detents(num, base_height, base_rim, inner, clearance, res, inner_piece) {
+  detent_extra_radius = 25;
   detent_height = clearance;
   extra = inner_piece ? 2*clearance : 0;
-  translate([0,0,base_height+clearance])
+  translate([0,0,base_height+clearance - detent_extra_radius])
   difference() {
     for ( i = [0:num-1] ) {
       rotate( [0, 0, i * 180 / num ] )
         rotate([0,90,0])
-        cylinder(d=2*detent_height + extra, h=inner + 2*clearance + 1, center=true, $fn=30);
+        cylinder(d=2*(detent_height + detent_extra_radius) + extra, h=inner + 2*clearance + 1, center=true, $fn=res);
     }
-    cylinder(h=2*detent_height + extra + 1, d=inner - (base_rim*2) - extra, center=true, $fn=res);
+    cylinder(h=2*(detent_height + detent_extra_radius) + extra + 1, d=inner - (base_rim*2) - extra, center=true, $fn=res);
+    assign(cube_height=2*(detent_height + detent_extra_radius) + extra + 2)
+      translate([0,0,-cube_height/2 + detent_extra_radius - .1])
+      cube([inner + 2*clearance + 2,
+            inner + 2*clearance + 2,
+            cube_height],
+           center=true);
   }
 }
 
