@@ -8,35 +8,52 @@ part = "6_assembled"; // [4_assembled:Four-way roundabout (assembly),4_inner:Fou
 /* [Hidden] */
 use <../trains/tracklib.scad>;
 
-demo(part);
+roundabout_demo(part);
 
 // Sample instantiations
-module demo(part="6_assembled") {
+module roundabout_demo(part="6_assembled", size="medium") {
   if (part=="4_assembled") {
-    roundabout(num=2); // show both inner and outer for a 4-way roundabout
-  } else if (part=="6_assembled") {
-    roundabout(num=3); // show both inner and outer for a 6-way roundabout
+    roundabout(num=2, which="both", size=size); // show both inner and outer for a 4-way roundabout
   } else if (part=="4_inner") {
-    roundabout(num=2,outer_piece=false); // inner for 4-way
+    roundabout(num=2, which="inner", size=size); // inner for 4-way
   } else if (part=="4_outer") {
-    roundabout(num=2, inner_piece=false); // 4-way outer piece
+    roundabout(num=2, which="outer", size=size); // 4-way outer piece
+  } else if (part=="6_assembled") {
+    roundabout(num=3, which="both", size=size); // show both inner and outer for a 6-way roundabout
   } else if (part=="6_inner") {
-    roundabout(num=3,outer_piece=false); // inner for 6-way
+    roundabout(num=3, which="inner", size=size); // inner for 6-way
   } else if (part=="6_outer") {
-    roundabout(num=3, inner_piece=false); // 6-way outer piece
+    roundabout(num=3, which="outer", size=size); // 6-way outer piece
   } else if (part=="8_assembled") {
-    roundabout(num=4, inner=95, outer=46); // show both inner and outer for 8-way
+    roundabout(num=4, which="both", size=size); // show both inner and outer for 8-way
   } else if (part=="8_inner") {
-    roundabout(num=4, inner=95, outer=46, outer_piece=false); // 8-way inner piece
+    roundabout(num=4, which="inner", size=size); // 8-way inner piece
   } else if (part=="8_outer") {
-    roundabout(num=4, inner=95, outer=46, inner_piece=false); // 8-way outer piece
+    roundabout(num=4, which="outer", size=size); // 8-way outer piece
+  }
+}
+
+// "small" size can only be used for 4 or 6 way.
+// "medium" is the largest that can fit on a 6"x6" printer.
+module roundabout(size="medium", num=3, which="both") {
+  inner_piece = (which=="inner") || (which=="both");
+  outer_piece = (which=="outer") || (which=="both");
+  if (size=="small") {
+    roundabout_custom(inner=80, outer=53.5,
+                      num=num, inner_piece=inner_piece, outer_piece=outer_piece);
+  } else if (size=="large") {
+    roundabout_custom(inner=152, outer=53.5,
+                      num=num, inner_piece=inner_piece, outer_piece=outer_piece);
+  } else { // "medium" size
+    roundabout_custom(inner=95, outer=46,
+                      num=num, inner_piece=inner_piece, outer_piece=outer_piece);
   }
 }
 
 // inner is "roundabout" diameter.
 // outer is the additional length of the
 // 'stubs' reaching out from the roundabout
-module roundabout(inner=80, outer=53.5, clearance=1, num=3, snap_fit=true,
+module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
                   inner_piece=true, outer_piece=true) {
   // Dimensions
   total = inner + outer;
