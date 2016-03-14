@@ -12,23 +12,23 @@ use <./roundabout.scad>
 
 // Dave suggests a base radius of 200mm.
 // The core hexagon will then have a diameter of
-// (4/3)r, or 266.7mm.
+// (4/3)r, or 266.7mm, and a "flat side height"
+// of 2r/sqrt(3), or 230.9mm.
 //basic_radius = 200;
 // We want to fit the core hexagon in a build
 // area of 200mm square, so we use the following
 // basic radius:
-basic_radius = 150;
+basic_radius = 170;
 
-/* Option 1:
-function tie_spacing(radius) = 15;
+/* Option 1: */
+function tie_spacing(radius) = radius*((1/sqrt(3))-(PI/6))*2/*to taste*/;
 function tie_angle(radius) = 180 * tie_spacing(radius) / (PI * radius);
-// this yields tie_angle ~= 5.72958
-*/
+/* */
 
-/* Option 2: */
+/* Option 2:
 function tie_angle(radius) = 6;
 function tie_spacing(radius) = (tie_angle(radius) * PI * radius) / 180;
-// This yields tie_spacing ~= 15.708
+/* */
 
 function tie_height()=(wood_height()-wood_well_height())/2;
 function tie_width()=2;
@@ -351,18 +351,18 @@ module wood_rails_and_ties(radius, part="both") {
   }
 
   spacing = tie_spacing(radius);
-  num=(straight/spacing);
+  num=ceil((straight/spacing)/2);
 
   // ties.
-  for (i = [0:num] ) {
-    translate([0,(i+.5)*spacing,0]) {
+  for (i = [-num:1:num] ) {
+    translate([0,(straight/2)+(i-.5)*spacing,0]) {
       if (do_ties) {
-        translate([-wood_width()/2-epsilon, 0, wood_height()-tie_height()])
+        translate([-wood_width()/2-epsilon, -tie_width()/2, wood_height()-tie_height()])
           cube([wood_width()+2*epsilon, tie_width(), wood_height()]);
       }
       if (do_rails) for (j=[1,-1]) scale([j,1,1]) {
         translate([-(wood_well_spacing()/2)-wood_well_width(),
-                   0, wood_well_height() - well_tie_height()])
+                   -tie_width()/2, wood_well_height() - well_tie_height()])
           cube([wood_well_width(), tie_width(), wood_height()]);
       }
     }
@@ -377,11 +377,11 @@ module wood_road_and_stripes(radius) {
     cube([road_width, straight+2*epsilon, wood_height()]);
 
   spacing = tie_spacing(radius)*2;
-  num=(straight/spacing);
+  num=ceil((straight/spacing)/2);
 
   // stripes.
-  for (i = [0:num] ) {
-    translate([0,(i+.25)*spacing,0]) {
+  for (i = [-num:1:num] ) {
+    translate([0,(straight/2)+(i+.25)*spacing,0]) {
       translate([-stripe_width()/2,0,wood_well_height()-stripe_height()])
         cube([stripe_width(),spacing/2, stripe_height() + epsilon]);
     }
@@ -410,11 +410,11 @@ module wood_road_and_stripes_arc(radius, angle) {
     }
   }
   angle_increment = tie_angle(radius)*2;
-  num=(angle/angle_increment);
+  num=ceil((angle/angle_increment)/2);
 
   // stripes.
-  for (i = [0:num] ) {
-    rotate([0,0,(i+0.25)*angle_increment]) difference() {
+  for (i = [-num:1:num] ) {
+    rotate([0,0,(angle/2)+(i-0.25)*angle_increment]) difference() {
       translate([0,0,wood_well_height()-stripe_height()])
         pie(radius + stripe_width()/2, angle_increment/2,
             stripe_height() + epsilon);
@@ -434,19 +434,19 @@ module wood_rails_and_ties_arc(radius, angle, part="both") {
 
   angle_increment = tie_angle(radius);
 
-  num=(angle/angle_increment);
+  num=ceil((angle/angle_increment)/2);
 
   if (do_rails) wood_rails_arc(inner_radius, angle);
 
-  for (i = [0:num] ) {
-    rotate([0,0,(i+0.5)*angle_increment]) {
+  for (i = [-num:1:num] ) {
+    rotate([0,0,(angle/2)+(i*angle_increment)]) {
       if (do_ties) {
-      translate([radius - wood_width()/2 - epsilon, 0, wood_height()-tie_height()])
+      translate([radius - wood_width()/2 - epsilon, -tie_width()/2, wood_height()-tie_height()])
         cube([wood_width()+2*epsilon, tie_width(), wood_height()]);
       }
       if (do_rails) for (j=[1,-1]) {
         translate([radius+j*(wood_well_spacing()/2)-(j<0?wood_well_width():0),
-                   0, wood_well_height() - well_tie_height()])
+                   -tie_width()/2, wood_well_height() - well_tie_height()])
           cube([wood_well_width(), tie_width(), wood_height()]);
       }
     }
