@@ -211,10 +211,11 @@ module roundabout_detents(num, base_height, base_rim, inner, clearance, res, inn
         cylinder(d=2*(detent_height + detent_extra_radius) + extra, h=inner + 2*clearance + 1, center=true, $fn=res);
     }
     cylinder(h=2*(detent_height + detent_extra_radius) + extra + 1, d=inner - (base_rim*2) - extra, center=true, $fn=res);
-    assign(cube_height=2*(detent_height + detent_extra_radius) + extra + 2)
-      translate([0,0,-cube_height/2 + detent_extra_radius - .1])
-      cube([inner + 2*clearance + 2,
-            inner + 2*clearance + 2,
+
+    cube_height=2*(detent_height + detent_extra_radius) + extra + 2;
+    translate([0,0,-cube_height/2 + detent_extra_radius - .1])
+      cube([inner + cube_height + 2*clearance + 2,
+            inner + cube_height + 2*clearance + 2,
             cube_height],
            center=true);
   }
