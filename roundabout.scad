@@ -54,7 +54,7 @@ module roundabout(size="medium", num=3, which="both") {
 // outer is the additional length of the
 // 'stubs' reaching out from the roundabout
 module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
-                  inner_piece=true, outer_piece=true) {
+                  inner_piece=true, outer_piece=true, rails=true) {
   // Dimensions
   total = inner + outer;
   base_height = 2.5;
@@ -79,7 +79,7 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
       union() {
         for ( i = [0:num-1] ) {
           rotate( [0, 0, i * 180 / num ]) {
-            wood_track_centered( total, false );
+            wood_track_centered( total, rails=false );
           }
         }
         cylinder(h=wood_height(), d=inner + outer_rim*2);
@@ -87,7 +87,7 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
       // Carve away the rails, and female connectors
       for ( i = [0:num-1] ) {
         rotate( [0, 0, i * 180 / num ]) {
-          wood_rails_centered( total );
+          if (rails) wood_rails_centered( total );
           translate([-total/2,0,0])
             wood_cutout();
           translate([total/2,0,0]) rotate([0,0,180])
@@ -141,7 +141,7 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
   // Inner rotating piece
   if (inner_piece) {
     // Put this piece flat on the xy plane if we're rendering it by itself.
-    translate([0, 0, outer_piece ? 0 : -(base_height + clearance)]) {
+    translate([0, 0, outer_piece||!rails ? 0 : -(base_height + clearance)]) {
       // Main cylinder body, minus rails and hub clearances
       difference() {
         // Main body
@@ -149,7 +149,7 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
           cylinder(h=wood_height() - (base_height + clearance),
                    d=inner, $fn=res);
         // Rails down the center
-        wood_rails_centered(inner);
+        if (rails) wood_rails_centered(inner);
         // Central hub
         cylinder(h=wood_height() + clearance,
                  d=hub_diam + clearance*2, $fn=res);
