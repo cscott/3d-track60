@@ -296,9 +296,9 @@ module straight60(radius, rail=false, road=false, part="all") {
         translate([wood_width()/2,0,0]) rotate([0,0,90])
           wood_track(straight_length(radius), false);
       } else if (part=="connector") {
-        rotate([0,0,90]) wood_cutout();
+        loose_wood_cutout();
         translate([0,straight_length(radius),0])
-          rotate([0,0,-90]) wood_cutout();
+          rotate([0,0,180]) loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
         do_rails_or_roads(rail=rail, road=road, part=part) {
           /* rails */
@@ -338,10 +338,10 @@ module curve60_left(radius, rail=false, road=false, part="all") {
       if (part=="plug") {
         wood_track_arc(inner_radius, 60, false);
       } else if (part=="connector") {
-        translate([radius,0,0]) rotate([0,0,90])
-          wood_cutout();
-        rotate([0,0,60]) translate([radius,0,0]) rotate([0,0,-90])
-          wood_cutout();
+        translate([radius,0,0])
+          loose_wood_cutout();
+        rotate([0,0,60]) translate([radius,0,0]) rotate([0,0,180])
+          loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
         do_rails_or_roads(rail=rail, road=road, part=part) {
           /* rails */
@@ -554,7 +554,7 @@ module dbl_sway60_left(radius, rail=false, road=false, part="all") {
           wood_track_arc(sway_radius - (wood_width()/2), sway_angle + epsilon,
                         false);
       } else if (part=="connector") {
-        rotate([0,0,90]) wood_cutout();
+        loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
         do_rails_or_roads(rail=rail, road=road, part=part) {
           /* rails */
@@ -652,6 +652,12 @@ module do_rails_or_roads(rail=false, road=false, part="both") {
   }
 }
 
+module loose_wood_cutout() {
+  rotate([0,0,90]) wood_cutout();
+  // shorten the pieces slightly to make them fit less tightly
+  trim=1;//mm
+  cube([wood_width()+trim, trim, 2*wood_height()+trim], center=true);
+}
 module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
 }
