@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "switch7-left"; // [curve:Basic 60 degree curve,straight:Straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to single wye),switch7-right:Switch #7 (right hand curved double to single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,dbl_xover-left:Double-track crossover (left hand),dbl_xover-right:Double-track crossover (right hand)]
+part = "switch7-right"; // [curve:Basic 60 degree curve,straight:Straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to single wye),switch7-right:Switch #7 (right hand curved double to single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,dbl_xover-left:Double-track crossover (left hand),dbl_xover-right:Double-track crossover (right hand)]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -577,7 +577,7 @@ module dbl_sway60_right(radius, rail=false, road=false, part="all", sway_far=fal
 }
 
 module dbl_sway60_left(radius, rail=false, road=false, part="all",
-                       sway_far=false, offset=0.5) {
+                       sway_far=false, offset=0.5, tie_internal=false) {
   epsilon=.1;
   sway_radius = radius; // for now.
   sway_offset = (wood_width() + double_gutter()) / (sway_far ? 1 : 2);
@@ -596,6 +596,13 @@ module dbl_sway60_left(radius, rail=false, road=false, part="all",
       dbl_sway60_left(radius, rail, road, "hole", sway_far, offset);
       dbl_sway60_left(radius, rail, road, "connector", sway_far, offset);
       dbl_sway60_left(radius, rail, road, "ties", sway_far, offset);
+    }
+  } else if (part=="ties" && !tie_internal) {
+    intersection() {
+      dbl_sway60_left(radius, rail=rail, road=road, part="ties",
+                      sway_far=sway_far, offset=offset, tie_internal=true);
+      dbl_sway60_left(radius, rail=rail, road=road, part="plug",
+                      sway_far=sway_far, offset=offset);
     }
   } else {
     translate([sway_far ? 0 : (-sway_offset/2),stub_offset,0])
