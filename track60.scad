@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "switch9"; // [curve:Basic 60 degree curve,straight:Straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,switch1:Switch #1,switch2:Switch #2,switch3:Switch #3,switch4:Switch #4,switch5:Switch #5,switch6:Switch #6,switch7:Switch #7,switch8:Switch #8 (single to double),switch9:Switch #9 (left curved double to single wye),switch10:Switch #10 (right curved double to single wye),switch1_rail:Switch #1 alternate (rails),switch1_road:Switch #1 alternate (road),switch4_rail:Switch #4 alternate (rails),switch4_road:Switch #4 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout_inner:Roundabout (inner piece),roundabout_outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,dbl_xover_left:Double-track crossover (left),dbl_xover_right:Double-track crossover (right)]
+part = "switch7-left"; // [curve:Basic 60 degree curve,straight:Straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to single wye),switch7-right:Switch #7 (right hand curved double to single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,dbl_xover-left:Double-track crossover (left hand),dbl_xover-right:Double-track crossover (right hand)]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -45,6 +45,8 @@ function stripe_height() = 1;
 // gutter between double-track pieces.
 function double_gutter() = 10;
 
+function other_dir(dir) = (dir=="left")?"right":"left";
+
 // Make curves look nice.
 $fn = 120;
 
@@ -57,77 +59,83 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   if (part=="curve") {
     curve60_left(r, road=true, rail=true);
   } else if (part=="straight") {
-     straight60(r, road=true, rail=true);
+    straight60(r, road=true, rail=true);
   } else if (part=="crossing1") {
-      crossing60(r, 1, rail=true, road=true);
+    crossing60(r, 1, rail=true, road=true);
   } else if (part=="crossing2") {
-      crossing60(r, 2, rail=true, road=true);
+    crossing60(r, 2, rail=true, road=true);
   } else if (part=="crossing3") {
-      crossing60(r, 3, rail=true, road=true);
+    crossing60(r, 3, rail=true, road=true);
   } else if (part=="crossing4") {
-      crossing60(r, 4, rail=true, road=true);
+    crossing60(r, 4, rail=true, road=true);
   } else if (part=="crossing5") {
-      crossing60(r, 5, rail=true, road=true);
-  } else if (part=="switch1") {
-      switch60(r, 1, rail=true, road=true);
+    crossing60(r, 5, rail=true, road=true);
+  } else if (part=="switch1-left") {
+    switch60(r, 1, "left", rail=true, road=true);
+  } else if (part=="switch1-right") {
+    switch60(r, 1, "right", rail=true, road=true);
+  } else if (part=="switch1-rail") {
+    // Rails on both sides, can flip to make left or right
+    switch60(r, 1, rail=true);
+  } else if (part=="switch1-road") {
+    // Roads on both sides, can flip to make left or right
+    switch60(r, 1, road=true);
   } else if (part=="switch2") {
-      switch60(r, 2, rail=true, road=true);
-  } else if (part=="switch3") {
-      switch60(r, 3, rail=true, road=true);
+    switch60(r, 2, rail=true, road=true);
+  } else if (part=="switch3-left") {
+    switch60(r, 3, "left", rail=true, road=true);
+  } else if (part=="switch3-right") {
+    switch60(r, 3, "right", rail=true, road=true);
+  } else if (part=="switch3-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 3, rail=true);
+  } else if (part=="switch3-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 3, road=true);
   } else if (part=="switch4") {
-      switch60(r, 4, rail=true, road=true);
+    switch60(r, 4, rail=true, road=true);
   } else if (part=="switch5") {
-      switch60(r, 5, rail=true, road=true);
+    switch60(r, 5, rail=true, road=true);
   } else if (part=="switch6") {
-      switch60(r, 6, rail=true, road=true);
-  } else if (part=="switch7") {
-      switch60(r, 7, rail=true, road=true);
-  } else if (part=="switch8") {
-      switch60(r, 8, rail=true, road=true);
-  } else if (part=="switch9") {
-      switch60(r, 9, rail=true, road=true);
-  } else if (part=="switch10") {
-      switch60(r, 10, rail=true, road=true);
-  } else if (part=="switch1_rail") {
-      // Rails on both sides, can flip to make switch #2
-      switch60(r, 1, rail=true);
-  } else if (part=="switch1_road") {
-      // Roads on both sides, can flip to make switch #2
-      switch60(r, 1, road=true);
-  } else if (part=="switch4_rail") {
-      // Rails on both sides, can flip to make switch #5
-      switch60(r, 4, rail=true);
-  } else if (part=="switch4_road") {
-      // Roads on both sides, can flip to make switch #5
-      switch60(r, 4, road=true);
+    switch60(r, 6, rail=true, road=true);
+  } else if (part=="switch7-left") {
+    switch60(r, 7, "left", rail=true, road=true);
+  } else if (part=="switch7-right") {
+    switch60(r, 7, "right", rail=true, road=true);
+  } else if (part=="switch7-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 7, rail=true);
+  } else if (part=="switch7-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 7, road=true);
   } else if (part=="misc1") {
-      misc60(r, 1, rail=true, road=true);
+    misc60(r, 1, rail=true, road=true);
   } else if (part=="misc2") {
-      misc60(r, 2, rail=true, road=true);
+    misc60(r, 2, rail=true, road=true);
   } else if (part=="misc3") {
-      misc60(r, 3, rail=true, road=true);
+    misc60(r, 3, rail=true, road=true);
   } else if (part=="misc4") {
-      misc60(r, 4, rail=true, road=true);
+    misc60(r, 4, rail=true, road=true);
   } else if (part=="roundabout") {
-      track60_demo(part="roundabout_inner",r=r);
-      track60_demo(part="roundabout_outer",r=r);
-  } else if (part=="roundabout_inner"||part=="roundabout_outer") {
+    track60_demo(part="roundabout-inner",r=r);
+    track60_demo(part="roundabout-outer",r=r);
+  } else if (part=="roundabout-inner"||part=="roundabout-outer") {
       ring=45; // just enough for a female connector
       difference() {
         rotate([0,0,90])
         roundabout_custom(outer=ring, inner=straight_length(r)-ring, num=3, rails=false,
-          inner_piece=(part!="roundabout_outer"),
-          outer_piece=(part!="roundabout_inner"));
+          inner_piece=(part!="roundabout-outer"),
+          outer_piece=(part!="roundabout-inner"));
         // Add our own rails
         difference() {
           for (p=["hole","ties"]) {
-            if (part=="roundabout_inner") {
+            if (part=="roundabout-inner") {
               intersection() {
                 straight60(radius=r, rail=true, part=p);
                 if (p=="ties")
                   cylinder(d=straight_length(r)-ring-10,h=wood_height()*3,center=true);
               }
-            } else if (part=="roundabout_outer") {
+            } else if (part=="roundabout-outer") {
               difference() {
                 crossing60(radius=r, which=5, rail=true, part=p);
                 if (p=="ties")
@@ -145,10 +153,10 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     dbl_straight60(r, road=true, rail=true);
   } else if (part=="dbl_curve") {
     dbl_curve60_left(r, road=true, rail=true);
-  } else if (part=="dbl_xover_left") {
-    switch60(r, -1, rail=true, road=true);
-  } else if (part=="dbl_xover_right") {
-    scale([-1,1,1]) switch60(r, -1, rail=true, road=true);
+  } else if (part=="dbl_xover-left") {
+    switch60(r, -1, dir="left", rail=true, road=true);
+  } else if (part=="dbl_xover-right") {
+    switch60(r, -1, dir="right", rail=true, road=true);
   } else if (part=="dbl_sway") {
     dbl_sway60_left(r, road=true, rail=true, offset=0);
   }
@@ -205,59 +213,58 @@ module crossing60(radius, which, rail=false, road=false, part="all", is_intersec
   }
 }
 
-module switch60(radius, which, rail=false, road=false, part="all", is_intersection=false) {
+// Some switches are mirror symmetric, but the `dir` parameter is used for
+// those which aren't.
+module switch60(radius, which, dir="left", rail=false, road=false, part="all", is_intersection=false) {
   if (part=="all") {
     difference() {
-      switch60(radius, which, rail, road, "plug");
-      switch60(radius, which, rail, road, "hole");
-      switch60(radius, which, rail, road, "connector");
+      switch60(radius, which, dir, rail, road, "plug");
+      switch60(radius, which, dir, rail, road, "hole");
+      switch60(radius, which, dir, rail, road, "connector");
       if (rail) difference() {
-        switch60(radius, which, rail, road, "ties");
-        switch60(radius, which, rail, road, "plug", is_intersection=true);
+        switch60(radius, which, dir, rail, road, "ties");
+        switch60(radius, which, dir, rail, road, "plug", is_intersection=true);
       }
     }
-  } else if (which==1 || which==2 || which==3) {
+  } else if (which==1 || which==2) {
     union_or_intersection(is_intersection=is_intersection) {
       straight60(radius, rail, road, part);
-      if (which != 2) { curve60_left(radius, rail, road, part); }
+      curve60(radius, dir, rail, road, part);
+      if (which == 2) { curve60(radius, other_dir(dir), rail, road, part); }
       else if (is_intersection) bogus60(radius);
-      if (which != 1) { curve60_right(radius, rail, road, part); }
-      else if (is_intersection) bogus60(radius);
+    }
+  } else if (which==3) {
+    union_or_intersection(is_intersection=is_intersection) {
+      straight60(radius, rail, road, part);
+      curve60(radius, dir=dir, rail=rail, road=road, part=part);
+      rotate([0,0,180]) curve60(radius, dir=dir, rail=rail, road=road, part=part);
     }
   } else if (which==4 || which==5) {
     union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, rail, road, part);
-      curve60(radius, dir=(which==4?"left":"right"), rail=rail, road=road, part=part);
-      rotate([0,0,180]) curve60(radius, dir=(which==4?"left":"right"), rail=rail, road=road, part=part);
-    }
-  } else if (which==6 || which==7) {
-    union_or_intersection(is_intersection=is_intersection) {
       curve60_left(radius, rail, road, part);
       curve60_right(radius, rail, road, part);
-      if (which==7) {
+      if (which==5) {
         rotate([0,0,120]) curve60_right(radius, rail, road, part);
       } else if (is_intersection) bogus60(radius);
     }
-  } else if (which==8) {
+  } else if (which==6) {
     // single-to-double switch
     union_or_intersection(is_intersection=is_intersection) {
       dbl_sway60_left(radius, rail, road, part);
       dbl_sway60_right(radius, rail, road, part);
     }
-  } else if (which==9 || which==10) {
+  } else if (which==7) {
     // curved double-to-single wye
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve60(radius, dir=(which==9?"left":"right"),
-                  rail=rail, road=road, part=part);
+      dbl_curve60(radius, dir=dir, rail=rail, road=road, part=part);
       rotate([0,0,180])
-        dbl_sway60(radius, dir=(which==9?"left":"right"),
-                   rail=rail, road=road, part=part, offset=0);
+        dbl_sway60(radius, dir=dir, rail=rail, road=road, part=part, offset=1);
     }
   } else if (which==-1) {
-    // double-track left crossover
+    // double-track crossover
     union_or_intersection(is_intersection=is_intersection) {
       dbl_straight60(radius, rail, road, part);
-      dbl_sway60_left(radius, rail, road, part, sway_far=true);
+      dbl_sway60(radius, dir, rail, road, part, sway_far=true);
     }
   }
 }
