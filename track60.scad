@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "curve"; // [curve:Basic 60 degree curve,straight:Straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to single wye),switch7-right:Switch #7 (right hand curved double to single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to single wye),switch8-right:Switch #8 (right hand curved double to single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,dbl_xover-left:Double-track crossover (left hand),dbl_xover-right:Double-track crossover (right hand)]
+part = "switch16-left"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -60,6 +60,8 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     curve60_left(r, road=true, rail=true);
   } else if (part=="straight") {
     straight60(r, road=true, rail=true);
+  } else if (part=="half_straight") {
+    half_straight60(r, road=true, rail=true);
   } else if (part=="crossing1") {
     crossing60(r, 1, rail=true, road=true);
   } else if (part=="crossing2") {
@@ -70,6 +72,28 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     crossing60(r, 4, rail=true, road=true);
   } else if (part=="crossing5") {
     crossing60(r, 5, rail=true, road=true);
+  } else if (part=="crossing6") {
+    crossing60(r, 6, rail=true, road=true);
+  } else if (part=="crossing7-left") {
+    crossing60(r, 7, "left", rail=true, road=true);
+  } else if (part=="crossing7-right") {
+    crossing60(r, 7, "right", rail=true, road=true);
+  } else if (part=="crossing7-road") {
+    crossing60(r, 7, road=true); // Left on top, right on bottom.
+  } else if (part=="crossing7-rail") {
+    crossing60(r, 7, rail=true); // Left on top, right on bottom.
+  } else if (part=="crossing8-left") {
+    crossing60(r, 8, "left", rail=true, road=true);
+  } else if (part=="crossing8-right") {
+    crossing60(r, 8, "right", rail=true, road=true);
+  } else if (part=="crossing8-road") {
+    crossing60(r, 8, road=true); // Left on top, right on bottom.
+  } else if (part=="crossing8-rail") {
+    crossing60(r, 8, rail=true); // Left on top, right on bottom.
+  } else if (part=="crossing9") {
+    crossing60(r, 9, rail=true, road=true);
+  } else if (part=="crossing10") {
+    crossing60(r, 10, rail=true, road=true);
   } else if (part=="switch1-left") {
     switch60(r, 1, "left", rail=true, road=true);
   } else if (part=="switch1-right") {
@@ -138,6 +162,66 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (part=="switch10-road") {
     // Roads on both sides, can flip to make left or right switch
     switch60(r, 10, road=true);
+  } else if (part=="switch11-left") {
+    switch60(r, 11, "left", rail=true, road=true);
+  } else if (part=="switch11-right") {
+    switch60(r, 11, "right", rail=true, road=true);
+  } else if (part=="switch11-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 11, rail=true);
+  } else if (part=="switch11-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 11, road=true);
+  } else if (part=="switch12-left") {
+    switch60(r, 12, "left", rail=true, road=true);
+  } else if (part=="switch12-right") {
+    switch60(r, 12, "right", rail=true, road=true);
+  } else if (part=="switch12-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 12, rail=true);
+  } else if (part=="switch12-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 12, road=true);
+  } else if (part=="switch13-left") {
+    switch60(r, 13, "left", rail=true, road=true);
+  } else if (part=="switch13-right") {
+    switch60(r, 13, "right", rail=true, road=true);
+  } else if (part=="switch13-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 13, rail=true);
+  } else if (part=="switch13-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 13, road=true);
+  } else if (part=="switch14-left") {
+    switch60(r, 14, "left", rail=true, road=true);
+  } else if (part=="switch14-right") {
+    switch60(r, 14, "right", rail=true, road=true);
+  } else if (part=="switch14-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 14, rail=true);
+  } else if (part=="switch14-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 14, road=true);
+  } else if (part=="switch15-left") {
+    switch60(r, 15, "left", rail=true, road=true);
+  } else if (part=="switch15-right") {
+    switch60(r, 15, "right", rail=true, road=true);
+  } else if (part=="switch15-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 15, rail=true);
+  } else if (part=="switch15-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 15, road=true);
+  } else if (part=="switch16-left") {
+    switch60(r, 16, "left", rail=true, road=true);
+  } else if (part=="switch16-right") {
+    switch60(r, 16, "right", rail=true, road=true);
+  } else if (part=="switch16-rail") {
+    // Rails on both sides, can flip to make left or right switch
+    switch60(r, 16, rail=true);
+  } else if (part=="switch16-road") {
+    // Roads on both sides, can flip to make left or right switch
+    switch60(r, 16, road=true);
   } else if (part=="misc1") {
     misc60(r, 1, rail=true, road=true);
   } else if (part=="misc2") {
@@ -183,10 +267,6 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     dbl_straight60(r, road=true, rail=true);
   } else if (part=="dbl_curve") {
     dbl_curve60_left(r, road=true, rail=true);
-  } else if (part=="dbl_xover-left") {
-    switch60(r, -1, dir="left", rail=true, road=true);
-  } else if (part=="dbl_xover-right") {
-    switch60(r, -1, dir="right", rail=true, road=true);
   }
 }
 
@@ -244,6 +324,31 @@ module crossing60(radius, which, dir="left", rail=false, road=false, part="all",
         rotate([0,0,-60]) straight60(radius, rail, road, part);
       } else if (is_intersection) bogus60(radius);
     }
+  } else if (which==6) {
+    // double crossover
+    union_or_intersection(is_intersection=is_intersection) {
+      dbl_sway60_left(radius, rail, road, part, sway_far=true, gutter=gutter);
+      dbl_sway60_right(radius, rail, road, part, sway_far=true, gutter=gutter);
+    }
+  } else if (which==7 || which==8) {
+    // double-to-single crossover (crossing #7 is technically a gantlet)
+    // one straight, one curved.
+    union_or_intersection(is_intersection=is_intersection) {
+      rotate([0,0,180])
+        dbl_sway60(radius, which==7 ? dir : other_dir(dir), rail, road, part,
+                   gutter=gutter);
+      dbl_curve_sway60(radius, dir, rail, road, part,
+                       far_side=(which==8), gutter=gutter);
+    }
+  } else if (which==9 || which==10) {
+    // double-to-single crossover (crossing #9 is technically a gantlet)
+    // both curved
+    union_or_intersection(is_intersection=is_intersection) {
+      dbl_curve_sway60_left(radius, rail, road, part,
+                            far_side=(which==10), gutter=gutter);
+      dbl_curve_sway60_right(radius, rail, road, part,
+                             far_side=(which==10), gutter=gutter);
+    }
   }
 }
 
@@ -284,13 +389,13 @@ module switch60(radius, which, dir="left", rail=false, road=false, part="all",
       } else if (is_intersection) bogus60(radius);
     }
   } else if (which==6) {
-    // single-to-double switch
+    // single-to-double straight switch
     union_or_intersection(is_intersection=is_intersection) {
       dbl_sway60_left(radius, rail, road, part, gutter=gutter);
       dbl_sway60_right(radius, rail, road, part, gutter=gutter);
     }
   } else if (which==7 || which==8) {
-    // curved double-to-single wye
+    // curved double-to-straight single wye
     union_or_intersection(is_intersection=is_intersection) {
       dbl_curve60(radius, dir=dir, rail=rail, road=road, part=part,
                   gutter=gutter);
@@ -300,18 +405,42 @@ module switch60(radius, which, dir="left", rail=false, road=false, part="all",
                    offset=(which==7 ? 1 : 0));
     }
   } else if (which==9 || which==10) {
-    // curved double-to-single wye
+    // straight double-to-curved single wye
     union_or_intersection(is_intersection=is_intersection) {
       dbl_straight60(radius, rail=rail, road=road, part=part,
                      gutter=gutter);
       dbl_curve_sway60(radius, dir=dir, rail=rail, road=road, part=part,
                        just_curve=true, far_side=(which==10), gutter=false);
     }
-  } else if (which==-1) {
+  } else if (which==11 || which==12) {
+    // curved double to curved single wye
+    union_or_intersection(is_intersection=is_intersection) {
+      dbl_curve60(radius, dir=dir, rail=rail, road=road, part=part,
+                  gutter=gutter);
+      dbl_curve_sway60(radius, dir=other_dir(dir), rail=rail, road=road,
+                       part=part, far_side=(which==12), gutter=false);
+    }
+  } else if (which==13) {
     // double-track crossover
     union_or_intersection(is_intersection=is_intersection) {
       dbl_straight60(radius, rail, road, part, gutter=false);
       dbl_sway60(radius, dir, rail, road, part, sway_far=true);
+    }
+  } else if (which==14) {
+    // single-to-double curved switch
+    union_or_intersection(is_intersection=is_intersection) {
+      dbl_curve_sway60(radius, dir, rail, road, part, gutter=gutter);
+      dbl_curve_sway60(radius, dir, rail, road, part,
+                       far_side=true, gutter=gutter);
+    }
+  } else if (which==15 || which==16) {
+    // single-to-double curved switch, with right single curve
+    union_or_intersection(is_intersection=is_intersection) {
+      dbl_curve_sway60(radius, dir, rail, road, part, gutter=gutter);
+      dbl_curve_sway60(radius, dir, rail, road, part,
+                       far_side=true, gutter=gutter);
+      dbl_curve_sway60(radius, other_dir(dir), rail, road, part,
+                       far_side=(which==16), gutter=gutter);
     }
   }
 }
@@ -390,6 +519,30 @@ module straight60(radius, rail=false, road=false, part="all", trim_ties=true) {
         }
       }
     }
+  }
+}
+
+module half_straight60(radius, rail=false, road=false, part="all", trim_ties=true) {
+
+  if (part=="all") {
+    difference() {
+      half_straight60(radius, rail, road, "body");
+      half_straight60(radius, rail, road, "hole");
+      half_straight60(radius, rail, road, "connector");
+      half_straight60(radius, rail, road, "ties", trim_ties=false);
+    }
+  } else if (part=="ties" && trim_ties) {
+    intersection() {
+      half_straight60(radius, rail=rail, road=road, part="ties",
+                      trim_ties=false);
+      half_straight60(radius, rail=rail, road=road, part="body");
+    }
+  } else if (part=="body" || part=="connector") {
+    translate([0,-straight_length(radius)/4,0])
+      straight60(radius/2, rail=rail, road=road, part=part);
+  } else {
+    // hole and ties are unscaled to preserve consistent spacing.
+    straight60(radius, rail=rail, road=road, part=part);
   }
 }
 
@@ -840,6 +993,13 @@ module dbl_curve_sway60_left(radius, rail=false, road=false, part="all",
                           just_curve=just_curve, far_side=far_side);
   } else if (part=="gutter") {
     dbl_curve60_left(radius, rail=rail, road=road, part="gutter");
+    // Add a bit extra to connect to far_side curve (otherwise there
+    // is a small gap, because far_side curve starts with straight segment)
+    if (far_side) {
+      translate([0,-straight_length(radius)/4,wood_height()/2])
+        cube([double_gutter(),straight_length(radius)/2,wood_well_height()],
+             center=true);
+    }
   } else {
     offset = (wood_width() + double_gutter())/2;
     new_radius = radius - 2*offset;
