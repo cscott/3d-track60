@@ -19,7 +19,7 @@ use <./roundabout.scad>
 // area of 200mm square, so we suggested the following
 // basic radius:
 //basic_radius = 170;
-// However, our wtrak-like system works nicely
+// However, our wTrak-like system works nicely
 // if 7 hex cells (flat-to-flat) are 49 inches, hence:
 basic_radius = 154;
 
@@ -38,6 +38,13 @@ function tie_spacing(radius) = (tie_angle(radius) * PI * radius) / 180;
 function tie_height()=(wood_height()-wood_well_height())/2;
 function tie_width()=2;
 function well_tie_height()=1;
+
+// In tracklib:
+//  wood_well_spacing should be 19.15
+//  wood_well_width() = (31.3 - wood_well_spacing())/2 = 6.075 ~= 6.1
+
+function road_height() = (wood_height()-2);
+function road_width() = wood_well_spacing() + 2*wood_well_width();
 
 function stripe_width() = 2;
 function stripe_height() = 1;
@@ -262,7 +269,7 @@ module track60_demo(part="curve_rail",r=basic_radius) {
       }
   } else if (part=="dogbone") {
     // scale to account for roadway depth
-    scale([1,1,wood_well_height()/wood_height()]) dogbone(true);
+    scale([1,1,road_height()/wood_height()]) dogbone(true);
   } else if (part=="dbl_straight") {
     dbl_straight60(r, road=true, rail=true);
   } else if (part=="dbl_curve") {
@@ -629,9 +636,8 @@ module wood_rails_and_ties(radius, part="both") {
 module wood_road_and_stripes(radius) {
   epsilon = 1;
 
-  road_width = wood_well_spacing() + 2*wood_well_width();
-  translate([-road_width/2,-epsilon,wood_well_height()])
-    cube([road_width, straight_length(radius) + 2*epsilon, wood_height()]);
+  translate([-road_width()/2,-epsilon,road_height()])
+    cube([road_width(), straight_length(radius) + 2*epsilon, wood_height()]);
 
   spacing = tie_spacing(radius)*2;
   num=ceil((straight_length(radius)/spacing)/2);
@@ -639,7 +645,7 @@ module wood_road_and_stripes(radius) {
   // stripes.
   for (i = [-num:1:num] ) {
     translate([0,(straight_length(radius)/2)+(i+.25)*spacing,0]) {
-      translate([-stripe_width()/2,0,wood_well_height()-stripe_height()])
+      translate([-stripe_width()/2,0,road_height()-stripe_height()])
         cube([stripe_width(),spacing/2, stripe_height() + epsilon]);
     }
   }
@@ -648,12 +654,11 @@ module wood_road_and_stripes(radius) {
 
 module wood_road_and_stripes_arc(radius, angle) {
   epsilon = 1;
-  road_width = wood_well_spacing() + 2*wood_well_width();
-  translate([0,0,wood_well_height()]) {
+  translate([0,0,road_height()]) {
     difference() {
-      pie(radius + road_width/2, angle, wood_height());
+      pie(radius + road_width()/2, angle, wood_height());
       translate([0,0,-epsilon])
-        pie(radius - road_width/2, angle + 2*epsilon,
+        pie(radius - road_width()/2, angle + 2*epsilon,
             wood_height() + 2*epsilon, -epsilon);
     }
   }
@@ -663,10 +668,10 @@ module wood_road_and_stripes_arc(radius, angle) {
   // stripes.
   for (i = [-num:1:num] ) {
     rotate([0,0,(angle/2)+(i-0.25)*angle_increment]) difference() {
-      translate([0,0,wood_well_height()-stripe_height()])
+      translate([0,0,road_height()-stripe_height()])
         pie(radius + stripe_width()/2, angle_increment/2,
             stripe_height() + epsilon);
-      translate([0,0,wood_well_height()-stripe_height()-epsilon])
+      translate([0,0,road_height()-stripe_height()-epsilon])
         pie(radius - stripe_width()/2, angle_increment/2 + 2*epsilon,
             stripe_height() + 3*epsilon, -epsilon);
     }
@@ -904,9 +909,8 @@ module dbl_sway60_left(radius, rail=false, road=false, part="all",
           }
           /* roads */
           for (which=["road","stripe"]) {
-            road_width = wood_well_spacing() + 2*wood_well_width();
-            which_width = (which=="road") ? road_width : stripe_width();
-            which_height = wood_well_height() -
+            which_width = (which=="road") ? road_width() : stripe_width();
+            which_height = road_height() -
               (which=="road" ? 0 : stripe_height());
             difference() {
               union() {
@@ -1067,9 +1071,8 @@ module dbl_curve_sway60_left(radius, rail=false, road=false, part="all",
           }
           /* roads */
           for (which=["road","stripe"]) {
-            road_width = wood_well_spacing() + 2*wood_well_width();
-            which_width = (which=="road") ? road_width : stripe_width();
-            which_height = wood_well_height() -
+            which_width = (which=="road") ? road_width() : stripe_width();
+            which_height = road_height() -
               (which=="road" ? 0 : stripe_height());
             difference() {
               union() {
@@ -1101,7 +1104,7 @@ module dbl_curve_sway60_left(radius, rail=false, road=false, part="all",
                              wood_height()])
                     pie_centered(radius + wood_width() + double_gutter(),
                                  angle_increment/2,
-                                 2*wood_height(),
+                                 2*wood_height() + epsilon,
                                  (angle/2)+((j-.25)*angle_increment));
                 }
               }
