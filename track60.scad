@@ -1136,7 +1136,7 @@ module loose_wood_cutout() {
   rotate([0,0,90]) wood_cutout();
   // shorten the pieces slightly to make them fit less tightly
   trim=1;//mm
-  cube([wood_width()+trim, trim, 2*wood_height()+trim], center=true);
+  cube([wood_width()+double_gutter()+trim, trim, 2*wood_height()+trim], center=true);
 }
 module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
