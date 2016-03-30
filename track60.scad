@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "switch16-left"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve]
+part = "slope"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,building:Building connector]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -274,6 +274,12 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     dbl_straight60(r, road=true, rail=true);
   } else if (part=="dbl_curve") {
     dbl_curve60_left(r, road=true, rail=true);
+  } else if (part=="half_dbl_straight") {
+    half_dbl_straight60(r, road=true, rail=true);
+  } else if (part=="building") {
+    building60(r, road=true, rail=true);
+  } else if (part=="slope") {
+    slope60(r, road=true, rail=true);
   }
 }
 
@@ -529,27 +535,39 @@ module straight60(radius, rail=false, road=false, part="all", trim_ties=true) {
   }
 }
 
-module half_straight60(radius, rail=false, road=false, part="all", trim_ties=true) {
+module half_dbl_straight60(radius, rail=false, road=false, part="all") {
+  half_straight60(radius, rail=rail, road=road, part=part, double=true);
+}
+
+module half_straight60(radius, rail=false, road=false, part="all", trim_ties=true, double=false) {
 
   if (part=="all") {
     difference() {
-      half_straight60(radius, rail, road, "body");
-      half_straight60(radius, rail, road, "hole");
-      half_straight60(radius, rail, road, "connector");
-      half_straight60(radius, rail, road, "ties", trim_ties=false);
+      half_straight60(radius, rail, road, "body", double=double);
+      half_straight60(radius, rail, road, "hole", double=double);
+      half_straight60(radius, rail, road, "connector", double=double);
+      half_straight60(radius, rail, road, "ties", trim_ties=false, double=double);
     }
   } else if (part=="ties" && trim_ties) {
     intersection() {
       half_straight60(radius, rail=rail, road=road, part="ties",
-                      trim_ties=false);
-      half_straight60(radius, rail=rail, road=road, part="body");
+                      trim_ties=false, double=double);
+      half_straight60(radius, rail=rail, road=road, part="body", double=double);
     }
   } else if (part=="body" || part=="connector") {
     translate([0,-straight_length(radius)/4,0])
-      straight60(radius/2, rail=rail, road=road, part=part);
+      if (double) {
+        dbl_straight60(radius/2, rail=rail, road=road, part=part);
+      } else {
+        straight60(radius/2, rail=rail, road=road, part=part);
+      }
   } else {
     // hole and ties are unscaled to preserve consistent spacing.
-    straight60(radius, rail=rail, road=road, part=part);
+    if (double) {
+      dbl_straight60(radius, rail=rail, road=road, part=part);
+    } else {
+      straight60(radius, rail=rail, road=road, part=part);
+    }
   }
 }
 
@@ -1123,7 +1141,7 @@ module do_rails_or_roads(rail=false, road=false, part="both") {
     if (part != "ties") children(1); /* road on top */
   }
 
-  translate([0,0,wood_height()/2]) scale([1,1,-1])
+  translate([0,0,wood_height()/2]) rotate([0,180,180])
     translate([0,0,-wood_height()/2]) {
     if (rail) { children(0); /* rail on bottom */ }
     if (road&&rail ? false : road) {
@@ -1140,4 +1158,129 @@ module loose_wood_cutout() {
 }
 module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
+}
+
+module building60(radius, rail=false, road=false, part="all", trim_ties=true) {
+  if (part=="all") {
+    difference() {
+      building60(radius, rail, road, "body");
+      building60(radius, rail, road, "hole");
+      building60(radius, rail, road, "connector");
+      building60(radius, rail, road, "ties", trim_ties=false);
+    }
+  } else {
+    straight60(radius, rail=rail, road=road, part=part, trim_ties=trim_ties);
+    if (part=="body") {
+      translate([wood_width()/2,0,0])
+        #wood_plug();
+    } else if (part=="hole") {
+      driveway_width = 46.6;
+      translate([0,-driveway_width/2, road_height()])
+        cube([wood_width(), driveway_width, wood_height()]);
+      translate([0,0,wood_height()/2]) for (j=[1,-1]) scale([1,1,j])
+      translate([wood_width()/2 + 3.8 + 0.5, -driveway_width/2, 7.4 - wood_height()/2])
+        cube([8, driveway_width, wood_height()]);
+    }
+  }
+}
+
+module slope60(radius, rail=false, road=false, part="all", trim_ties=true) {
+  epsilon=.1;
+  rise=62;  // standard module rise
+  length=straight_length(radius);
+  slope_angle=atan2(rise,length);
+  slope_radius=sqrt(pow(rise,2)+pow(length,2))/(4*sin(slope_angle));
+
+  //hypo= sqrt(pow(rise/2,2) + pow(length/2,2));
+  //echo(length=length,slope_angle=slope_angle,slope_radius=slope_radius,hypo=hypo);
+
+  if (part=="all") {
+    difference() {
+      slope60(radius, rail, road, "body");
+      slope60(radius, rail, road, "hole");
+      slope60(radius, rail, road, "connector");
+      slope60(radius, rail, road, "ties", trim_ties=false);
+    }
+  } else if (part=="ties" && trim_ties) {
+    intersection() {
+      slope60(radius, rail=rail, road=road, part="ties", trim_ties=false);
+      slope60(radius, rail=rail, road=road, part="body");
+    }
+  } else {
+    for(i=[-1,1]) rotate([0,0,(i+1)*90]) {
+      if (part=="body") {
+        translate([-wood_width()/2,-length/2,i*(rise/2)])
+          wood_track_slope(slope_radius + wood_height()/2,
+                           -i*(2*slope_angle + epsilon),
+                           rails=false);
+      } else if (part=="connector") {
+        translate([0, -length/2, i*(rise/2) + wood_height()/2])
+          /* scale cutout in z direction to account for track curvature */
+          scale([1,1,2]) translate([0,0,-wood_height()/2])
+            loose_wood_cutout();
+      } else if (part=="hole" || part=="ties") {
+        do_rails_or_roads(rail=rail, road=road, part=part) {
+          /* rails */
+          for (which=["rails","ties"]) {
+            which_height = (which=="rails" ? 0 : -well_tie_height());
+            difference() {
+              union() {
+                if (part=="hole") {
+                  translate([-wood_width()/2,-length/2,i*(rise/2) + which_height])
+                    wood_rails_slope(slope_radius + wood_height()/2,
+                                     -i*(2*slope_angle + epsilon),
+                                     bevel_ends=false);
+                }
+                if (part=="ties" && which=="ties") {
+                  translate([-wood_width()/2, -length/2,
+                             i*(rise/2) + wood_height() - tie_height()])
+                    wood_track_slope(slope_radius + wood_height()/2,
+                                     -i*(2*slope_angle + epsilon),
+                                     rails=false);
+                }
+              }
+              if (which=="ties") {
+                /* cut out ties */
+                spacing = tie_spacing(radius);
+                num=ceil((straight_length(radius)/2)/spacing);
+                for (j = [-num:1:0] ) {
+                  ypos = (j*spacing);
+                  translate([0,ypos,0])
+                    cube([2*wood_width(),
+                          spacing - tie_width(),
+                          rise + 4*wood_height()], center=true);
+                }
+              }
+            }
+          }
+          /* roads */
+          for (which=["road","stripe"]) {
+            which_width = (which=="road") ? road_width() : stripe_width();
+            which_height = road_height() - (which=="road" ? 0 : stripe_height());
+            difference() {
+              union() {
+                scale([which_width/wood_width(),1,1])
+                  translate([-wood_width()/2, -length/2,
+                             i*(rise/2) + which_height])
+                    wood_track_slope(slope_radius + wood_height()/2,
+                                     -i*(2*slope_angle + epsilon),
+                                     rails=false);
+              }
+              if (which=="stripe") {
+                /* cut out stripes */
+                spacing = tie_spacing(radius)*2;
+                num=ceil((straight_length(radius)/spacing)/2);
+                for (j = [-num:1:0] ) {
+                  ypos = (j*spacing);
+                  translate([0,ypos,0])
+                    cube([2*wood_width(),spacing/2, rise + 4*wood_height()],
+                          center=true);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
