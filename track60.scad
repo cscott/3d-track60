@@ -515,21 +515,22 @@ module straight60(radius, rail=false, road=false, part="all", trim_ties=true) {
       straight60(radius, rail=rail, road=road, part="body");
     }
   } else {
-    translate([0,-straight_length(radius)/2,0]) {
-      if (part=="body") {
-        translate([wood_width()/2,0,0]) rotate([0,0,90])
-          wood_track(straight_length(radius), false);
-      } else if (part=="connector") {
+    if (part=="body") {
+      translate([wood_width()/2,-straight_length(radius)/2,0])
+        rotate([0,0,90]) wood_track(straight_length(radius), false);
+    } else if (part=="connector") {
+      translate([0,-straight_length(radius)/2,0])
         loose_wood_cutout();
-        translate([0,straight_length(radius),0])
-          rotate([0,0,180]) loose_wood_cutout();
-      } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(rail=rail, road=road, part=part) {
-          /* rails */
-          wood_rails_and_ties(radius, part=(part=="hole"?"rails":part));
-          /* roads */
-          wood_road_and_stripes(radius);
-        }
+      translate([0,straight_length(radius)/2,0])
+        rotate([0,0,180]) loose_wood_cutout();
+    } else if (part=="hole" || part=="ties") {
+      do_rails_or_roads(rail=rail, road=road, part=part) {
+        /* rails */
+        translate([0,-straight_length(radius)/2,0])
+        wood_rails_and_ties(radius, part=(part=="hole"?"rails":part));
+        /* roads */
+        translate([0,-straight_length(radius)/2,0])
+        wood_road_and_stripes(radius);
       }
     }
   }
@@ -611,7 +612,7 @@ module curve60_left(radius, rail=false, road=false, part="all",
         rotate([0,0,60]) translate([radius,0,0]) rotate([0,0,180])
           loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(rail=rail, road=road, part=part) {
+        do_rails_or_roads(rail=rail, road=road, part=part, mirror_symmetric=false) {
           /* rails */
           wood_rails_and_ties_arc(radius, angle=60, part=(part=="hole"?"rails":part));
           /* roads */
@@ -883,7 +884,7 @@ module dbl_sway60_left(radius, rail=false, road=false, part="all",
       } else if (part=="connector") {
         loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(rail=rail, road=road, part=part) {
+        do_rails_or_roads(rail=rail, road=road, part=part, mirror_symmetric=false) {
           /* rails */
           for (which=["rails","ties"]) {
             which_height = (which=="rails" ? 0 : -well_tie_height());
@@ -1045,7 +1046,7 @@ module dbl_curve_sway60_left(radius, rail=false, road=false, part="all",
       } else if (part=="connector" && !just_curve) {
         loose_wood_cutout();
       } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(rail=rail, road=road, part=part) {
+        do_rails_or_roads(rail=rail, road=road, part=part, mirror_symmetric=false) {
           /* rails */
           for (which=["rails","ties"]) {
             which_height = (which=="rails" ? 0 : -well_tie_height());
@@ -1135,13 +1136,15 @@ module dbl_curve_sway60_left(radius, rail=false, road=false, part="all",
   }
 }
 
-module do_rails_or_roads(rail=false, road=false, part="both") {
+module do_rails_or_roads(rail=false, road=false, part="both", mirror_symmetric=true) {
   if (road&&rail ? false : rail) { children(0); /* rail on top */ }
   if (road) {
     if (part != "ties") children(1); /* road on top */
   }
 
-  translate([0,0,wood_height()/2]) rotate([0,180,180])
+  translate([0,0,wood_height()/2])
+    rotate([0, mirror_symmetric ? 180 : 0, mirror_symmetric ? 180 : 0])
+    scale([1, 1, mirror_symmetric ? 1 : -1])
     translate([0,0,-wood_height()/2]) {
     if (rail) { children(0); /* rail on bottom */ }
     if (road&&rail ? false : road) {
