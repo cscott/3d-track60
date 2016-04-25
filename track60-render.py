@@ -4,6 +4,9 @@ import os, sys
 from dotscad import Customizer
 import argparse
 
+def norm(s):
+    return s.replace('/', '-').replace('_','-')
+
 def render_parts(basename, relativeTo=__file__):
     parser = argparse.ArgumentParser(
         description='Render STL from '+basename+'.scad'
@@ -19,7 +22,7 @@ def render_parts(basename, relativeTo=__file__):
     for part in s.vars['part'].possible.parameters.keys():
         shortname = s.vars['part'].possible[part]
         s.vars['part'].set(shortname)
-        name = '{0}-stl/{0}-{1}'.format(basename, shortname.replace('_','-'))
+        name = '{0}-stl/{0}-{1}'.format(basename, norm(shortname))
         print name
         if (args.update and os.path.isfile(name + '.stl')):
           print "  (skipping, as it already exists)"
