@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "carwash"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,barn:John Deere Barn connector,carwash:Texaco Carwash connector]
+part = "firehouse"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1,crossing2:Crossing #2,crossing3:Crossing #3,crossing4:Crossing #4,crossing5:Crossing #5,crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner:Roundabout (inner piece),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,barn:John Deere Barn connector,carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -280,6 +280,8 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     barn60(r, road=true, rail=true);
   } else if (part=="carwash") {
     carwash60(r, road=true, rail=true);
+  } else if (part=="firehouse") {
+    firehouse60(r, road=true, rail=true);
   } else if (part=="slope") {
     slope60(r, road=true, rail=true);
   }
@@ -699,7 +701,7 @@ module wood_road_and_stripes_arc(radius, angle) {
   }
 }
 
-module wood_rails_and_ties_arc(radius, angle, part="both") {
+module wood_rails_and_ties_arc(radius, angle, part="both", bevel_ends=false) {
   epsilon=.1;
   do_rails = (part=="both" || part=="rails");
   do_ties = (part=="both" || part=="ties");
@@ -710,7 +712,7 @@ module wood_rails_and_ties_arc(radius, angle, part="both") {
 
   num=ceil((angle/angle_increment)/2);
 
-  if (do_rails) wood_rails_arc(inner_radius, angle);
+  if (do_rails) wood_rails_arc(inner_radius, angle, bevel_ends=bevel_ends);
 
   for (i = [-num:1:num] ) {
     rotate([0,0,(angle/2)+(i*angle_increment)]) {
@@ -1155,11 +1157,11 @@ module do_rails_or_roads(rail=false, road=false, part="both", mirror_symmetric=t
   }
 }
 
-module loose_wood_cutout() {
+module loose_wood_cutout(extra_trim=0) {
   rotate([0,0,90]) wood_cutout();
   // shorten the pieces slightly to make them fit less tightly
   trim=1;//mm
-  cube([wood_width()+double_gutter()+trim, trim, 2*wood_height()+trim], center=true);
+  cube([wood_width()+double_gutter()+extra_trim+trim, trim, 2*wood_height()+trim], center=true);
 }
 module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
@@ -1266,6 +1268,8 @@ module slope60(radius, rail=false, road=false, part="all", trim_ties=true) {
   }
 }
 
+// XXX the connector keeps breaking off; split this into two pieces?
+// (ie, add a female cutout to the barn piece, then print a special joiner)
 module barn60(radius, rail=false, road=false, part="all", trim_ties=true) {
   if (part=="all") {
     difference() {
@@ -1278,7 +1282,7 @@ module barn60(radius, rail=false, road=false, part="all", trim_ties=true) {
     straight60(radius, rail=rail, road=road, part=part, trim_ties=trim_ties);
     if (part=="body") {
       translate([wood_width()/2,0,0])
-        #wood_plug();
+        wood_plug();
     } else if (part=="hole") {
       driveway_width = 46.6;
       translate([0,-driveway_width/2, road_height()])
@@ -1286,6 +1290,98 @@ module barn60(radius, rail=false, road=false, part="all", trim_ties=true) {
       translate([0,0,wood_height()/2]) for (j=[1,-1]) scale([1,1,j])
       translate([wood_width()/2 + 3.8 + 0.5, -driveway_width/2, 7.4 - wood_height()/2])
         cube([8, driveway_width, wood_height()]);
+    }
+  }
+}
+
+function track60_radius_for(x, y) = (x*x + y*y)/(2*y);
+function track60_angle_for(x, y) = atan2(x, track60_radius_for(x,y)-y);
+
+module firehouse60(radius, rail=false, road=false, part="all", mirrored=false, gutter=true, trim_ties=true) {
+  // narrowing double track.
+  firehouse_length = 6 /*inches*/ * 25.4;
+  firehouse_width = 5.875 /* inches */ * 25.4;
+  firehouse_spacing = 62.5; // space between tracks
+  desired_spacing = wood_width() + double_gutter();
+  max_spacing = max(firehouse_spacing, desired_spacing);
+  epsilon = .1;
+
+  firehouse_units = 2; //  how many "straight pieces" should this take up.
+  transition_length = (firehouse_units*straight_length(radius) - firehouse_length) / 2;
+  transition_x = transition_length/2;
+  transition_y = (firehouse_spacing - desired_spacing)/4;
+  transition_radius = track60_radius_for(transition_x, transition_y);
+  transition_angle = track60_angle_for(transition_x, transition_y);
+
+  // increase circle res since radius is high/angle is small
+  myfn=ceil(360/transition_angle)*8;
+
+  if (part=="all" && !mirrored) {
+    difference() {
+      firehouse60(radius, rail, road, "body", gutter=true);
+      firehouse60(radius, rail, road, "hole");
+      firehouse60(radius, rail, road, "connector");
+      firehouse60(radius, rail, road, "ties", trim_ties=false);
+    }
+  } else if (part=="ties" && trim_ties) {
+    intersection() {
+      firehouse60(radius, rail, road, part, mirrored=mirrored, trim_ties=false);
+      firehouse60(radius, rail, road, part="body", mirrored=mirrored, gutter=false);
+    }
+  } else if (part=="body" && gutter) {
+    firehouse60(radius, rail, road, part="body", mirrored=mirrored,
+                gutter=false);
+    firehouse60(radius, rail, road, part="gutter", mirrored=mirrored);
+  } else if (part=="gutter-body" && !mirrored) {
+    translate([0,transition_length/2,wood_height()/2])
+      cube([max_spacing + epsilon, transition_length, wood_height()],
+           center=true);
+    scale([firehouse_width/2, transition_length/2, 1])
+      pie(1, 180, wood_height());
+  } else if (part=="gutter" && !mirrored) {
+      translate([0,0,wood_height()/2])
+        scale([1,1,wood_well_height()/wood_height()])
+        translate([0,0,-wood_height()/2])
+        firehouse60(radius, rail, road, part="gutter-body",
+                    mirrored=false, trim_ties=false, gutter=false);
+    difference() {
+      firehouse60(radius, rail, road, part="gutter-body",
+                  mirrored=false, trim_ties=false, gutter=false);
+      minkowski() {
+        sphere(r=2, $fn=6);
+        firehouse60(radius, rail, road, part="body", mirrored=false, trim_ties=false, gutter=false);
+      }
+    }
+  } else if (!mirrored) {
+    for  (i=[-1,1]) scale([i,1,1]) {
+      translate([firehouse_spacing/2,0,0]) intersection() {
+        firehouse60(radius, rail, road, part,
+                    mirrored=true, gutter=gutter, trim_ties=false);
+        translate([-transition_radius,0,0])
+          pie_centered(transition_radius + wood_width(),
+                       transition_angle + epsilon, wood_height()*3);
+      }
+      translate([desired_spacing/2,transition_length,0]) rotate([0,0,180]) intersection() {
+        firehouse60(radius, rail, road, part,
+                    mirrored=true, gutter=gutter, trim_ties=false);
+        translate([-transition_radius,0,0])
+          pie_centered(transition_radius + wood_width(),
+                       transition_angle + epsilon, wood_height()*3);
+      }
+    }
+  } else if (part=="body") {
+    translate([-transition_radius,0,0])
+      wood_track_arc(transition_radius - (wood_width()/2),
+                     transition_angle + epsilon, false, $fn=myfn);
+  } else if (part=="connector") {
+    loose_wood_cutout(extra_trim=firehouse_width);
+  } else if (part=="hole" || part=="ties") {
+    translate([-transition_radius,0,0])
+    do_rails_or_roads(rail=rail, road=road, part=part, mirror_symmetric=false){
+      /* rails */
+      wood_rails_and_ties_arc(transition_radius, angle=transition_angle+epsilon, part=(part=="hole"?"rails":part), $fn=myfn);
+      /* roads */
+      wood_road_and_stripes_arc(transition_radius, angle=transition_angle+epsilon, $fn=myfn);
     }
   }
 }
