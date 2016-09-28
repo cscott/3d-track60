@@ -20,7 +20,7 @@ def render_parts(basename, relativeTo=__file__):
       os.makedirs(basename + '-stl')
     s = Customizer(basename + '.scad', debug=False)
     for part in s.vars['part'].possible.parameters.keys():
-        shortname = s.vars['part'].possible[part]
+        shortname = str(s.vars['part'].possible[part])
         s.vars['part'].set(shortname)
         name = '{0}-stl/{0}-{1}'.format(basename, norm(shortname))
         print name
