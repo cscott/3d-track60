@@ -54,14 +54,17 @@ module roundabout(size="medium", num=3, which="both") {
 // outer is the additional length of the
 // 'stubs' reaching out from the roundabout
 module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
-                  inner_piece=true, outer_piece=true, rails=true) {
+                  inner_piece=true, outer_piece=true, rails=true,
+                  hub_height=wood_height(), inner_num=1) {
   // Dimensions
   total = inner + outer;
   base_height = 2.5;
   outer_rim = 10;
   base_rim = 8;
+  snap_fit_height = 2;
   hub_diam = 10;
-  hub_ramp = 4;
+  hub_ramp = min(4, max(0,
+                 hub_height - base_height - (snap_fit?snap_fit_height:0) - 1));
   strut_width = num < 4 ? wood_width()/3 : wood_width()/4;
   guard_height = 5;
   guard_width = 2;
@@ -69,7 +72,6 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
   knob_diam = 6;
   res = 120; // rotating pieces resolution
   knob_res = 25; // knob resolution
-  snap_fit_height = 2;
 
   // Outer piece
   if (outer_piece) {
@@ -102,7 +104,8 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
           translate([0, 0, base_height])
             cylinder(h=wood_height(), d=inner - (base_rim*2), $fn=res);
         }
-        cylinder(h=wood_height() + base_height*2, d=hub_diam, $fn=res);
+        translate([0,0,-base_height])
+          cylinder(h=hub_height + base_height, d=hub_diam, $fn=res);
         translate([0,0,base_height])
           cylinder(h=hub_ramp, d1=hub_diam + hub_ramp*2, d2=hub_diam, $fn=res);
       }
@@ -128,7 +131,7 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
     }
     // add an extra "snap fit" widening of central shaft
     if ( snap_fit ) {
-      translate([0, 0, wood_height() - snap_fit_height])
+      translate([0, 0, hub_height - snap_fit_height])
         cylinder(h=snap_fit_height, d1=hub_diam, d2=hub_diam + clearance*2,
                  $fn=res);
     }
@@ -151,19 +154,22 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
         // Rails down the center
         if (rails) wood_rails_centered(inner);
         // Central hub
-        cylinder(h=wood_height() + clearance,
+        cylinder(h=hub_height + clearance,
                  d=hub_diam + clearance*2, $fn=res);
-        // Hub ramp (add extra clearance/10 height to ensure we punch through)
-        translate([0, 0, base_height + clearance - clearance/10])
-          cylinder(h=hub_ramp + clearance/10,
-                   d1=hub_diam + hub_ramp*2 + clearance*2,
-                   d2=hub_diam + clearance*2, $fn=res);
+        // Hub ramp (start low @ base_height to ensure we punch through)
+        translate([0, 0, base_height])
+          cylinder(h=hub_ramp + clearance*sqrt(2),
+                   d1=hub_diam + hub_ramp*2 + clearance*sqrt(2)*2,
+                   d2=hub_diam, $fn=res);
         // Snap fit hub (add extra clearance/10 height to ensure we punch thru)
         if (snap_fit) {
-          translate([0, 0, wood_height() - snap_fit_height]) {
-            cylinder(h=snap_fit_height + clearance/10,
+          translate([0, 0, hub_height - snap_fit_height]) {
+            cylinder(h=snap_fit_height,
                      d1=hub_diam + clearance*2,
                      d2=hub_diam + clearance*4, $fn=res);
+            translate([0,0,snap_fit_height-clearance/10])
+              cylinder(h=clearance+clearance/10,
+                       d=hub_diam + clearance*4, $fn=res);
           }
         }
         // Detents
@@ -178,8 +184,10 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
             cylinder(h=guard_height + clearance/2, d=inner, $fn=res);
           cylinder(h=guard_height + clearance*2, d=inner - guard_width*2, $fn=res);
           // protect the track
-          cube([inner + clearance, wood_width() + clearance*2, 2*(guard_height + clearance*2)],
-               center=true);
+          for ( i = [0:1:inner_num-1] ) rotate( [0, 0, i * 180 / num ])
+            cube([inner + clearance,
+                  wood_width() + clearance*2,
+                  2*(guard_height + clearance*2)], center=true);
         }
       }
       // now add knob
