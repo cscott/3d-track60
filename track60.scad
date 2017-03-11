@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "buffer-road"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout:Roundabout (assembled),roundabout-inner-straight:Roundabout (inner piece; straight),roundabout-inner-crossing4:Roundabout (inner piece; three way crossing),roundabout-outer:Roundabout (outer piece),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,buffer-rail:Buffer for rail,buffer-road:Buffer for road,barn:John Deere Barn connector,carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector]
+part = "roundabout-road"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout-rail:Roundabout (assembled; w/ rails),roundabout-inner-straight-rail:Roundabout (inner piece; straight; w/ rails),roundabout-inner-crossing4-rail:Roundabout (inner piece; three way crossing; w/ rails),roundabout-outer-rail:Roundabout (outer piece; w/ rails),roundabout-road:Roundabout (assembled; w/ road),roundabout-inner-straight-road:Roundabout (inner piece; straight; w/ road),roundabout-inner-crossing4-road:Roundabout (inner piece; three way crossing; w/ road),roundabout-outer-road:Roundabout (outer piece; w/ road),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,buffer-rail:Buffer for rail,buffer-road:Buffer for road,barn:John Deere Barn connector,carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -9,6 +9,7 @@ use <../trains/tracklib.scad>;
 use <../trains/track-wooden/dog-bone.scad>;
 use <../trains/track-wooden/track-standard.scad>;
 use <./roundabout.scad>
+use <./strutil.scad>
 
 // Dave suggests a base radius of 200mm.
 // The core hexagon will then have a diameter of
@@ -59,196 +60,47 @@ $fn = 120;
 
 track60_demo(part);
 
+function track60_parse_suffix(part) =
+  let(n=len(part), suf5=substr(part, n-5, 5), suf6=substr(part, n-6, 6))
+  (suf5=="-left" || suf5=="-road" || suf5=="-rail") ? substr(part, 0, n-5) :
+  (suf6=="-right") ? substr(part, 0, n-6) : part;
+
 // Sample instantiations
 module track60_demo(part="curve_rail",r=basic_radius) {
   hex_edge = 2*r/3;
 
-  if (part=="curve") {
-    curve60_left(r, road=true, rail=true);
-  } else if (part=="straight") {
-    straight60(r, road=true, rail=true);
-  } else if (part=="half_straight") {
-    half_straight60(r, road=true, rail=true);
-  } else if (part=="crossing1") {
-    crossing60(r, 1, rail=true, road=true);
-  } else if (part=="crossing2") {
-    crossing60(r, 2, rail=true, road=true);
-  } else if (part=="crossing3") {
-    crossing60(r, 3, rail=true, road=true);
-  } else if (part=="crossing4") {
-    crossing60(r, 4, rail=true, road=true);
-  } else if (part=="crossing5") {
-    crossing60(r, 5, rail=true, road=true);
-  } else if (part=="crossing6") {
-    crossing60(r, 6, rail=true, road=true);
-  } else if (part=="crossing7-left") {
-    crossing60(r, 7, "left", rail=true, road=true);
-  } else if (part=="crossing7-right") {
-    crossing60(r, 7, "right", rail=true, road=true);
-  } else if (part=="crossing7-road") {
-    crossing60(r, 7, road=true); // Left on top, right on bottom.
-  } else if (part=="crossing7-rail") {
-    crossing60(r, 7, rail=true); // Left on top, right on bottom.
-  } else if (part=="crossing8-left") {
-    crossing60(r, 8, "left", rail=true, road=true);
-  } else if (part=="crossing8-right") {
-    crossing60(r, 8, "right", rail=true, road=true);
-  } else if (part=="crossing8-road") {
-    crossing60(r, 8, road=true); // Left on top, right on bottom.
-  } else if (part=="crossing8-rail") {
-    crossing60(r, 8, rail=true); // Left on top, right on bottom.
-  } else if (part=="crossing9") {
-    crossing60(r, 9, rail=true, road=true);
-  } else if (part=="crossing10") {
-    crossing60(r, 10, rail=true, road=true);
-  } else if (part=="switch1-left") {
-    switch60(r, 1, "left", rail=true, road=true);
-  } else if (part=="switch1-right") {
-    switch60(r, 1, "right", rail=true, road=true);
-  } else if (part=="switch1-rail") {
-    // Rails on both sides, can flip to make left or right
-    switch60(r, 1, rail=true);
-  } else if (part=="switch1-road") {
-    // Roads on both sides, can flip to make left or right
-    switch60(r, 1, road=true);
-  } else if (part=="switch2") {
-    switch60(r, 2, rail=true, road=true);
-  } else if (part=="switch3-left") {
-    switch60(r, 3, "left", rail=true, road=true);
-  } else if (part=="switch3-right") {
-    switch60(r, 3, "right", rail=true, road=true);
-  } else if (part=="switch3-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 3, rail=true);
-  } else if (part=="switch3-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 3, road=true);
-  } else if (part=="switch4") {
-    switch60(r, 4, rail=true, road=true);
-  } else if (part=="switch5") {
-    switch60(r, 5, rail=true, road=true);
-  } else if (part=="switch6") {
-    switch60(r, 6, rail=true, road=true);
-  } else if (part=="switch7-left") {
-    switch60(r, 7, "left", rail=true, road=true);
-  } else if (part=="switch7-right") {
-    switch60(r, 7, "right", rail=true, road=true);
-  } else if (part=="switch7-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 7, rail=true);
-  } else if (part=="switch7-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 7, road=true);
-  } else if (part=="switch8-left") {
-    switch60(r, 8, "left", rail=true, road=true);
-  } else if (part=="switch8-right") {
-    switch60(r, 8, "right", rail=true, road=true);
-  } else if (part=="switch8-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 8, rail=true);
-  } else if (part=="switch8-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 8, road=true);
-  } else if (part=="switch9-left") {
-    switch60(r, 9, "left", rail=true, road=true);
-  } else if (part=="switch9-right") {
-    switch60(r, 9, "right", rail=true, road=true);
-  } else if (part=="switch9-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 9, rail=true);
-  } else if (part=="switch9-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 9, road=true);
-  } else if (part=="switch10-left") {
-    switch60(r, 10, "left", rail=true, road=true);
-  } else if (part=="switch10-right") {
-    switch60(r, 10, "right", rail=true, road=true);
-  } else if (part=="switch10-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 10, rail=true);
-  } else if (part=="switch10-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 10, road=true);
-  } else if (part=="switch11-left") {
-    switch60(r, 11, "left", rail=true, road=true);
-  } else if (part=="switch11-right") {
-    switch60(r, 11, "right", rail=true, road=true);
-  } else if (part=="switch11-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 11, rail=true);
-  } else if (part=="switch11-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 11, road=true);
-  } else if (part=="switch12-left") {
-    switch60(r, 12, "left", rail=true, road=true);
-  } else if (part=="switch12-right") {
-    switch60(r, 12, "right", rail=true, road=true);
-  } else if (part=="switch12-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 12, rail=true);
-  } else if (part=="switch12-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 12, road=true);
-  } else if (part=="switch13-left") {
-    switch60(r, 13, "left", rail=true, road=true);
-  } else if (part=="switch13-right") {
-    switch60(r, 13, "right", rail=true, road=true);
-  } else if (part=="switch13-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 13, rail=true);
-  } else if (part=="switch13-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 13, road=true);
-  } else if (part=="switch14-left") {
-    switch60(r, 14, "left", rail=true, road=true);
-  } else if (part=="switch14-right") {
-    switch60(r, 14, "right", rail=true, road=true);
-  } else if (part=="switch14-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 14, rail=true);
-  } else if (part=="switch14-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 14, road=true);
-  } else if (part=="switch15-left") {
-    switch60(r, 15, "left", rail=true, road=true);
-  } else if (part=="switch15-right") {
-    switch60(r, 15, "right", rail=true, road=true);
-  } else if (part=="switch15-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 15, rail=true);
-  } else if (part=="switch15-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 15, road=true);
-  } else if (part=="switch16-left") {
-    switch60(r, 16, "left", rail=true, road=true);
-  } else if (part=="switch16-right") {
-    switch60(r, 16, "right", rail=true, road=true);
-  } else if (part=="switch16-rail") {
-    // Rails on both sides, can flip to make left or right switch
-    switch60(r, 16, rail=true);
-  } else if (part=="switch16-road") {
-    // Roads on both sides, can flip to make left or right switch
-    switch60(r, 16, road=true);
-  } else if (part=="misc1") {
-    misc60(r, 1, rail=true, road=true);
-  } else if (part=="misc2") {
-    misc60(r, 2, rail=true, road=true);
-  } else if (part=="misc3") {
-    misc60(r, 3, rail=true, road=true);
-  } else if (part=="misc4") {
-    misc60(r, 4, rail=true, road=true);
-  } else if (part=="buffer-rail") {
-    buffer60(r, rail=true, road=false);
-  } else if (part=="buffer-road") {
-    buffer60(r, rail=false, road=true);
-  } else if (part=="roundabout") {
-    track60_demo(part="roundabout-inner-straight",r=r);
-    track60_demo(part="roundabout-outer",r=r);
-  } else if (part=="roundabout-inner-straight" ||
-             part=="roundabout-inner-crossing4" ||
-             part=="roundabout-outer") {
-      is_outer = (part=="roundabout-outer");
-      is_inner_straight = (part=="roundabout-inner-straight");
+  base = track60_parse_suffix(part);
+  suffix = substr(part, len(base), len(part)-len(base));
+
+  road=(suffix!="-rail");
+  rail=(suffix!="-road");
+  dir=(suffix=="-right") ? "right" : "left";
+
+  if (base=="curve") {
+    curve60(r, dir, rail=rail, road=road);
+  } else if (base=="straight") {
+    straight60(r, rail=rail, road=road);
+  } else if (base=="half_straight") {
+    half_straight60(r, rail=rail, road=road);
+  } else if (substr(base, 0, 8)=="crossing") {
+    which = numat(base, 8, intonly=true);
+    crossing60(r, which=which, dir=dir, rail=rail, road=road);
+  } else if (substr(base, 0, 6)=="switch") {
+    which = numat(base, 6, intonly=true);
+    switch60(r, which=which, dir=dir, rail=rail, road=road);
+  } else if (substr(base, 0, 4)=="misc") {
+    which = numat(base, 4, intonly=true);
+    misc60(r, which=which, rail=rail, road=road);
+  } else if (base=="buffer") {
+    buffer60(r, rail=rail, road=road);
+  } else if (base=="roundabout") {
+    track60_demo(part=str("roundabout-inner-straight",suffix),r=r);
+    track60_demo(part=str("roundabout-outer",suffix),r=r);
+  } else if (base=="roundabout-inner-straight" ||
+             base=="roundabout-inner-crossing4" ||
+             base=="roundabout-outer") {
+      is_outer = (base=="roundabout-outer");
+      is_inner_straight = (base=="roundabout-inner-straight");
       ring=45; // just enough for a female connector
       difference() {
         rotate([0,0,90])
@@ -259,21 +111,21 @@ module track60_demo(part="curve_rail",r=basic_radius) {
           inner_piece=!is_outer, outer_piece=is_outer);
         // Add our own rails
         difference() {
-          for (p=["hole","ties"]) {
+          for (p=road?["hole"]:["hole","ties"]) {
             if (!is_outer) {
               intersection() {
                 if (is_inner_straight) {
-                  straight60(radius=r, rail=true, part=p);
+                  straight60(radius=r, rail=rail, road=road, part=p);
                 } else {
                   adjr = (straight_length(r)-ring)*sqrt(3)/2;
-                  crossing60(radius=adjr, which=4, rail=true, part=p);
+                  crossing60(radius=adjr, which=4, rail=rail, road=road, part=p);
                 }
                 if (p=="ties")
                   cylinder(d=straight_length(r)-ring-10,h=wood_height()*3,center=true);
               }
             } else if (is_outer) {
               difference() {
-                crossing60(radius=r, which=5, rail=true, part=p);
+                crossing60(radius=r, which=5, rail=rail, road=road, part=p);
                 if (p=="ties")
                   cylinder(d=straight_length(r)-ring+10,h=wood_height()*3,center=true);
               }
@@ -285,20 +137,20 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (part=="dogbone") {
     // scale to account for roadway depth
     scale([1,1,road_height()/wood_height()]) dogbone(true);
-  } else if (part=="dbl_straight") {
-    dbl_straight60(r, road=true, rail=true);
-  } else if (part=="dbl_curve") {
-    dbl_curve60_left(r, road=true, rail=true);
-  } else if (part=="half_dbl_straight") {
-    half_dbl_straight60(r, road=true, rail=true);
-  } else if (part=="barn") {
-    barn60(r, road=true, rail=true);
-  } else if (part=="carwash") {
-    carwash60(r, road=true, rail=true);
-  } else if (part=="firehouse") {
-    firehouse60(r, road=true, rail=true);
-  } else if (part=="slope") {
-    slope60(r, road=true, rail=true);
+  } else if (base=="dbl_straight") {
+    dbl_straight60(r, rail=rail, road=road);
+  } else if (base=="dbl_curve") {
+    dbl_curve60_left(r, rail=rail, road=road);
+  } else if (base=="half_dbl_straight") {
+    half_dbl_straight60(r, rail=rail, road=road);
+  } else if (base=="barn") {
+    barn60(r, rail=rail, road=road);
+  } else if (base=="carwash") {
+    carwash60(r, rail=rail, road=road);
+  } else if (base=="firehouse") {
+    firehouse60(r, rail=rail, road=road);
+  } else if (base=="slope") {
+    slope60(r, rail=rail, road=road);
   }
 }
 
