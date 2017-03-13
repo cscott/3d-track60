@@ -1286,16 +1286,30 @@ module dbl_dogbone(rail=false, road=false) {
 }
 
 module dbl_dogbone_plug(rail=false, road=false) {
+  off = wood_height() - road_height();
+  offset_bottom = rail ? 0 : off;
+  offset_top = road ? off : 0;
+  height = wood_height() - offset_top - offset_bottom;
+  length = 50; // arbitrary
+  epsilon=.1;
+  //$fn=8;
+
+  scale([1,1,height/wood_height()])
   difference() {
-    translate([(wood_width()+double_gutter())/2,0,-wood_height()/2])
-      dbl_connector(rail=rail, road=road, part="body");
+    difference() {
+      translate([-wood_width()/2, 0, 0])
+        cube([wood_width(), length, wood_height()]);
+      translate([-(wood_width()+double_gutter())/2,0,0])
+        dbl_connector(rail=true, road=false, part="connector");
+    }
     minkowski() {
-      // ensure it's tall enough to remove bevel
-      scale([1,1,(wood_height()+3)/wood_height()])
-        translate([0,0,-wood_height()/2])
-          rotate([0,0,-90]) wood_plug(true);
+      difference() {
+        translate([-wood_width()/2, 0, 0])
+          cube([wood_width(), length, wood_height()]);
+        loose_wood_cutout();
+      }
       // subtract some extra clearance
-      cube([.5,.5,.5], center=true);
+      cylinder(r=0.2, h=5, center=true, $fn=8);
     }
   }
 }
