@@ -450,7 +450,6 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
                      buflen - ramp_start);
   // ensure surface ends in '-blank'
   nsurface = str(substr(surface, 0, indexof(surface, "-")), "-blank");
-  echo(surface=surface, nsurface=nsurface);
 
   if (part=="all") {
     difference() {
@@ -970,25 +969,24 @@ module dbl_sway60_left(radius, surface="road-rail", part="all",
           for (which=["rails","ties"]) {
             which_height = (which=="rails" ? 0 : -well_tie_height());
             difference() {
-              union() {
+              with_bogus60(radius) {
                 if (part=="hole") {
-                  translate([wood_width()/2, 0, which_height])
+                  translate([wood_width()/2, -epsilon, which_height])
                     rotate([0,0,90])
-                    wood_rails(stub_length + (i*stub_offset) + epsilon, bevel_ends=false);
+                    wood_rails(stub_length + (i*stub_offset) + 2*epsilon, bevel_ends=false);
                   translate([-sway_radius, stub_length + (i*stub_offset), which_height])
                     wood_rails_arc(sway_radius - (wood_width()/2),
                                    sway_angle + epsilon, bevel_ends=false);
                 }
                 if (part=="ties" && which=="ties") {
-                  translate([-wood_width()/2 - epsilon, 0,
+                  translate([-wood_width()/2 - sway_offset/2 - epsilon,
+                             -epsilon,
                              wood_height() - tie_height()]) {
-                    cube([wood_width() + 2*epsilon,
-                          stub_length + (i*stub_offset) + epsilon,
+                    cube([wood_width() + (sway_offset/2) + 2*epsilon,
+                          straight_length(radius)/2 +
+                          (i*stub_offset) +
+                          tie_width()/2 + 2*epsilon,
                           wood_height()]);
-                    translate([-sway_offset/2, stub_length+(i*stub_offset), 0])
-                      cube([wood_width() + (sway_offset/2) + 2*epsilon,
-                            straight_length(radius)/2 - stub_length +
-                              tie_width()/2 + epsilon, wood_height()]);
                   }
                 }
               }
@@ -1139,7 +1137,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
           for (which=["rails","ties"]) {
             which_height = (which=="rails" ? 0 : -well_tie_height());
             difference() {
-              union() {
+              with_bogus60(radius) {
                 if (part=="hole") {
                   if (!just_curve)
                     translate([wood_width()/2, 0, which_height])
@@ -1523,7 +1521,7 @@ module slope60(radius, surface="road-rail", part="all", trim_ties=true) {
           for (which=["rails","ties"]) {
             which_height = (which=="rails" ? 0 : -well_tie_height());
             difference() {
-              union() {
+              with_bogus60(radius) {
                 if (part=="hole") {
                   translate([-wood_width()/2,-length/2,i*(rise/2) + which_height])
                     wood_rails_slope(slope_radius + wood_height()/2,
