@@ -1,7 +1,7 @@
 /* Dave Barber's 60-degree brio track system */
 
 /* [Global] */
-part = "straight"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout-rail:Roundabout (assembled; w/ rails),roundabout-inner-straight-rail:Roundabout (inner piece; straight; w/ rails),roundabout-inner-crossing4-rail:Roundabout (inner piece; three way crossing; w/ rails),roundabout-outer-rail:Roundabout (outer piece; w/ rails),roundabout-road:Roundabout (assembled; w/ road),roundabout-inner-straight-road:Roundabout (inner piece; straight; w/ road),roundabout-inner-crossing4-road:Roundabout (inner piece; three way crossing; w/ road),roundabout-outer-road:Roundabout (outer piece; w/ road),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,buffer-rail:Buffer for rail,buffer-road:Buffer for road,ramp-rail:Ramp for rail,ramp-road:Ramp for road,barn:John Deere Barn connector,barn-dogbone:Special dogbone to connect John Deere Barn connector track,carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector,dbl_dogbone_plug]
+part = "straight"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout-rail:Roundabout (assembled; w/ rails),roundabout-inner-straight-rail:Roundabout (inner piece; straight; w/ rails),roundabout-inner-crossing4-rail:Roundabout (inner piece; three way crossing; w/ rails),roundabout-outer-rail:Roundabout (outer piece; w/ rails),roundabout-road:Roundabout (assembled; w/ road),roundabout-inner-straight-road:Roundabout (inner piece; straight; w/ road),roundabout-inner-crossing4-road:Roundabout (inner piece; three way crossing; w/ road),roundabout-outer-road:Roundabout (outer piece; w/ road),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,slope:Straight piece sloping up,riser:Riser (print on its side),buffer-rail:Buffer for rail,buffer-road:Buffer for road,ramp-rail:Ramp for rail,ramp-road:Ramp for road,barn:John Deere Barn connector,barn-dogbone:Special dogbone to connect John Deere Barn connector track,carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector,dbl_dogbone_plug]
 
 /* [Hidden] */
 use <../dotscad/pie.scad>;
@@ -28,6 +28,9 @@ basic_radius = 154;
 // the standard brio "E" curve has a centerline radius of 202mm
 // and the tighter brio "E1" curve has a centerline radius of 110mm
 // and the typical straights are 4.5in, 5.5in, and 8.5in (compared to our 7in)
+
+// 64mm is brio standard; some other sets have 62mm risers.
+function riser_height() = 64;
 
 function straight_length(radius) = 2*radius/sqrt(3);
 
@@ -181,6 +184,8 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     firehouse60(r, surface=blank_dbl_surface(surface));
   } else if (base=="slope") {
     slope60(r, surface=surface);
+  } else if (base=="riser") {
+    riser60();
   } else if (base=="dbl_dogbone") {
     dbl_dogbone(surface=surface);
   } else if (base=="dbl_dogbone_plug") {
@@ -1406,9 +1411,80 @@ module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
 }
 
+// a rectangle, tapered at 45 degree angles.  sort of line a cone($fn=4),
+// but not just for squares.
+module rect45(x, y, h, x_only=false, y_only=false) {
+  intersection() {
+    if (!y_only) rotate([90,0,0])
+      linear_extrude(height=y, center=true)
+        polygon(points=[[-x/2,0],[0,x/2],[x/2,0]]);
+    if (!x_only) rotate([0,-90,0])
+      linear_extrude(height=x, center=true)
+        polygon(points=[[0,-y/2],[y/2,0],[0,y/2]]);
+    translate([-x/2,-y/2,0])
+      cube([x, y, h]);
+  }
+}
+
+module riser60() {
+  rise = riser_height();
+  epsilon = .1;
+  length = wood_width(); // allows stacking
+  width = wood_width() + 12; // margin for clips
+  top_thick = 2;
+  bumpr=4;
+  infringe=0.5;
+
+  // base
+  difference() {
+    translate([-width/2,-length/2,0])
+      cube([width,length,wood_height()/*allows stacking*/]);
+    translate([0,0,wood_height()+epsilon]) scale([1,1,-1])
+      rect45(width+epsilon, length-2*top_thick,
+             wood_height()+epsilon-top_thick, y_only=true);
+  }
+  // top
+  difference() {
+    translate([-width/2, -length/2, rise-top_thick])
+      cube([width, length, top_thick + 11]);
+    difference() {
+      innerw = (wood_width()-infringe) + 2*bumpr - 0.5 /* hide points */;
+      translate([-innerw/2, -length/2-epsilon, rise])
+        cube([innerw, length+2*epsilon, 11 + epsilon]);
+      for (i=[1,-1]) for (j=[1,-1]) scale([i,j,1]) {
+        translate([(wood_width()-infringe)/2+bumpr, 8.2, rise + 6])
+          rotate([90,0,0]) {
+            cylinder(r=bumpr, h=6, center=true, $fn=24);
+            for (k=[1,-1]) scale([1,1,k])
+              translate([0,0,3-epsilon])
+                cylinder(r1=bumpr, r2=0, h=bumpr);
+          }
+      }
+    }
+  }
+  // pillars connecting top to bottom
+  difference() {
+    union() for (i=[1,-1]) scale([i,1,1])
+      translate([width/4, 0, rise/2])
+        cube([6, length, rise-epsilon], center=true);
+    // decorative
+    ncutouts=3;
+    spacing=(rise-2*top_thick)/(3*ncutouts+1);
+    for (i=[2:3:3*ncutouts])
+      translate([0,0,i*spacing + top_thick])
+        rotate([0,90,0])
+          cylinder(r=spacing, h=width, center=true, $fn=4);
+    for (j=[1,-1]) scale([1,j,1])
+      for(i=[3.5:3:3*ncutouts])
+        translate([0,spacing*3/2,i*spacing + top_thick])
+          rotate([0,90,0])
+            cylinder(r=spacing, h=width, center=true, $fn=4);
+  }
+}
+
 module slope60(radius, surface="road-rail", part="all", trim_ties=true) {
   epsilon=.1;
-  rise=64;  // standard module rise
+  rise=riser_height();
   length=straight_length(radius);
   slope_angle=atan2(rise,length);
   slope_radius=sqrt(pow(rise,2)+pow(length,2))/(4*sin(slope_angle));
