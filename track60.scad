@@ -1430,7 +1430,7 @@ module rect45(x, y, h, x_only=false, y_only=false) {
 }
 
 // Idea: dogbone cutout on bottom, built-in dogbone at top
-module riser60(part="all", dogbone=false, ncutouts=3) {
+module riser60(part="all", dogbone=true, ncutouts=3) {
   rise = riser_height();
   epsilon = .1;
   length = wood_width(); // allows stacking
