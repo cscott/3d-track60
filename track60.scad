@@ -30,7 +30,8 @@ basic_radius = 154;
 // and the typical straights are 4.5in, 5.5in, and 8.5in (compared to our 7in)
 
 // 64mm is brio standard; some other sets have 62mm risers.
-function riser_height() = 64;
+// Split the difference, so we're more or less compatible with either.
+function riser_height() = 63;
 
 function straight_length(radius) = 2*radius/sqrt(3);
 
@@ -1424,59 +1425,107 @@ module rect45(x, y, h, x_only=false, y_only=false) {
   }
 }
 
-module riser60() {
+// Idea: dogbone cutout on bottom, built-in dogbone at top
+module riser60(part="all", dogbone=false, ncutouts=3) {
   rise = riser_height();
   epsilon = .1;
   length = wood_width(); // allows stacking
   width = wood_width() + 12; // margin for clips
   top_thick = 2;
+  top_height = max(11, road_height());
   bumpr=4;
-  infringe=0.5;
+  infringe=0.75;
 
-  // base
-  difference() {
-    translate([-width/2,-length/2,0])
-      cube([width,length,wood_height()/*allows stacking*/]);
-    translate([0,0,wood_height()+epsilon]) scale([1,1,-1])
-      rect45(width+epsilon, length-2*top_thick,
-             wood_height()+epsilon-top_thick, y_only=true);
-  }
-  // top
-  difference() {
-    translate([-width/2, -length/2, rise-top_thick])
-      cube([width, length, top_thick + 11]);
+  if (part=="all") {
     difference() {
-      innerw = (wood_width()-infringe) + 2*bumpr - 0.5 /* hide points */;
-      translate([-innerw/2, -length/2-epsilon, rise])
-        cube([innerw, length+2*epsilon, 11 + epsilon]);
-      for (i=[1,-1]) for (j=[1,-1]) scale([i,j,1]) {
-        translate([(wood_width()-infringe)/2+bumpr, 8.2, rise + 6])
-          rotate([90,0,0]) {
-            cylinder(r=bumpr, h=6, center=true, $fn=24);
-            for (k=[1,-1]) scale([1,1,k])
-              translate([0,0,3-epsilon])
-                cylinder(r1=bumpr, r2=0, h=bumpr);
-          }
+      union() {
+        riser60(part="top", dogbone=dogbone, ncutouts=ncutouts);
+        riser60(part="pillar", dogbone=dogbone, ncutouts=ncutouts);
+        riser60(part="base", dogbone=dogbone, ncutouts=ncutouts);
+      }
+      riser60(part="hole", dogbone=dogbone, ncutouts=ncutouts);
+    }
+  } else if (part=="top") {
+    // top
+    difference() {
+      translate([-width/2, -length/2, rise-top_thick])
+        cube([width, length, top_thick + top_height]);
+      difference() {
+        innerw = (wood_width()-infringe) + 2*bumpr - 0.5 /* hide points */;
+        translate([-innerw/2, -length/2-epsilon, rise])
+          cube([innerw, length+2*epsilon, top_height + epsilon]);
+        // bumpers
+        for (i=[1,-1]) for (j=[1,-1]) scale([i,j,1]) {
+          translate([(wood_width()-infringe)/2+bumpr, 8.2, rise + 6])
+            rotate([90,0,0]) {
+              cylinder(r=bumpr, h=6, center=true, $fn=24);
+              for (k=[1,-1]) scale([1,1,k])
+                translate([0,0,3-epsilon])
+                  cylinder(r1=bumpr, r2=0, h=bumpr);
+            }
+        }
+        // (optional) integral dogbone
+        if (dogbone) {
+          translate([0,0,rise])
+            scale([1,1,road_height()/(wood_height()-bevel())])
+              translate([0,0,-bevel()]) {
+                rotate([0,0,90]) wood_plug(true);
+                rotate([0,0,-90]) wood_plug(true);
+              }
+        }
       }
     }
-  }
-  // pillars connecting top to bottom
-  difference() {
-    union() for (i=[1,-1]) scale([i,1,1])
-      translate([width/4, 0, rise/2])
-        cube([6, length, rise-epsilon], center=true);
-    // decorative
-    ncutouts=3;
+  } else if (part=="base") {
+    // base
+    difference() {
+      translate([-width/2,-length/2,0])
+        cube([width,length,wood_height()/*allows stacking*/]);
+      translate([0,0,wood_height()+epsilon]) scale([1,1,-1])
+        rect45(width+epsilon, length-2*top_thick,
+               wood_height()+epsilon-top_thick, y_only=true);
+    }
+  } else if (part=="pillar") {
+    // pillars connecting top to bottom
+    pillar_thick = 6;
+    spacing = dogbone ?
+      wood_plug_radius() + wood_plug_neck_length() - pillar_thick/2 + top_thick
+      : width/4;
+    for (i=[1,-1]) scale([i,1,1])
+      translate([spacing, 0, rise/2])
+        cube([pillar_thick, length, rise-epsilon], center=true);
+     if (dogbone)
+       rect45(2*spacing,
+              2*(wood_plug_radius() + top_thick + wood_height()),
+              wood_height() + top_thick, y_only=true);
+  } else if (part=="hole") {
+    // decorative grill
     spacing=(rise-2*top_thick)/(3*ncutouts+1);
-    for (i=[2:3:3*ncutouts])
+    for (i=(ncutouts<3||!dogbone)?[2:3:3*ncutouts]:[5:3:3*(ncutouts-1)])
       translate([0,0,i*spacing + top_thick])
         rotate([0,90,0])
           cylinder(r=spacing, h=width, center=true, $fn=4);
-    for (j=[1,-1]) scale([1,j,1])
-      for(i=[3.5:3:3*ncutouts])
+    if (ncutouts>2) for (j=[1,-1]) scale([1,j,1]) {
+      for (i=(ncutouts<5||!dogbone)?[3.5:3:3*ncutouts]:[6.5:3:3*(ncutouts-1)])
         translate([0,spacing*3/2,i*spacing + top_thick])
           rotate([0,90,0])
             cylinder(r=spacing, h=width, center=true, $fn=4);
+      if (ncutouts>3) {
+        for (i=[5:3:3*(ncutouts-1)])
+          translate([0,spacing*3,i*spacing + top_thick])
+            rotate([0,90,0])
+              cylinder(r=spacing, h=width, center=true, $fn=4);
+      }
+    }
+    // dogbone cutout
+    if (dogbone) intersection() {
+      clearance=0.5;
+      scale([1,1,(wood_height()+bevel()+clearance)/wood_height()])
+        for (i=[0,180]) rotate([0,0,i]) wood_cutout();
+      // trim bevels which extend above wood_height()
+      translate([-width/2-epsilon,-length/2-epsilon,-epsilon])
+        cube([width+2*epsilon, length+2*epsilon,
+              wood_height()+clearance+epsilon]);
+    }
   }
 }
 
