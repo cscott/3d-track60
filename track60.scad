@@ -1903,37 +1903,49 @@ module carwash60(radius, surface="road-rail", part="all", trim_ties=true) {
   }
 }
 
+// XXX Consider overlaying piece on two point-to-point triangles, instead of
+// two flat-to-flat triangles.  In/out entrances would come from straights,
+// and the side entrance/exit would arc 30 degree from top or bottom slant.
+// Takes up more space that way, though.
 module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=true, trim_ties=true) {
   hexr=radius/1.5;
-  recycling_width = straight_length(radius) + 25;
+  straight_length = straight_length(radius);
+  recycling_width = straight_length + 25;
   recycling_length = 135;
+  side_connector_offset = 10.5;
   inout_spacing = 136.5;
-  cheat_down = 10;
+  cheat_down = 8;
 
-  // part one is a sway from
-  // [recycling_width/2, (recycling_length-straight_length)/2-cheat_down] to
-  // [straight_length, 0]
-  sway_x = straight_length(radius) - (recycling_width/2);
-  sway_y = 0-((recycling_length-straight_length(radius))/2 - cheat_down);
+  // part one is a sway from `sway_dest` to `sway_hex`:
+  sway_dest = [recycling_width/2,
+               (recycling_length-straight_length)/2
+               - side_connector_offset - cheat_down];
+  sway_hex = [straight_length, 0];
+  sway_x = sway_hex.x - sway_dest.x;
+  sway_y = sway_hex.y - sway_dest.y;
   sway_r = track60_radius_for(sway_x/2, sway_y/2);
   sway_a = track60_angle_for(sway_x/2, sway_y/2);
 
-  // part two is a 30 degree arc from
-  // [straight_length/4, (3/4)*hexr] to
-  // [inout_spacing/2, recycling_length - (straight_length/2) - cheat_down]
-  arc_x =  (inout_spacing/2) - (straight_length(radius)/4);
-  arc_y = (3/4)*hexr - (recycling_length - (straight_length(radius)/2) - cheat_down);
-  arc_r = 2*arc_y;
+  // part two is a 30 degree arc(-ish) from `arc_dest` to `arc_hex`:
+  arc_dest = [inout_spacing/2,
+              recycling_length - (straight_length/2) - cheat_down];
+  arc_hex = [straight_length/4, (3/4)*hexr];
+  arc_x = arc_dest.x - arc_hex.x;
+  arc_y = arc_hex.y - arc_dest.y;
+  arc_r = 2*arc_y; // 30-60-90 triangle
   // However, a pure arc won't line up.  We need a bit of sway.
   // The top will sway away 'alpha' degrees, and then we'll sway back
   // 'alpha + 30' degrees to enter the recycling center.
   // I gave up doing the algebra to determine exactly how much sway is
-  // needed, instead I just manually set a y amount for the first 30
-  // degree arc, rotated the remaining x and y amounts by 30 degrees,
+  // needed, instead I just manually set a y amount (`y_adj`) for the first
+  // 30 degree arc, rotated the remaining x and y amounts by 30 degrees,
   // and computed the remaining sway needed.  I adjusted the y amount
   // until the radii of the first arc and the sway match, in order
   // to have a seamless transition.
-  y_adj = 19.244; // trial and error to get first_r and arc_sway_r to match
+  // for cheat_down = 10, y_adj = 19.244
+  // for cheat_down = 8,  y_adj = 17.543
+  // for cheat_down = 5,  y_adj = 15.203
+  y_adj = 17.543; // trial and error to get first_r and arc_sway_r to match
   first_r = y_adj*2;
   first_x = first_r*(1-sqrt(3)/2);
   new_x = (arc_x - first_x);
@@ -1960,7 +1972,7 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
   } else if (startswith(part, "recycling")) {
     is_hole = (part=="recycling-hole");
     trim = is_hole ? 1 : 0; // matches loose_wood_cutout
-    translate([0, -straight_length(radius)/2 + recycling_length/2 - cheat_down, 0]) {
+    translate([0, -straight_length/2 + recycling_length/2 - cheat_down, 0]) {
       difference() {
         union() {
           translate([0,0,wood_height()/2])
@@ -2004,7 +2016,7 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
     height = wood_height() - top_offset - bottom_offset;
 
     intersection() {
-      pie_center=[0,(recycling_length-straight_length(radius))/2 + border/2,0];
+      pie_center=[0,(recycling_length-straight_length)/2 + border/2,0];
       pie_scale =[recycling_width/recycling_length,1,1];
       main_radius = sqrt(2)*(recycling_length/2) + border/2;
       union() {
@@ -2020,7 +2032,7 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
         }
       }
       difference() {
-        translate([straight_length(radius)/2,0,0]) rotate([0,0,30])
+        translate([straight_length/2,0,0]) rotate([0,0,30])
           cylinder(r=hexr - 0.5/*trim*/, h=3*wood_height(), center=true, $fn=6);
         recycling60(radius, dir, surface, part="recycling-hole");
       }
@@ -2030,16 +2042,16 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
     recycling60(radius, dir, surface, str(part, "-inout"), gutter=false);
   } else if (endswith(part, "-sway")) {
     npart = str(part, "-mirrored");
-    translate([straight_length(radius),0,0]) rotate([0,0,90]) intersection() {
+    translate(sway_hex) rotate([0,0,90]) intersection() {
+      with_bogus60(radius, disable=startswith(part, "body-"))
       recycling60(radius, dir, surface, npart, gutter=gutter, trim_ties=false);
       translate([-sway_r,0,0])
         pie_centered(sway_r + wood_width(),
                      sway_a + epsilon, wood_height()*3);
     }
-    translate([recycling_width/2,
-               (recycling_length-straight_length(radius))/2 - cheat_down,
-               0])
+    translate(sway_dest)
       rotate([0,0,-90]) intersection() {
+        with_bogus60(radius, disable=startswith(part, "body-"))
         recycling60(radius, dir, surface, npart, gutter=gutter, trim_ties=false);
         translate([-sway_r,0,0])
           pie_centered(sway_r + wood_width(),
@@ -2049,19 +2061,18 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
     is_connector = startswith(part, "connector-");
     part_small = str(part, "-small");
     part_big = str(part, "-big");
-    translate([straight_length(radius)/4, (3/4)*hexr, 0])
-      rotate([0,0,180+30]) intersection() {
+    translate(arc_hex) rotate([0,0,180+30]) intersection() {
         with_bogus60(radius, disable=startswith(part, "body-"))
-        recycling60(radius, dir, surface, part_small, gutter=gutter, trim_ties=false);
+          recycling60(radius, dir, surface, part_small,
+                      gutter=gutter, trim_ties=false);
         if (!is_connector) translate([-arc_sway_r,0,0])
           pie_centered(arc_sway_r + wood_width(),
                        arc_sway_a + epsilon, wood_height()*3);
     }
-    translate([inout_spacing/2,
-                recycling_length - straight_length(radius)/2 - cheat_down,
-                0]) intersection() {
+    translate(arc_dest) intersection() {
       with_bogus60(radius, disable=startswith(part, "body-"))
-      recycling60(radius, dir, surface, part_big, gutter=gutter, trim_ties=false);
+        recycling60(radius, dir, surface, part_big,
+                    gutter=gutter, trim_ties=false);
       if (!is_connector) translate([-arc_sway_r,0,0])
         pie_centered(arc_sway_r + wood_width(),
                      arc_sway_a + 30 + epsilon, wood_height()*3);
