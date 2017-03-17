@@ -40,13 +40,16 @@ function riser_height() = 63;
 function straight_length(radius) = 2*radius/sqrt(3);
 
 /* Option 1: */
-function tie_spacing(radius) = radius*((1/sqrt(3))-(PI/6))*2/*to taste*/;
-function tie_angle(radius) = 180 * tie_spacing(radius) / (PI * radius);
+function tie_spacing(basic_radius=basic_radius) =
+  basic_radius*((1/sqrt(3))-(PI/6))*2/*to taste*/;
+function tie_angle(arc_radius, basic_radius=basic_radius) =
+  180 * tie_spacing(basic_radius) / (PI * arc_radius);
 /* */
 
 /* Option 2:
-function tie_angle(radius) = 6;
-function tie_spacing(radius) = (tie_angle(radius) * PI * radius) / 180;
+function tie_angle(arc_radius, basic_radius=basic_radius) = 6;
+function tie_spacing(basic_radius=basic_radius) =
+  (tie_angle(basic_radius, basic_radius) * PI * basic_radius) / 180;
 /* */
 
 function tie_height()=(wood_height()-wood_well_height())/2;
@@ -668,9 +671,11 @@ module curve60_left(radius, surface="road-rail", part="all",
       } else if (part=="hole" || part=="ties") {
         do_rails_or_roads(surface=surface, part=part, mirror_symmetric=false) {
           /* rails */
-          wood_rails_and_ties_arc(radius, angle=60, part=(part=="hole"?"rails":part));
+          wood_rails_and_ties_arc(radius, angle=60,
+                                  part=(part=="hole"?"rails":part),
+                                  basic_radius=radius);
           /* roads */
-          wood_road_and_stripes_arc(radius, angle=60);
+          wood_road_and_stripes_arc(radius, angle=60, basic_radius=radius);
         }
       }
     }
@@ -725,7 +730,10 @@ module wood_road_and_stripes(radius) {
 }
 
 
-module wood_road_and_stripes_arc(radius, angle, stripe_factor=1) {
+module wood_road_and_stripes_arc(radius, angle,
+                                 basic_radius=basic_radius,
+                                 stripes_from_start=false,
+                                 stripes_from_end=false) {
   epsilon = 1;
   translate([0,0,road_height()]) {
     difference() {
@@ -735,12 +743,16 @@ module wood_road_and_stripes_arc(radius, angle, stripe_factor=1) {
             wood_height() + 2*epsilon, -epsilon);
     }
   }
-  angle_increment = tie_angle(radius)*2 * stripe_factor;
+  angle_increment = tie_angle(arc_radius=radius, basic_radius=basic_radius)*2;
   num=ceil((angle/angle_increment)/2);
 
   // stripes.
-  for (i = [-num:1:num] ) {
-    rotate([0,0,(angle/2)+(i-0.25)*angle_increment]) difference() {
+  for (i = (stripes_from_start||stripes_from_end)?[-0.5:1:2*num]:[-num:1:num] ) {
+    a =
+      stripes_from_start ? (i-0.25)*angle_increment :
+      stripes_from_end ? (angle - (i-0.25)*angle_increment) :
+      ((angle/2) + ((i-0.25)*angle_increment));
+    rotate([0,0,a]) difference() {
       translate([0,0,road_height()-stripe_height()])
         pie(radius + stripe_width()/2, angle_increment/2,
             stripe_height() + epsilon);
@@ -752,21 +764,27 @@ module wood_road_and_stripes_arc(radius, angle, stripe_factor=1) {
 }
 
 module wood_rails_and_ties_arc(radius, angle, part="both", bevel_ends=false,
-                               tie_factor=1) {
+                               basic_radius=basic_radius,
+                               ties_from_start=false,
+                               ties_from_end=false) {
   epsilon=.1;
   do_rails = (part=="both" || part=="rails");
   do_ties = (part=="both" || part=="ties");
 
   inner_radius = radius - (wood_width()/2);
 
-  angle_increment = tie_angle(radius) * tie_factor;
+  angle_increment = tie_angle(arc_radius=radius, basic_radius=basic_radius);
 
   num=ceil((angle/angle_increment)/2);
 
   if (do_rails) wood_rails_arc(inner_radius, angle, bevel_ends=bevel_ends);
 
-  for (i = [-num:1:num] ) {
-    rotate([0,0,(angle/2)+(i*angle_increment)]) {
+  for (i = (ties_from_start||ties_from_end)?[-0.5:1:2*num]:[-num:1:num] ) {
+    a =
+      ties_from_start ? i*angle_increment :
+      ties_from_end ? (angle - i*angle_increment) :
+      ((angle/2) + (i*angle_increment));
+    rotate([0,0,a]) {
       if (do_ties) {
       translate([radius - wood_width()/2 - epsilon, -tie_width()/2, wood_height()-tie_height()])
         cube([wood_width()+2*epsilon, tie_width(), wood_height()]);
@@ -1172,7 +1190,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
               if (which=="ties") {
                 /* cut out ties */
                 angle = 60;
-                angle_increment = tie_angle(radius);
+                angle_increment = tie_angle(arc_radius=radius, basic_radius=radius);
                 num=ceil((angle/angle_increment)/2);
                 tie_angle = 180 * tie_width() / (PI * radius);
                 for (j = [-num:1:num]) {
@@ -1214,7 +1232,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
               if (which=="stripe") {
                 /* cut out stripes */
                 angle = 60;
-                angle_increment = tie_angle(radius)*2;
+                angle_increment = tie_angle(arc_radius=radius, basic_radius=radius)*2;
                 num=ceil((angle/angle_increment)/2);
                 for (j = [-num:1:num]) {
                   translate([-radius+(far_side ? -offset : offset), 0,
@@ -1817,9 +1835,16 @@ module firehouse60(radius, surface="road-rail", part="all", mirrored=false, gutt
     translate([-transition_radius,0,0])
     do_rails_or_roads(surface=surface, part=part, mirror_symmetric=false){
       /* rails */
-      wood_rails_and_ties_arc(transition_radius, angle=transition_angle+epsilon, part=(part=="hole"?"rails":part), $fn=myfn);
+      wood_rails_and_ties_arc(transition_radius,
+                              angle=transition_angle+epsilon,
+                              part=(part=="hole"?"rails":part),
+                              basic_radius=radius,
+                              ties_from_end=true, $fn=myfn);
       /* roads */
-      wood_road_and_stripes_arc(transition_radius, angle=transition_angle+epsilon, $fn=myfn);
+      wood_road_and_stripes_arc(transition_radius,
+                                angle=transition_angle+epsilon,
+                                basic_radius=radius,
+                                stripes_from_end=true, $fn=myfn);
     }
   }
 }
@@ -2052,10 +2077,12 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
       /* rails */
       wood_rails_and_ties_arc(arc_sway_r, angle=angle+epsilon,
                               part=(base=="hole"?"rails":base),
-                              tie_factor=2, $fn=myfn);
+                              basic_radius=radius,
+                              ties_from_end=true, $fn=myfn);
       /* roads */
       wood_road_and_stripes_arc(arc_sway_r, angle=angle+epsilon,
-                                stripe_factor=2, $fn=myfn);
+                                basic_radius=radius,
+                                stripes_from_end=true, $fn=myfn);
     }
   } else if (part=="body-sway-mirrored") {
     translate([-sway_r,0,0])
@@ -2068,10 +2095,12 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
       /* rails */
       wood_rails_and_ties_arc(sway_r, angle=sway_a+epsilon,
                               part=(base=="hole"?"rails":base),
-                              tie_factor=2, $fn=myfn);
+                              basic_radius=radius,
+                              ties_from_end=true, $fn=myfn);
       /* roads */
       wood_road_and_stripes_arc(sway_r, angle=sway_a+epsilon,
-                                stripe_factor=2, $fn=myfn);
+                                basic_radius=radius,
+                                stripes_from_end=true, $fn=myfn);
     }
   } else if (part=="connector-sway-mirrored") {
     loose_wood_cutout(cutout_width=recycling_length);
