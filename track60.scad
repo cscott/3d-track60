@@ -1977,17 +1977,20 @@ module recycling60(radius, dir="left", surface="road-rail", part="all", gutter=t
     height = wood_height() - top_offset - bottom_offset;
 
     intersection() {
-      translate([0,(recycling_length-straight_length(radius))/2 + border/2,0])
-        scale([recycling_width/recycling_length,1,1]) {
-          main_radius = sqrt(2)*(recycling_length/2) + border/2;
-          ring_width = 5;
-          translate([0,0,bottom_offset])
-            pie(main_radius, 180, height, spin=-90);
-          if (height < wood_height()) for (i=[0:2:8]) difference() {
-            pie(main_radius - i*ring_width, 180, wood_height(), spin=-90);
-            translate([0,0,-1])
-            pie(main_radius - (i+1)*ring_width, 180, wood_height()+2, spin=-90);
+      pie_center=[0,(recycling_length-straight_length(radius))/2 + border/2,0];
+      pie_scale =[recycling_width/recycling_length,1,1];
+      main_radius = sqrt(2)*(recycling_length/2) + border/2;
+      union() {
+        translate(pie_center+[0,0,bottom_offset]) scale(pie_scale)
+          pie(main_radius, 180, height, spin=-90);
+        if (height < wood_height()) difference() {
+          translate(pie_center) scale(pie_scale)
+            pie(main_radius + epsilon, 180, wood_height(), spin=-90);
+          minkowski() {
+            sphere(r=2, $fn=6);
+            recycling60(radius, dir, surface, part="body", gutter=false);
           }
+        }
       }
       difference() {
         translate([straight_length(radius)/2,0,0]) rotate([0,0,30])
