@@ -2131,17 +2131,41 @@ module grade_crossing60(radius, part="all", trim_ties=true) {
   }
 }
 
-module thomas_crossing60(radius, surface="road-rail", part="all", trim_ties=true) {
+module thomas_crossing60(radius, surface="road-rail", part="all", gutter=true, trim_ties=true) {
   thomas_length = 152;
+  thomas_width = 120;
   adapter_length = straight_length(radius) - thomas_length;
 
   if (part=="all") {
     difference() {
-      thomas_crossing60(radius, surface, "body");
+      thomas_crossing60(radius, surface, "body", gutter=true);
       thomas_crossing60(radius, surface, "hole");
       thomas_crossing60(radius, surface, "connector");
       thomas_crossing60(radius, surface, "ties", trim_ties=false);
     }
+  } else if (part=="ties" && trim_ties) {
+    intersection() {
+      with_bogus60(radius)
+        thomas_crossing60(radius, surface, part, trim_ties=false);
+      thomas_crossing60(radius, surface, part="body", gutter=false);
+    }
+  } else if (part=="body" && gutter) {
+    thomas_crossing60(radius, surface, part="body", gutter=false);
+    translate([0,0,wood_height()/2])
+      scale([1,1,wood_well_height()/wood_height()])
+      translate([0,0,-wood_height()/2])
+      thomas_crossing60(radius, surface, part="gutter");
+    difference() {
+      thomas_crossing60(radius, surface, part="gutter");
+      minkowski() {
+        sphere(r=2, $fn=6);
+        thomas_crossing60(radius, surface, part="body", gutter=false);
+      }
+    }
+  } else if (part=="gutter") {
+    translate([0,-straight_length(radius)/2,0])
+      scale([(thomas_width/2)/adapter_length,1,1])
+      pie(adapter_length, 180, wood_height(), spin=0);
   } else if (part=="connector") {
     translate([0,-straight_length(radius)/2,0])
       loose_wood_cutout();
