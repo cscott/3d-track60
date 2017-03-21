@@ -12,6 +12,8 @@
 // Added: 1-7: combinations of double-to-single paths
 // Added: 8 - dbl ramp
 // Added: 9 - dbl buffer
+// Added: < - like 2, but with offset = 0
+// Added: > - like 2, but with offset = 1
 
 // Translation between old and new names:
 // curve: BS
@@ -38,7 +40,7 @@
 // switch6: 22
 // switch7: bs2A/osA2*
 // switch8: bsA2/os2A*
-// switch9: au1A/auA4*
+// switch9: auA4/au1A*
 // switch10:auA1/au4A*
 // switch11:bs1A/osA4*
 // switch12:bsA1/os4A*
@@ -271,7 +273,8 @@ function num_tracks_for_letter(s) =
   (toupper(s) != s[0]) ? num_tracks_for_letter(toupper(s)[0]) :
   (s == "A" || s == "S") ? 0 :
   (s == "B" || s == "O" || s == "R" || s == "T" || s == "U" || s == "V" ||
-   s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ) ? 1 :
+   s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ||
+   s == "<" || s == ">" ) ? 1 :
   (s == "C" || s == "D" || s == "E" || s == "W" || s == "X" || s == "Y" ||
    s == "3" || s == "5" || s == "6" ) ? 2 :
   (s == "J" || s == "K" || s == "L") ? 4 :
@@ -284,7 +287,8 @@ function num_tracks_for_shortname(s) = len(s) == 0 ? 0 :
 function name_has_dbl(s) = let (n=len(s)) n == 0 ? false :
   (let (c=s[0]) toupper(c) != c ? true :
   (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" ||
-   c == "5" || c == "6" || c == "7" || c == "8" || c == "9") ? true :
+   c == "5" || c == "6" || c == "7" || c == "8" || c == "9" ||
+   c == "<" || c == ">" ) ? true :
   name_has_dbl(substr(s, 1, n-1)));
 
 module maybe_dbl_curve60(radius, dir, surface, part, is_double) {
@@ -411,8 +415,11 @@ module decode_shortname(s, i, radius, surface, part) {
     (c == "2" && i == 0) ||
     (c == "3" && i == 1) ||
     (c == "6" && i == 0) ||
-    (c == "7" && i == 1)) {
-    dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part);
+    (c == "7" && i == 1) ||
+    (c == "<" && i == 0) ||
+    (c == ">" && i == 0)) {
+    dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part,
+               offset=(c=="<") ? 0 : (c==">") ? 1 : 0.5);
   } else if (
     (c == "4" && i == 0) ||
     (c == "5" && i == 1) ||
@@ -570,142 +577,74 @@ module trim_gutter60() {
 // those which aren't.
 module switch60(radius, which, dir="left", surface="road-rail", part="all",
                 is_intersection=false) {
-  bsurface=blank_dbl_surface(surface);
-  if (part=="all") {
-    difference() {
-      union() {
-        switch60(radius, which, dir, surface, "body");
-        switch60(radius, which, dir, surface, "gutter");
-      }
-      switch60(radius, which, dir, surface, "hole");
-      switch60(radius, which, dir, surface, "connector");
-      difference() {
-        with_bogus60(radius)
-          switch60(radius, which, dir, surface, "ties");
-        switch60(radius, which, dir, surface, "body",
-                 is_intersection=true);
-      }
-    }
-  } else if (which==1 || which==2) {
-    union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, surface, part);
-      curve60(radius, dir, surface, part);
-      if (which == 2) { curve60(radius, other_dir(dir), surface, part); }
-      else if (is_intersection) bogus60(radius);
-    }
+  if (which==1) {
+    shortname60(radius=radius, name=(dir=="left"?"BU":"BT"), surface=surface, part=part);
+  } else if (which==2) {
+    shortname60(radius=radius, name="DU", surface=surface, part=part);
   } else if (which==3) {
-    union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, surface, part);
-      curve60(radius, dir=dir, surface=surface, part=part);
-      rotate([0,0,180]) curve60(radius, dir=dir, surface=surface, part=part);
-    }
-  } else if (which==4 || which==5) {
-    union_or_intersection(is_intersection=is_intersection) {
-      curve60_left(radius, surface, part);
-      curve60_right(radius, surface, part);
-      if (which==5) {
-        rotate([0,0,120]) curve60_right(radius, surface, part);
-      } else if (is_intersection) bogus60(radius);
-    }
+    shortname60(radius=radius, name=(dir=="left"?"EU":"ET"), surface=surface, part=part);
+  } else if (which==4) {
+    shortname60(radius=radius, name="DS", surface=surface, part=part);
+  } else if (which==5) {
+    shortname60(radius=radius, name="HS", surface=surface, part=part);
   } else if (which==6) {
     // single-to-double straight switch
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_sway60_left(radius, bsurface, part);
-      dbl_sway60_right(radius, bsurface, part);
-    }
-  } else if (which==7 || which==8) {
+    shortname60(radius=radius, name="22", surface=surface, part=part);
+  } else if (which==7) {
     // curved double-to-straight single wye
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve60(radius, dir=dir, surface=bsurface, part=part);
-      rotate([0,0,180])
-        dbl_sway60(radius, dir=(which==7 ? dir : other_dir(dir)),
-                   surface=bsurface, part=part,
-                   offset=(which==7 ? 1 : 0));
-    }
-  } else if (which==9 || which==10) {
+    // optimized offset -- but maybe default is actually better?
+    shortname60(radius=radius, name=(dir=="left"?"bs>A":"osA>"), surface=surface, part=part);
+  } else if (which==8) {
+    // curved double-to-straight single wye
+    // optimized offset -- but maybe default is actually better?
+    shortname60(radius=radius, name=(dir=="left"?"bsA<":"os<A"), surface=surface, part=part);
+  } else if (which==9) {
     // straight double-to-curved single wye
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_straight60(radius, surface=bsurface, part=part);
-      dbl_curve_sway60(radius, dir=dir, surface=bsurface, part=part,
-                       just_curve=true, far_side=(which==10));
-    }
-  } else if (which==11 || which==12) {
+    shortname60(radius=radius, name=(dir=="left"?"auA4":"au1A"), surface=surface, part=part);
+  } else if (which==10) {
+    // straight double-to-curved single wye
+    shortname60(radius=radius, name=(dir=="left"?"au4A":"auA1"), surface=surface, part=part);
+  } else if (which==11) {
     // curved double to curved single wye
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve60(radius, dir=dir, surface=bsurface, part=part);
-      dbl_curve_sway60(radius, dir=other_dir(dir), surface=bsurface,
-                       part=part, far_side=(which==12));
-    }
+    shortname60(radius=radius, name=(dir=="left"?"bs1A":"osA4"), surface=surface, part=part);
+  } else if (which==12) {
+    // curved double to curved single wye
+    shortname60(radius=radius, name=(dir=="left"?"bsA1":"os4A"), surface=surface, part=part);
   } else if (which==13) {
     // double-track crossover
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_straight60(radius, bsurface, part);
-      dbl_sway60(radius, dir, bsurface, part, sway_far=true);
-    }
+    shortname60(radius=radius, name=(dir=="left"?"au0A":"auA0"), surface=surface, part=part);
   } else if (which==14) {
     // single-to-double curved switch
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve_sway60(radius, dir, bsurface, part);
-      dbl_curve_sway60(radius, dir, bsurface, part,
-                       far_side=true);
-    }
-  } else if (which==15 || which==16) {
+    shortname60(radius=radius, name=(dir=="left"?"44":"11"), surface=surface, part=part);
+  } else if (which==15) {
     // single-to-double curved switch, with right single curve
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve_sway60(radius, dir, bsurface, part);
-      dbl_curve_sway60(radius, dir, bsurface, part, far_side=true);
-      dbl_curve_sway60(radius, other_dir(dir), bsurface, part,
-                       far_side=(which==16));
-    }
+    shortname60(radius=radius, name=(dir=="left"?"54":"15"), surface=surface, part=part);
+  } else if (which==16) {
+    // single-to-double curved switch, with right single curve
+    shortname60(radius=radius, name=(dir=="left"?"45":"51"), surface=surface, part=part);
   } else if (which==17) {
+    shortname60(radius=radius, name="CT", surface=surface, part=part);
+  } else if (which==9 || which==10) {
+    // XXX this doesn't work anymore after refactor, but I'm leaving it
+    // around to document how the `just_curve` parameter was used.
+    // straight double-to-curved single wye
     union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, surface, part);
-      curve60(radius, dir=dir, surface=surface, part=part);
-      rotate([0,0,180])
-        curve60(radius, dir=other_dir(dir), surface=surface, part=part);
+      dbl_straight60(radius, surface=surface, part=part);
+      dbl_curve_sway60(radius, dir=dir, surface=surface, part=part,
+                       just_curve=true, far_side=(which==10));
     }
   }
 }
 
 module misc60(radius, which, surface="road-rail", part="all", is_intersection=false) {
-  if (part=="all") {
-    difference() {
-      misc60(radius, which, surface, "body");
-      misc60(radius, which, surface, "hole");
-      misc60(radius, which, surface, "connector");
-      difference() {
-        with_bogus60(radius)
-          misc60(radius, which, surface, "ties");
-        misc60(radius, which, surface, "body", is_intersection=true);
-      }
-    }
-  } else if (which==1) {
-    union_or_intersection(is_intersection=is_intersection) {
-      curve60_left(radius, surface, part);
-      curve60_right(radius, surface, part);
-      rotate([0,0,180]) curve60_left(radius, surface, part);
-      rotate([0,0,180]) curve60_right(radius, surface, part);
-    }
+  if (which==1) {
+    shortname60(radius=radius, name="JS", surface=surface, part=part);
   } else if (which==2) {
-    union_or_intersection(is_intersection=is_intersection) {
-      curve60_left(radius, surface, part);
-      curve60_right(radius, surface, part);
-      rotate([0,0,-60]) curve60_right(radius, surface, part);
-    }
+    shortname60(radius=radius, name="GS", surface=surface, part=part);
   } else if (which==3) {
-    union_or_intersection(is_intersection=is_intersection) {
-      rotate([0,0,60]) straight60(radius, surface, part);
-      rotate([0,0,120]) straight60(radius, surface, part);
-      rotate([0,0,60]) curve60_left(radius, surface, part);
-      rotate([0,0,120]) curve60_right(radius, surface, part);
-    }
+    shortname60(radius=radius, name="EW", surface=surface, part=part);
   } else if (which==4) {
-    union_or_intersection(is_intersection=is_intersection) {
-      rotate([0,0,0]) curve60_left(radius, surface, part);
-      rotate([0,0,-120]) curve60_left(radius, surface, part);
-      rotate([0,0,120]) curve60_left(radius, surface, part);
-      rotate([0,0,60]) curve60_left(radius, surface, part);
-    }
+    shortname60(radius=radius, name="KS", surface=surface, part=part);
   }
 }
 
