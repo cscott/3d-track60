@@ -27,7 +27,7 @@
 // crossing5: AZ
 // crossing6: 00
 // crossing7: 24/12*
-// crossing8: bsA2/os2A*
+// crossing8: 42/21
 // crossing9: 14
 // crossing10:41
 // switch1: BT/BU*
@@ -47,10 +47,10 @@
 // switch15:54/15*
 // switch16:45/51*
 // switch17: CT
-// misc1:
-// misc2:
-// misc3:
-// misc4:
+// misc1: JS
+// misc2: GS
+// misc3: EW
+// misc4: KS
 // dbl_buffer: 88
 // dbl_ramp: 99
 // grade-crossing3: AT-AU/AU-AT (need to fix this)
@@ -281,23 +281,29 @@ function num_tracks_for_letter(s) =
 function num_tracks_for_shortname(s) = len(s) == 0 ? 0 :
   num_tracks_for_letter(s[0]) + num_tracks_for_letter(substr(s, 1, len(s)-1));
 
-module maybe_dbl_curve60(radius, dir, surface, part, gutter, is_double) {
+function name_has_dbl(s) = let (n=len(s)) n == 0 ? false :
+  (let (c=s[0]) toupper(c) != c ? true :
+  (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" ||
+   c == "5" || c == "6" || c == "7" || c == "8" || c == "9") ? true :
+  name_has_dbl(substr(s, 1, n-1)));
+
+module maybe_dbl_curve60(radius, dir, surface, part, is_double) {
   if (is_double) {
-    dbl_curve60(radius, dir, surface=surface, part=part, gutter=gutter);
+    dbl_curve60(radius, dir, surface=surface, part=part);
   } else {
     curve60(radius, dir, surface=surface, part=part);
   }
 }
 
-module maybe_dbl_straight60(radius, surface, part, gutter, is_double) {
+module maybe_dbl_straight60(radius, surface, part, is_double) {
   if (is_double) {
-    dbl_straight60(radius, surface=surface, part=part, gutter=gutter);
+    dbl_straight60(radius, surface=surface, part=part);
   } else {
     straight60(radius, surface=surface, part=part);
   }
 }
 
-module decode_shortname(s, i, radius, surface, part, gutter) {
+module decode_shortname(s, i, radius, surface, part) {
   off = len(s) - 1;
   n = (len(s) <= 0 || s[off] == "-") ? 0 :
     num_tracks_for_letter(s[off]);
@@ -306,12 +312,11 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
   dash_pos = indexof(s, "-");
   surf = dash_pos < 0 ? surface : flip_surface(surface);
   is_even = ((off - (dash_pos < 0 ? 0 : (dash_pos+1))) % 2) == 0;
-  echo(s, i, is_even);
   if (s == "") {
     /* nothing */
     if (part != "body") bogus60(radius);
   } else if (i >= n) {
-    decode_shortname(substr(s, 0, len(s)-1), i-n, radius, surface, part, gutter);
+    decode_shortname(substr(s, 0, len(s)-1), i-n, radius, surface, part);
   } else if (
     (c == "B" && i == 0) ||
     (c == "C" && i == 0) ||
@@ -324,7 +329,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "O" && i == 0)) {
     dir = (c == "O") ? "right" : "left";
     rotate([0,0,180])
-      maybe_dbl_curve60(radius, dir, surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, dir, surf, part, is_double);
   } else if (
     (c == "I" && i == 0) ||
     (c == "J" && i == 0) ||
@@ -333,7 +338,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "M" && i == 0) ||
     (c == "N" && i == 1)) {
     rotate([0,0,120])
-      maybe_dbl_curve60(radius, "left", surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, "left", surf, part, is_double);
   } else if (
     (c == "H" && i == 1) ||
     (c == "I" && i == 1) ||
@@ -343,7 +348,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "M" && i == 1) ||
     (c == "N" && i == 2)) {
     rotate([0,0,60])
-      maybe_dbl_curve60(radius, "left", surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, "left", surf, part, is_double);
   } else if (
     (c == "E" && i == 1) ||
     (c == "F" && i == 1) ||
@@ -352,7 +357,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "M" && i == 2) ||
     (c == "N" && i == 3)) {
     rotate([0,0,0])
-      maybe_dbl_curve60(radius, "left", surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, "left", surf, part, is_double);
   } else if (
     (c == "D" && i == 1) ||
     (c == "G" && i == 1) ||
@@ -363,7 +368,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "M" && i == 3) ||
     (c == "N" && i == 4)) {
     rotate([0,0,-60])
-      maybe_dbl_curve60(radius, "left", surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, "left", surf, part, is_double);
   } else if (
     (c == "C" && i == 1) ||
     (c == "F" && i == 2) ||
@@ -373,27 +378,27 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "M" && i == 4) ||
     (c == "N" && i == 5)) {
     rotate([0,0,-120])
-      maybe_dbl_curve60(radius, "left", surf, part, gutter, is_double);
+      maybe_dbl_curve60(radius, "left", surf, part, is_double);
   } else if (
     (c == "T" && i == 0) ||
     (c == "W" && i == 1) ||
     (c == "X" && i == 1) ||
     (c == "Z" && i == 2)) {
     rotate([0,0,60])
-      maybe_dbl_straight60(radius, surf, part, gutter, is_double);
+      maybe_dbl_straight60(radius, surf, part, is_double);
   } else if (
     (c == "U" && i == 0) ||
     (c == "W" && i == 0) ||
     (c == "Y" && i == 0) ||
     (c == "Z" && i == 0)) {
-    maybe_dbl_straight60(radius, surf, part, gutter, is_double);
+    maybe_dbl_straight60(radius, surf, part, is_double);
   } else if (
     (c == "V" && i == 0) ||
     (c == "X" && i == 0) ||
     (c == "Y" && i == 1) ||
     (c == "Z" && i == 1)) {
     rotate([0,0,-60])
-      maybe_dbl_straight60(radius, surf, part, gutter, is_double);
+      maybe_dbl_straight60(radius, surf, part, is_double);
   } else if (
     (c == "1" && i == 0) ||
     (c == "3" && i == 0) ||
@@ -401,14 +406,13 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "7" && i == 0)) {
     rotate([0,0,180])
     dbl_curve_sway60(radius, dir="right", surface=surf, part=part,
-                     far_side=!is_even, gutter=gutter);
+                     far_side=!is_even);
   } else if (
     (c == "2" && i == 0) ||
     (c == "3" && i == 1) ||
     (c == "6" && i == 0) ||
     (c == "7" && i == 1)) {
-    dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part,
-               gutter=gutter);
+    dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part);
   } else if (
     (c == "4" && i == 0) ||
     (c == "5" && i == 1) ||
@@ -416,10 +420,10 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     (c == "7" && i == 2)) {
     rotate([0,0,180])
     dbl_curve_sway60(radius, dir="left", surface=surf, part=part,
-                     far_side=is_even, gutter=gutter);
+                     far_side=is_even);
   } else if ((c == "0" && i == 0)) {
     dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part,
-               gutter=gutter, sway_far=true);
+               sway_far=true);
   } else if (
     (c == "8" && i == 0) ||
     (c == "9" && i == 0)) {
@@ -429,8 +433,7 @@ module decode_shortname(s, i, radius, surface, part, gutter) {
     rotate([0,0,180])
       buffer_or_ramp60(radius, surface=surf, part=part, which=which);
   } else if ((c == "R" && i == 0)) {
-    half_straight60(radius, surface=surface, part=part,
-                    double=is_double, gutter=gutter);
+    half_straight60(radius, surface=surface, part=part, double=is_double);
   }
 }
 
@@ -461,67 +464,36 @@ module with_bogus60(radius, disable=false) {
 
 // Most crossings are mirror symmetric, but the `dir` parameter is used for
 // those which aren't.
-module crossing60(radius, which, dir="left", surface="road-rail", part="all",
-                  gutter=true, is_intersection=false) {
-  bsurface=blank_dbl_surface(surface);
-  if (part=="all") {
-    difference() {
-      crossing60(radius, which, dir, surface, "body", gutter);
-      crossing60(radius, which, dir, surface, "hole");
-      crossing60(radius, which, dir, surface, "connector");
-      if (true) difference() {
-        with_bogus60(radius)
-          crossing60(radius, which, dir, surface, "ties");
-        crossing60(radius, which, dir, surface, "body",
-                   gutter=false, is_intersection=true);
-      }
-    }
-  } else if (which==1) {
-    union_or_intersection(is_intersection=is_intersection) {
-      curve60_right(radius, surface, part);
-      rotate([0,0,60]) curve60_right(radius, surface, part);
-    }
-  } else if (which==2 || which==4) {
-    union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, surface, part);
-      rotate([0,0,60]) curve60_left(radius, surface, part);
-      if (which==4) {
-        rotate([0,0,-120]) curve60_left(radius, surface, part);
-      } else if (is_intersection) bogus60(radius);
-    }
-  } else if (which==3 || which==5) {
-    union_or_intersection(is_intersection=is_intersection) {
-      straight60(radius, surface, part);
-      rotate([0,0,60]) straight60(radius, surface, part);
-      if (which==5) {
-        rotate([0,0,-60]) straight60(radius, surface, part);
-      } else if (is_intersection) bogus60(radius);
-    }
+module crossing60(radius, which, dir="left", surface="road-rail", part="all") {
+  if (which==1) {
+    shortname60(radius=radius, name="CS", surface=surface, part=part);
+  } else if (which==2) {
+    shortname60(radius=radius, name="BV", surface=surface, part=part);
+  } else if (which==3) {
+    shortname60(radius=radius, name="AW", surface=surface, part=part);
+  } else if (which==4) {
+    shortname60(radius=radius, name="EV", surface=surface, part=part);
+  } else if (which==5) {
+    shortname60(radius=radius, name="AZ", surface=surface, part=part);
   } else if (which==6) {
     // double crossover
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_sway60_left(radius, bsurface, part, sway_far=true, gutter=gutter);
-      dbl_sway60_right(radius, bsurface, part, sway_far=true, gutter=gutter);
-    }
-  } else if (which==7 || which==8) {
+    shortname60(radius=radius, name="00", surface=surface, part=part);
+  } else if (which==7) {
     // double-to-single crossover (crossing #7 is technically a gantlet)
     // one straight, one curved.
-    union_or_intersection(is_intersection=is_intersection) {
-      rotate([0,0,180])
-        dbl_sway60(radius, which==7 ? dir : other_dir(dir), bsurface, part,
-                   gutter=gutter);
-      dbl_curve_sway60(radius, dir, bsurface, part,
-                       far_side=(which==8), gutter=gutter);
-    }
-  } else if (which==9 || which==10) {
+    shortname60(radius=radius, name=(dir=="left"?"24":"12"), surface=surface, part=part);
+  } else if (which==8) {
+    // double-to-single crossover (crossing #7 is technically a gantlet)
+    // one straight, one curved.
+    shortname60(radius=radius, name=(dir=="left"?"42":"21"), surface=surface, part=part);
+  } else if (which==9) {
     // double-to-single crossover (crossing #9 is technically a gantlet)
     // both curved
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve_sway60_left(radius, bsurface, part,
-                            far_side=(which==10), gutter=gutter);
-      dbl_curve_sway60_right(radius, bsurface, part,
-                             far_side=(which==10), gutter=gutter);
-    }
+    shortname60(radius=radius, name="14", surface=surface, part=part);
+  } else if (which==10) {
+    // double-to-single crossover (crossing #9 is technically a gantlet)
+    // both curved
+    shortname60(radius=radius, name="41", surface=surface, part=part);
   }
 }
 
@@ -529,41 +501,67 @@ module crossing60(radius, which, dir="left", surface="road-rail", part="all",
 // subtract body from cutout, subtract body+2mm from top of gutter
 // compute road crossing cutouts of hole
 module shortname60(radius=basic_radius, name="BS", surface="road-rail",
-                   part="all", gutter=true, is_intersection=false) {
-  bsurface=blank_dbl_surface(surface);
+                   part="all", is_intersection=false) {
   if (part=="all") {
+    has_double = name_has_dbl(name);
+    nsurface = has_double ? blank_dbl_surface(surface) : surface;
     difference() {
-      shortname60(radius, name, surface, "body", gutter);
-      shortname60(radius, name, surface, "hole");
-      shortname60(radius, name, surface, "connector");
+      union() {
+        shortname60(radius, name, nsurface, "body");
+        if (has_double) shortname60(radius, name, nsurface, "gutter");
+      }
+      difference() {
+        shortname60(radius, name, nsurface, "hole");
+        // XXX flipped road
+      }
+      shortname60(radius, name, nsurface, "connector");
       difference() {
         with_bogus60(radius)
-          shortname60(radius, name, surface, "ties");
-        shortname60(radius, name, surface, "body",
-                    gutter=false, is_intersection=true);
+          shortname60(radius, name, nsurface, "ties");
+        shortname60(radius, name, nsurface, "body", is_intersection=true);
       }
+    }
+  } else if (part=="gutter") {
+    trim_gutter60() {
+      shortname60(radius, name, surface, "gutter-body");
+      shortname60(radius, name, surface, "body");
     }
   } else {
     num = num_tracks_for_shortname(name);
     union_or_intersection(is_intersection=is_intersection, nchildren=num) {
-      decode_shortname(name, 0, radius, surface, part, gutter);
-      decode_shortname(name, 1, radius, surface, part, gutter);
-      decode_shortname(name, 2, radius, surface, part, gutter);
-      decode_shortname(name, 3, radius, surface, part, gutter);
-      decode_shortname(name, 4, radius, surface, part, gutter);
-      decode_shortname(name, 5, radius, surface, part, gutter);
-      decode_shortname(name, 6, radius, surface, part, gutter);
-      decode_shortname(name, 7, radius, surface, part, gutter);
-      decode_shortname(name, 8, radius, surface, part, gutter);
-      decode_shortname(name, 9, radius, surface, part, gutter);
-      decode_shortname(name, 10, radius, surface, part, gutter);
-      decode_shortname(name, 11, radius, surface, part, gutter);
-      decode_shortname(name, 12, radius, surface, part, gutter);
-      decode_shortname(name, 13, radius, surface, part, gutter);
-      decode_shortname(name, 14, radius, surface, part, gutter);
-      decode_shortname(name, 15, radius, surface, part, gutter);
-      decode_shortname(name, 16, radius, surface, part, gutter);
-      decode_shortname(name, 17, radius, surface, part, gutter);
+      decode_shortname(name, 0, radius, surface, part);
+      decode_shortname(name, 1, radius, surface, part);
+      decode_shortname(name, 2, radius, surface, part);
+      decode_shortname(name, 3, radius, surface, part);
+      decode_shortname(name, 4, radius, surface, part);
+      decode_shortname(name, 5, radius, surface, part);
+      decode_shortname(name, 6, radius, surface, part);
+      decode_shortname(name, 7, radius, surface, part);
+      decode_shortname(name, 8, radius, surface, part);
+      decode_shortname(name, 9, radius, surface, part);
+      decode_shortname(name, 10, radius, surface, part);
+      decode_shortname(name, 11, radius, surface, part);
+      decode_shortname(name, 12, radius, surface, part);
+      decode_shortname(name, 13, radius, surface, part);
+      decode_shortname(name, 14, radius, surface, part);
+      decode_shortname(name, 15, radius, surface, part);
+      decode_shortname(name, 16, radius, surface, part);
+      decode_shortname(name, 17, radius, surface, part);
+    }
+  }
+}
+
+module trim_gutter60() {
+  intersection() {
+    children(0); // part="gutter-body"
+    translate([0,0,wood_height()/2])
+      cube([2*basic_radius, 2*basic_radius, wood_well_height()], center=true);
+  }
+  difference() {
+    children(0); // part="gutter-body"
+    minkowski() {
+      cylinder(r=2, h=2*wood_height(), center=true, $fn=6);
+      children(1); // part="body"
     }
   }
 }
@@ -571,18 +569,21 @@ module shortname60(radius=basic_radius, name="BS", surface="road-rail",
 // Some switches are mirror symmetric, but the `dir` parameter is used for
 // those which aren't.
 module switch60(radius, which, dir="left", surface="road-rail", part="all",
-                gutter=true, is_intersection=false) {
+                is_intersection=false) {
   bsurface=blank_dbl_surface(surface);
   if (part=="all") {
     difference() {
-      switch60(radius, which, dir, surface, "body", gutter);
+      union() {
+        switch60(radius, which, dir, surface, "body");
+        switch60(radius, which, dir, surface, "gutter");
+      }
       switch60(radius, which, dir, surface, "hole");
       switch60(radius, which, dir, surface, "connector");
       difference() {
         with_bogus60(radius)
           switch60(radius, which, dir, surface, "ties");
         switch60(radius, which, dir, surface, "body",
-                 gutter=false, is_intersection=true);
+                 is_intersection=true);
       }
     }
   } else if (which==1 || which==2) {
@@ -609,56 +610,52 @@ module switch60(radius, which, dir="left", surface="road-rail", part="all",
   } else if (which==6) {
     // single-to-double straight switch
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_sway60_left(radius, bsurface, part, gutter=gutter);
-      dbl_sway60_right(radius, bsurface, part, gutter=gutter);
+      dbl_sway60_left(radius, bsurface, part);
+      dbl_sway60_right(radius, bsurface, part);
     }
   } else if (which==7 || which==8) {
     // curved double-to-straight single wye
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve60(radius, dir=dir, surface=bsurface, part=part,
-                  gutter=gutter);
+      dbl_curve60(radius, dir=dir, surface=bsurface, part=part);
       rotate([0,0,180])
         dbl_sway60(radius, dir=(which==7 ? dir : other_dir(dir)),
-                   surface=bsurface, part=part, gutter=false,
+                   surface=bsurface, part=part,
                    offset=(which==7 ? 1 : 0));
     }
   } else if (which==9 || which==10) {
     // straight double-to-curved single wye
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_straight60(radius, surface=bsurface, part=part,
-                     gutter=gutter);
+      dbl_straight60(radius, surface=bsurface, part=part);
       dbl_curve_sway60(radius, dir=dir, surface=bsurface, part=part,
-                       just_curve=true, far_side=(which==10), gutter=false);
+                       just_curve=true, far_side=(which==10));
     }
   } else if (which==11 || which==12) {
     // curved double to curved single wye
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve60(radius, dir=dir, surface=bsurface, part=part,
-                  gutter=gutter);
+      dbl_curve60(radius, dir=dir, surface=bsurface, part=part);
       dbl_curve_sway60(radius, dir=other_dir(dir), surface=bsurface,
-                       part=part, far_side=(which==12), gutter=false);
+                       part=part, far_side=(which==12));
     }
   } else if (which==13) {
     // double-track crossover
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_straight60(radius, bsurface, part, gutter=false);
+      dbl_straight60(radius, bsurface, part);
       dbl_sway60(radius, dir, bsurface, part, sway_far=true);
     }
   } else if (which==14) {
     // single-to-double curved switch
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve_sway60(radius, dir, bsurface, part, gutter=gutter);
+      dbl_curve_sway60(radius, dir, bsurface, part);
       dbl_curve_sway60(radius, dir, bsurface, part,
-                       far_side=true, gutter=gutter);
+                       far_side=true);
     }
   } else if (which==15 || which==16) {
     // single-to-double curved switch, with right single curve
     union_or_intersection(is_intersection=is_intersection) {
-      dbl_curve_sway60(radius, dir, bsurface, part, gutter=gutter);
-      dbl_curve_sway60(radius, dir, bsurface, part,
-                       far_side=true, gutter=gutter);
+      dbl_curve_sway60(radius, dir, bsurface, part);
+      dbl_curve_sway60(radius, dir, bsurface, part, far_side=true);
       dbl_curve_sway60(radius, other_dir(dir), bsurface, part,
-                       far_side=(which==16), gutter=gutter);
+                       far_side=(which==16));
     }
   } else if (which==17) {
     union_or_intersection(is_intersection=is_intersection) {
@@ -750,7 +747,10 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
 
   if (part=="all") {
     difference() {
-      buffer_or_ramp60(radius, nsurface, "body", which=which);
+      union() {
+        buffer_or_ramp60(radius, nsurface, "body", which=which);
+        buffer_or_ramp60(radius, nsurface, "gutter", which=which);
+      }
       buffer_or_ramp60(radius, nsurface, "hole", which=which);
       buffer_or_ramp60(radius, nsurface, "connector", which=which);
       buffer_or_ramp60(radius, nsurface, "ties", which=which, trim_ties=false);
@@ -761,7 +761,7 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
         buffer_or_ramp60(radius, surface=nsurface, part="ties", which=which, trim_ties=false);
       buffer_or_ramp60(radius, surface=nsurface, part="body", which=which);
     }
-  } else if (part=="body") {
+  } else if (part=="body" || part=="gutter" || part=="gutter-body") {
     newr = buflen*sqrt(3)/2;
     // short straight
     difference() {
@@ -790,11 +790,11 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
       }
     }
     // male connector
-    if (!is_double) translate([0,-straight_length(radius)/2, 0])
+    if (part=="body" && !is_double) translate([0,-straight_length(radius)/2, 0])
       scale([1,1,startswith(surface, "rail-")?1:(road_height()/wood_height())])
         rotate([0,0,-90]) wood_plug();
     // buffer
-    if (buffer) {
+    if (part=="body" && buffer) {
       buffer_or_ramp60(radius, nsurface, part="buffer", which=which);
     }
   } else if (part=="buffer") {
@@ -903,18 +903,19 @@ module straight60(radius, surface="road-rail", part="all", trim_ties=true) {
   }
 }
 
-module half_dbl_straight60(radius, surface="road-rail", part="all",
-                           gutter=true) {
-  half_straight60(radius, surface=surface, part=part, double=true,
-                  gutter=gutter);
+module half_dbl_straight60(radius, surface="road-rail", part="all") {
+  half_straight60(radius, surface=surface, part=part, double=true);
 }
 
 module half_straight60(radius, surface="road-rail", part="all", trim_ties=true,
-                       double=false, gutter=true) {
+                       double=false) {
 
   if (part=="all") {
     difference() {
-      half_straight60(radius, surface, "body", double=double, gutter=gutter);
+      union() {
+        half_straight60(radius, surface, "body", double=double);
+        if (double) half_straight60(radius, surface, "gutter", double=double);
+      }
       half_straight60(radius, surface, "hole", double=double);
       half_straight60(radius, surface, "connector", double=double);
       half_straight60(radius, surface, "ties", trim_ties=false, double=double);
@@ -926,17 +927,18 @@ module half_straight60(radius, surface="road-rail", part="all", trim_ties=true,
                         trim_ties=false, double=double);
       half_straight60(radius, surface=surface, part="body", double=double);
     }
-  } else if (part=="body" || part=="connector") {
+  } else if (part=="body" || part=="connector" ||
+             part=="gutter" || part=="gutter-body") {
     translate([0,-straight_length(radius)/4,0])
       if (double) {
-        dbl_straight60(radius/2, surface=surface, part=part, gutter=gutter);
+        dbl_straight60(radius/2, surface=surface, part=part);
       } else {
         straight60(radius/2, surface=surface, part=part);
       }
   } else {
     // hole and ties are unscaled to preserve consistent spacing.
     if (double) {
-      dbl_straight60(radius, surface=surface, part=part, gutter=gutter);
+      dbl_straight60(radius, surface=surface, part=part);
     } else {
       straight60(radius, surface=surface, part=part);
     }
@@ -1115,25 +1117,27 @@ module wood_rails_and_ties_arc(radius, angle, part="both", bevel_ends=false,
 
 // Double-track pieces.
 // centered on the hex center
-module dbl_straight60(radius, surface="road-rail", part="all",
-                      gutter=true, trim_ties=true) {
+module dbl_straight60(radius, surface="road-rail", part="all", trim_ties=true) {
   epsilon=.1;
 
   if (part=="all") {
     difference() {
-      dbl_straight60(radius, surface, "body", gutter);
+      union() {
+        dbl_straight60(radius, surface, "body");
+        dbl_straight60(radius, surface, "gutter");
+      }
       dbl_straight60(radius, surface, "hole");
       dbl_straight60(radius, surface, "connector");
       dbl_straight60(radius, surface, "ties", trim_ties=false);
     }
-  } else if (part=="body" && gutter) {
-    dbl_straight60(radius, surface=surface, part="body", gutter=false);
-    dbl_straight60(radius, surface=surface, part="gutter");
   } else if (part=="gutter") {
+    trim_gutter60() {
+      dbl_straight60(radius, surface, "gutter-body");
+      dbl_straight60(radius, surface, "body");
+    }
+  } else if (part=="gutter-body") {
     translate([0,0,wood_height()/2]) {
       cube([double_gutter()+epsilon, straight_length(radius),
-            wood_well_height()], center=true);
-      cube([double_gutter()/2, straight_length(radius),
             wood_height()], center=true);
     }
   } else if (part=="connector") {
@@ -1150,47 +1154,39 @@ module dbl_straight60(radius, surface="road-rail", part="all",
   }
 }
 
-module dbl_curve60(radius, dir, surface="road-rail", part="all",
-                   gutter=true, trim_ties=true) {
+module dbl_curve60(radius, dir, surface="road-rail", part="all", trim_ties=true) {
   if (dir=="right") {
-    dbl_curve60_right(radius, surface, part, gutter, trim_ties);
+    dbl_curve60_right(radius, surface, part, trim_ties);
   } else if (dir=="left") {
-    dbl_curve60_left(radius, surface, part, gutter, trim_ties);
+    dbl_curve60_left(radius, surface, part, trim_ties);
   } else { echo("bad direction", dir); }
 }
 
-module dbl_curve60_right(radius, surface="road-rail", part="all",
-                         gutter=true, trim_ties=true) {
+module dbl_curve60_right(radius, surface="road-rail", part="all", trim_ties=true) {
   rotate([0,0,120])
-    dbl_curve60_left(radius, surface, part, gutter, trim_ties);
+    dbl_curve60_left(radius, surface, part, trim_ties);
 }
 
-module dbl_curve60_left(radius, surface="road-rail", part="all",
-                        gutter=true, trim_ties=true) {
+module dbl_curve60_left(radius, surface="road-rail", part="all", trim_ties=true) {
   epsilon=.1;
 
   if (part=="all") {
     difference() {
-      dbl_curve60_left(radius, surface, "body", gutter);
+      union() {
+        dbl_curve60_left(radius, surface, "body");
+        dbl_curve60_left(radius, surface, "gutter");
+      }
       dbl_curve60_left(radius, surface, "hole");
       dbl_curve60_left(radius, surface, "connector");
       dbl_curve60_left(radius, surface, "ties", trim_ties=false);
     }
-  } else if (part=="body" && gutter) {
-    dbl_curve60_left(radius, surface=surface, part="body", gutter=false);
-    dbl_curve60_left(radius, surface=surface, part="gutter");
+  } else if (part=="gutter-body") {
+    translate([-radius, -straight_length(radius)/2, 0])
+      ring(radius, 60, wood_height(), double_gutter() + epsilon);
   } else if (part=="gutter") {
-    translate([-radius,-straight_length(radius)/2,wood_height()/2]) {
-      difference() {
-        pie_centered(radius + double_gutter()/2 + epsilon, 60,
-                     wood_well_height());
-        pie_centered(radius - double_gutter()/2 - epsilon, 60 + 2*epsilon,
-                     wood_well_height() + epsilon, -epsilon);
-      }
-      difference() {
-        pie_centered(radius + double_gutter()/4, 60, wood_height());
-        pie_centered(radius - double_gutter()/4, 60 + 2*epsilon, wood_height() + epsilon, -epsilon);
-      }
+    trim_gutter60() {
+      dbl_curve60_left(radius, surface, "gutter-body");
+      dbl_curve60_left(radius, surface, "body");
     }
   } else if (part=="connector") {
     translate([-radius,-straight_length(radius)/2,0])
@@ -1214,28 +1210,24 @@ module dbl_curve60_left(radius, surface="road-rail", part="all",
 }
 
 module dbl_sway60(radius, dir, surface="road-rail", part="all",
-                  sway_far=false, offset=0.5, gutter=true,
-                  trim_ties=true) {
+                  sway_far=false, offset=0.5, trim_ties=true) {
   if (dir=="right") {
-    dbl_sway60_right(radius, surface, part, sway_far, offset, gutter,
-                     trim_ties);
+    dbl_sway60_right(radius, surface, part, sway_far, offset, trim_ties);
   } else if (dir=="left") {
-    dbl_sway60_left(radius, surface, part, sway_far, offset, gutter,
-                    trim_ties);
+    dbl_sway60_left(radius, surface, part, sway_far, offset, trim_ties);
   } else { echo("bad direction", dir); }
 }
 
 module dbl_sway60_right(radius, surface="road-rail", part="all",
-                        sway_far=false, offset=0.5, gutter=true,
-                        trim_ties=true) {
+                        sway_far=false, offset=0.5, trim_ties=true) {
   scale([-1,1,1])
     dbl_sway60_left(radius=radius, surface=surface, part=part,
-                    sway_far=sway_far, offset=offset, gutter=gutter,
+                    sway_far=sway_far, offset=offset,
                     trim_ties=trim_ties, mirror_connector=true);
 }
 
 module dbl_sway60_left(radius, surface="road-rail", part="all",
-                       sway_far=false, offset=0.5, gutter=true,
+                       sway_far=false, offset=0.5,
                        trim_ties=true, mirror_connector=false) {
   epsilon=.1;
   sway_radius = radius; // for now.
@@ -1248,8 +1240,11 @@ module dbl_sway60_left(radius, surface="road-rail", part="all",
 
   if (part=="all") {
     difference() {
-      dbl_sway60_left(radius, surface, "body", sway_far, offset, gutter,
-                      mirror_connector=mirror_connector);
+      union() {
+        dbl_sway60_left(radius, surface, "body", sway_far, offset,
+                        mirror_connector=mirror_connector);
+        dbl_sway60_left(radius, surface, "gutter", sway_far, offset);
+      }
       dbl_sway60_left(radius, surface, "hole", sway_far, offset);
       dbl_sway60_left(radius, surface, "connector", sway_far, offset,
                       mirror_connector=mirror_connector);
@@ -1261,28 +1256,21 @@ module dbl_sway60_left(radius, surface="road-rail", part="all",
         dbl_sway60_left(radius, surface=surface, part="ties",
                         sway_far=sway_far, offset=offset, trim_ties=false);
       dbl_sway60_left(radius, surface=surface, part="body",
-                      sway_far=sway_far, offset=offset, gutter=false);
+                      sway_far=sway_far, offset=offset);
     }
-  } else if (part=="body" && gutter) {
-    dbl_sway60_left(radius, surface=surface, part="body",
-                    sway_far=sway_far, offset=offset, gutter=false,
-                    mirror_connector=mirror_connector);
-    dbl_sway60_left(radius, surface=surface, part="gutter",
-                    sway_far=sway_far, offset=offset);
   } else if (part=="gutter") {
-    dbl_straight60(radius, surface=surface, part="gutter");
-  } else if (part=="gutter") { // Old version.
-    for(i=sway_far?[-1,1]:[1]) rotate([0,0,(i+1)*90]) for(j=["well","ridge"]){
-      gutter_off = (j=="well") ? (wood_height()-wood_well_height()) : 0;
-      gutter_width = (j=="well") ? double_gutter()+epsilon : double_gutter()/2;
-      gutter_length = stub_length + (i*stub_offset);
-      translate([-gutter_width/2, -straight_length(radius)/2, gutter_off/2])
-        cube([gutter_width, gutter_length, wood_height() - gutter_off]);
+    trim_gutter60() {
+      dbl_sway60_left(radius, surface=surface, part="gutter-body",
+                      sway_far=sway_far, offset=offset);
+      dbl_sway60_left(radius, surface=surface, part="body",
+                      sway_far=sway_far, offset=offset);
     }
+  } else if (part=="gutter-body") {
+    dbl_straight60(radius, surface=surface, part="gutter-body");
   } else if (part=="connector" || part=="body") {
     if (part=="body") {
       dbl_sway60_left(radius, surface, "body-main",
-                      sway_far, offset, gutter);
+                      sway_far, offset);
     }
     // Bottom connector: dbl if sway_far, else normal
     suppress_body = (part=="body" && !mirror_connector);
@@ -1389,34 +1377,39 @@ module dbl_sway60_left(radius, surface="road-rail", part="all",
 }
 
 module dbl_curve_sway60(radius, dir, surface="road-rail", part="all",
-                        just_curve=false, far_side=false, gutter=true,
+                        just_curve=false, far_side=false,
                         trim_ties=true) {
   if (dir=="right") {
     dbl_curve_sway60_right(radius, surface, part, just_curve, far_side,
-                           gutter, trim_ties);
+                           trim_ties);
   } else if (dir=="left") {
     dbl_curve_sway60_left(radius, surface, part, just_curve, far_side,
-                          gutter, trim_ties);
+                          trim_ties);
   } else { echo("bad direction", dir); }
 }
 
 module dbl_curve_sway60_right(radius, surface="road-rail", part="all",
-                              just_curve=false, far_side=false, gutter=true,
+                              just_curve=false, far_side=false,
                               trim_ties=true) {
   scale([-1,1,1])
     dbl_curve_sway60_left(radius, surface, part, just_curve, far_side,
-                          gutter, trim_ties, mirror_connector=true);
+                          trim_ties, mirror_connector=true);
 }
 
 module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
-                             just_curve=false, far_side=false, gutter=true,
+                             just_curve=false, far_side=false,
                              trim_ties=true, mirror_connector=false) {
   epsilon=.1;
   if (part=="all") {
     difference() {
-      dbl_curve_sway60_left(radius, surface, "body",
-                            just_curve, far_side, gutter,
-                            mirror_connector=mirror_connector);
+      union() {
+        dbl_curve_sway60_left(radius, surface, "body",
+                              just_curve, far_side,
+                              mirror_connector=mirror_connector);
+        dbl_curve_sway60_left(radius, surface, "gutter",
+                              just_curve, far_side,
+                              mirror_connector=mirror_connector);
+      }
       dbl_curve_sway60_left(radius, surface, "hole",
                             just_curve, far_side);
       dbl_curve_sway60_left(radius, surface, "connector",
@@ -1432,24 +1425,26 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
                               just_curve=just_curve, far_side=far_side,
                               trim_ties=false);
       dbl_curve_sway60_left(radius, surface=surface, part="body",
-                            just_curve=just_curve, far_side=far_side,
-                            gutter=false);
+                            just_curve=just_curve, far_side=far_side);
     }
-  } else if (part=="body" && gutter) {
-    dbl_curve_sway60_left(radius, surface=surface, part="body",
-                          just_curve=just_curve, far_side=far_side,
-                          mirror_connector=mirror_connector,
-                          gutter=false);
-    dbl_curve_sway60_left(radius, surface=surface, part="gutter",
-                          just_curve=just_curve, far_side=far_side);
   } else if (part=="gutter") {
-    dbl_curve60_left(radius, surface=surface, part="gutter");
+    trim_gutter60() {
+      dbl_curve_sway60_left(radius, surface=surface, part="gutter-body",
+                            just_curve=just_curve, far_side=far_side);
+      dbl_curve_sway60_left(radius, surface=surface, part="body",
+                            just_curve=just_curve, far_side=far_side);
+    }
+  } else if (part=="gutter-body") {
+    dbl_curve60_left(radius, surface=surface, part="gutter-body");
     // Add a bit extra to connect to far_side curve (otherwise there
     // is a small gap, because far_side curve starts with straight segment)
     if (far_side) {
       translate([0,-straight_length(radius)/4,wood_height()/2])
-        cube([double_gutter(),straight_length(radius)/2,wood_well_height()],
+        cube([double_gutter(),straight_length(radius)/2,wood_height()],
              center=true);
+    } else {
+      // extra for smooth transition on near side curve
+      curve60_left(radius, surface, "body");
     }
   } else {
     offset = (wood_width() + double_gutter())/2;
@@ -1752,6 +1747,15 @@ module dbl_connector(surface="road-rail", part="all", mirror=false) {
 
 module pie_centered(radius, angle, height, spin=0) {
   translate([0,0,-height/2]) pie(radius, angle, height, spin=spin);
+}
+
+module ring(radius, angle, height, width, spin=0, center=false) {
+  epsilon=.1;
+  translate([0,0,center?(-height/2):0]) rotate([0,0,spin]) difference() {
+    pie(radius + width/2, angle, height);
+    translate([-epsilon,0,-epsilon])
+      pie(radius - width/2 + epsilon, angle + 2*epsilon, height + 2*epsilon, -epsilon);
+  }
 }
 
 // a rectangle, tapered at 45 degree angles.  sort of line a cone($fn=4),
@@ -2058,7 +2062,7 @@ module barn60(radius, surface="road-rail", part="all", trim_ties=true,
 function track60_radius_for(x, y) = (x*x + y*y)/(2*y);
 function track60_angle_for(x, y) = atan2(x, track60_radius_for(x,y)-y);
 
-module firehouse60(radius, surface="road-rail", part="all", mirrored=false, gutter=true, trim_ties=true) {
+module firehouse60(radius, surface="road-rail", part="all", mirrored=false, trim_ties=true) {
   // narrowing double track.
   firehouse_length = 6 /*inches*/ * 25.4;
   firehouse_width = 5.875 /* inches */ * 25.4;
@@ -2079,7 +2083,10 @@ module firehouse60(radius, surface="road-rail", part="all", mirrored=false, gutt
 
   if (part=="all" && !mirrored) {
     difference() {
-      firehouse60(radius, surface, "body", gutter=true);
+      union() {
+        firehouse60(radius, surface, "body");
+        firehouse60(radius, surface, "gutter");
+      }
       firehouse60(radius, surface, "hole");
       firehouse60(radius, surface, "connector");
       firehouse60(radius, surface, "ties", trim_ties=false);
@@ -2088,32 +2095,19 @@ module firehouse60(radius, surface="road-rail", part="all", mirrored=false, gutt
     intersection() {
       with_bogus60(radius)
         firehouse60(radius, surface, part, mirrored=mirrored, trim_ties=false);
-      firehouse60(radius, surface, part="body", mirrored=mirrored, gutter=false);
+      firehouse60(radius, surface, part="body", mirrored=mirrored);
     }
-  } else if (part=="body" && gutter) {
-    firehouse60(radius, surface, part="body", mirrored=mirrored,
-                gutter=false);
-    firehouse60(radius, surface, part="gutter", mirrored=mirrored);
-  } else if (part=="gutter-body" && !mirrored) {
+  } else if (part=="gutter") {
+    trim_gutter60() {
+      firehouse60(radius, surface, part="gutter-body", mirrored=mirrored);
+      firehouse60(radius, surface, part="body", mirrored=mirrored);
+    }
+  } else if (part=="gutter-body") {
     translate([0,transition_length/2,wood_height()/2])
       cube([max_spacing + epsilon, transition_length, wood_height()],
            center=true);
     scale([firehouse_width/2, transition_length/2, 1])
       pie(1, 180, wood_height());
-  } else if (part=="gutter" && !mirrored) {
-      translate([0,0,wood_height()/2])
-        scale([1,1,wood_well_height()/wood_height()])
-        translate([0,0,-wood_height()/2])
-        firehouse60(radius, surface, part="gutter-body",
-                    mirrored=false, trim_ties=false, gutter=false);
-    difference() {
-      firehouse60(radius, surface, part="gutter-body",
-                  mirrored=false, trim_ties=false, gutter=false);
-      minkowski() {
-        sphere(r=2, $fn=6);
-        firehouse60(radius, surface, part="body", mirrored=false, trim_ties=false, gutter=false);
-      }
-    }
   } else if (part=="connector" || part=="body-extra") {
     // double track connector
     translate([0,transition_length,0]) rotate([0,0,180])
@@ -2129,14 +2123,14 @@ module firehouse60(radius, surface="road-rail", part="all", mirrored=false, gutt
     for  (i=[-1,1]) scale([i,1,1]) {
       translate([firehouse_spacing/2,0,0]) intersection() {
         firehouse60(radius, surface, part,
-                    mirrored=true, gutter=gutter, trim_ties=false);
+                    mirrored=true, trim_ties=false);
         translate([-transition_radius,0,0])
           pie_centered(transition_radius + wood_width(),
                        transition_angle + epsilon, wood_height()*3);
       }
       translate([desired_spacing/2,transition_length,0]) rotate([0,0,180]) intersection() {
         firehouse60(radius, surface, part,
-                    mirrored=true, gutter=gutter, trim_ties=false);
+                    mirrored=true, trim_ties=false);
         translate([-transition_radius,0,0])
           pie_centered(transition_radius + wood_width(),
                        transition_angle + epsilon, wood_height()*3);
@@ -2220,7 +2214,7 @@ module carwash60(radius, surface="road-rail", part="all", trim_ties=true) {
 // two flat-to-flat triangles.  In/out entrances would come from straights,
 // and the side entrance/exit would arc 30 degree from top or bottom slant.
 // Takes up more space that way, though.
-module recycling60(radius, dir="left", surface="road-rail", split_surface=false, part="all", gutter=true, trim_ties=true) {
+module recycling60(radius, dir="left", surface="road-rail", split_surface=false, part="all", trim_ties=true) {
   hexr=radius/1.5;
   straight_length = straight_length(radius);
   recycling_width = straight_length + 25;
@@ -2274,14 +2268,17 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
 
   if (part=="all") {
     difference() {
-      recycling60(radius, dir, surface, split_surface, "body", gutter=true);
+      union() {
+        recycling60(radius, dir, surface, split_surface, "body");
+        recycling60(radius, dir, surface, split_surface, "gutter");
+      }
       recycling60(radius, dir, surface, split_surface, "hole");
       recycling60(radius, dir, surface, split_surface, "connector");
       recycling60(radius, dir, surface, split_surface, "ties", trim_ties=false);
     }
   } else if (dir=="left") {
     scale([-1,1,1])
-      recycling60(radius, "right", surface, split_surface, part, gutter, trim_ties);
+      recycling60(radius, "right", surface, split_surface, part, trim_ties);
   } else if (startswith(part, "recycling")) {
     is_hole = (part=="recycling-hole");
     trim = is_hole ? 1 : 0; // matches loose_wood_cutout
@@ -2310,11 +2307,8 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
     intersection() {
       with_bogus60(radius)
         recycling60(radius, dir, surface, split_surface, part, trim_ties=false);
-      recycling60(radius, dir, surface, split_surface, part="body", gutter=false);
+      recycling60(radius, dir, surface, split_surface, part="body");
     }
-  } else if (part=="body" && gutter) {
-    recycling60(radius, dir, surface, split_surface, "body", gutter=false);
-    recycling60(radius, dir, surface, split_surface, "gutter");
   } else if (part=="gutter") {
     border=10;
 
@@ -2340,7 +2334,7 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
             pie(main_radius + epsilon, 180, wood_height(), spin=-90);
           minkowski() {
             sphere(r=2, $fn=6);
-            recycling60(radius, dir, surface, split_surface, part="body", gutter=false);
+            recycling60(radius, dir, surface, split_surface, part="body");
           }
         }
       }
@@ -2354,13 +2348,13 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
 
     // optionally flip the surface for the arc piece
     arc_surface = split_surface ? flip_surface(surface) : surface;
-    recycling60(radius, dir, surface, false, str(part, "-sway"), gutter=false);
-    recycling60(radius, dir, arc_surface, false, str(part, "-inout"), gutter=false);
+    recycling60(radius, dir, surface, false, str(part, "-sway"));
+    recycling60(radius, dir, arc_surface, false, str(part, "-inout"));
   } else if (endswith(part, "-sway")) {
     npart = str(part, "-mirrored");
     translate(sway_hex) rotate([0,0,90]) intersection() {
       with_bogus60(radius, disable=startswith(part, "body-"))
-      recycling60(radius, dir, surface, false, npart, gutter=gutter, trim_ties=false);
+      recycling60(radius, dir, surface, false, npart, trim_ties=false);
       translate([-sway_r,0,0])
         pie_centered(sway_r + wood_width(),
                      sway_a + epsilon, wood_height()*3);
@@ -2368,7 +2362,7 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
     translate(sway_dest)
       rotate([0,0,-90]) intersection() {
         with_bogus60(radius, disable=startswith(part, "body-"))
-        recycling60(radius, dir, surface, false, npart, gutter=gutter, trim_ties=false);
+        recycling60(radius, dir, surface, false, npart, trim_ties=false);
         translate([-sway_r,0,0])
           pie_centered(sway_r + wood_width(),
                        sway_a + epsilon, wood_height()*3);
@@ -2379,16 +2373,14 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
     part_big = str(part, "-big");
     translate(arc_hex) rotate([0,0,180+30]) intersection() {
         with_bogus60(radius, disable=startswith(part, "body-"))
-          recycling60(radius, dir, surface, false, part_small,
-                      gutter=gutter, trim_ties=false);
+          recycling60(radius, dir, surface, false, part_small, trim_ties=false);
         if (!is_connector) translate([-arc_sway_r,0,0])
           pie_centered(arc_sway_r + wood_width(),
                        arc_sway_a + epsilon, wood_height()*3);
     }
     translate(arc_dest) intersection() {
       with_bogus60(radius, disable=startswith(part, "body-"))
-        recycling60(radius, dir, surface, false, part_big,
-                    gutter=gutter, trim_ties=false);
+        recycling60(radius, dir, surface, false, part_big, trim_ties=false);
       if (!is_connector) translate([-arc_sway_r,0,0])
         pie_centered(arc_sway_r + wood_width(),
                      arc_sway_a + 30 + epsilon, wood_height()*3);
@@ -2438,16 +2430,16 @@ module recycling60(radius, dir="left", surface="road-rail", split_surface=false,
   }
 }
 
-module grade_crossing360(radius, part="all", gutter=true, is_intersection=false) {
+module grade_crossing360(radius, part="all", is_intersection=false) {
   if (part=="all") {
     difference() {
-      grade_crossing360(radius, "body", gutter);
+      grade_crossing360(radius, "body");
       grade_crossing360(radius, "hole");
       grade_crossing360(radius, "connector");
       difference() {
         with_bogus60(radius)
           grade_crossing360(radius, "ties");
-        grade_crossing360(radius, "body", gutter=false, is_intersection=true);
+        grade_crossing360(radius, "body", is_intersection=true);
       }
     }
   } else {
@@ -2490,14 +2482,17 @@ module grade_crossing60(radius, part="all", trim_ties=true) {
   }
 }
 
-module thomas_crossing60(radius, surface="road-rail", part="all", gutter=true, trim_ties=true) {
+module thomas_crossing60(radius, surface="road-rail", part="all", trim_ties=true) {
   thomas_length = 152;
   thomas_width = 120;
   adapter_length = straight_length(radius) - thomas_length;
 
   if (part=="all") {
     difference() {
-      thomas_crossing60(radius, surface, "body", gutter=true);
+      union() {
+        thomas_crossing60(radius, surface, "body");
+        thomas_crossing60(radius, surface, "gutter");
+      }
       thomas_crossing60(radius, surface, "hole");
       thomas_crossing60(radius, surface, "connector");
       thomas_crossing60(radius, surface, "ties", trim_ties=false);
@@ -2506,22 +2501,14 @@ module thomas_crossing60(radius, surface="road-rail", part="all", gutter=true, t
     intersection() {
       with_bogus60(radius)
         thomas_crossing60(radius, surface, part, trim_ties=false);
-      thomas_crossing60(radius, surface, part="body", gutter=false);
-    }
-  } else if (part=="body" && gutter) {
-    thomas_crossing60(radius, surface, part="body", gutter=false);
-    translate([0,0,wood_height()/2])
-      scale([1,1,wood_well_height()/wood_height()])
-      translate([0,0,-wood_height()/2])
-      thomas_crossing60(radius, surface, part="gutter");
-    difference() {
-      thomas_crossing60(radius, surface, part="gutter");
-      minkowski() {
-        sphere(r=2, $fn=6);
-        thomas_crossing60(radius, surface, part="body", gutter=false);
-      }
+      thomas_crossing60(radius, surface, part="body");
     }
   } else if (part=="gutter") {
+    trim_gutter60() {
+      thomas_crossing60(radius, surface, part="gutter-body");
+      thomas_crossing60(radius, surface, part="body");
+    }
+  } else if (part=="gutter-body") {
     translate([0,-straight_length(radius)/2,0])
       scale([(thomas_width/2)/adapter_length,1,1])
       pie(adapter_length, 180, wood_height(), spin=0);
