@@ -14,6 +14,8 @@
 // Added: 9 - dbl buffer
 // Added: < - like 2, but with offset = 0
 // Added: > - like 2, but with offset = 1
+// Added: ! - like 1, but with just_curve=true
+// Added: $ - like 4, but with just_curve=true
 
 // Translation between old and new names:
 // curve: BS
@@ -274,21 +276,21 @@ function num_tracks_for_letter(s) =
   (s == "A" || s == "S") ? 0 :
   (s == "B" || s == "O" || s == "R" || s == "T" || s == "U" || s == "V" ||
    s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ||
-   s == "<" || s == ">" ) ? 1 :
+   s == "<" || s == ">" || s == "!" || s == "$" ) ? 1 :
   (s == "C" || s == "D" || s == "E" || s == "W" || s == "X" || s == "Y" ||
    s == "3" || s == "5" || s == "6" ) ? 2 :
   (s == "J" || s == "K" || s == "L") ? 4 :
   s == "M" ? 5 :
   s == "N" ? 6 : 3;
 
-function num_tracks_for_shortname(s) = len(s) == 0 ? 0 :
-  num_tracks_for_letter(s[0]) + num_tracks_for_letter(substr(s, 1, len(s)-1));
+function num_tracks_for_shortname(s) = let (n=len(s)) n == 0 ? 0 :
+  num_tracks_for_letter(s[0]) + num_tracks_for_shortname(substr(s, 1, n-1));
 
 function name_has_dbl(s) = let (n=len(s)) n == 0 ? false :
   (let (c=s[0]) toupper(c) != c ? true :
   (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" ||
    c == "5" || c == "6" || c == "7" || c == "8" || c == "9" ||
-   c == "<" || c == ">" ) ? true :
+   c == "<" || c == ">" || s == "!" || s == "$" ) ? true :
   name_has_dbl(substr(s, 1, n-1)));
 
 module maybe_dbl_curve60(radius, dir, surface, part, is_double) {
@@ -407,10 +409,11 @@ module decode_shortname(s, i, radius, surface, part) {
     (c == "1" && i == 0) ||
     (c == "3" && i == 0) ||
     (c == "5" && i == 0) ||
-    (c == "7" && i == 0)) {
+    (c == "7" && i == 0) ||
+    (c == "!" && i == 0)) {
     rotate([0,0,180])
     dbl_curve_sway60(radius, dir="right", surface=surf, part=part,
-                     far_side=!is_even);
+                     far_side=!is_even, just_curve=(c=="!"));
   } else if (
     (c == "2" && i == 0) ||
     (c == "3" && i == 1) ||
@@ -424,10 +427,11 @@ module decode_shortname(s, i, radius, surface, part) {
     (c == "4" && i == 0) ||
     (c == "5" && i == 1) ||
     (c == "6" && i == 1) ||
-    (c == "7" && i == 2)) {
+    (c == "7" && i == 2) ||
+    (c == "$" && i == 0)) {
     rotate([0,0,180])
     dbl_curve_sway60(radius, dir="left", surface=surf, part=part,
-                     far_side=is_even);
+                     far_side=is_even, just_curve=(c=="$"));
   } else if ((c == "0" && i == 0)) {
     dbl_sway60(radius, is_even ? "left" : "right", surface=surf, part=part,
                sway_far=true);
@@ -600,10 +604,10 @@ module switch60(radius, which, dir="left", surface="road-rail", part="all",
     shortname60(radius=radius, name=(dir=="left"?"bsA<":"os<A"), surface=surface, part=part);
   } else if (which==9) {
     // straight double-to-curved single wye
-    shortname60(radius=radius, name=(dir=="left"?"auA4":"au1A"), surface=surface, part=part);
+    shortname60(radius=radius, name=(dir=="left"?"auA$":"au!A"), surface=surface, part=part);
   } else if (which==10) {
     // straight double-to-curved single wye
-    shortname60(radius=radius, name=(dir=="left"?"au4A":"auA1"), surface=surface, part=part);
+    shortname60(radius=radius, name=(dir=="left"?"au$A":"auA!"), surface=surface, part=part);
   } else if (which==11) {
     // curved double to curved single wye
     shortname60(radius=radius, name=(dir=="left"?"bs1A":"osA4"), surface=surface, part=part);
@@ -624,15 +628,6 @@ module switch60(radius, which, dir="left", surface="road-rail", part="all",
     shortname60(radius=radius, name=(dir=="left"?"45":"51"), surface=surface, part=part);
   } else if (which==17) {
     shortname60(radius=radius, name="CT", surface=surface, part=part);
-  } else if (which==9 || which==10) {
-    // XXX this doesn't work anymore after refactor, but I'm leaving it
-    // around to document how the `just_curve` parameter was used.
-    // straight double-to-curved single wye
-    union_or_intersection(is_intersection=is_intersection) {
-      dbl_straight60(radius, surface=surface, part=part);
-      dbl_curve_sway60(radius, dir=dir, surface=surface, part=part,
-                       just_curve=true, far_side=(which==10));
-    }
   }
 }
 
