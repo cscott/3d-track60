@@ -533,7 +533,7 @@ module shortname60(radius=basic_radius, name="BS", surface="road-rail",
       }
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       shortname60(radius, name, surface, "gutter-body");
       shortname60(radius, name, surface, "body");
     }
@@ -562,13 +562,18 @@ module shortname60(radius=basic_radius, name="BS", surface="road-rail",
   }
 }
 
-module trim_gutter60() {
+module trim_gutter60(radius, surface) {
+  off = (wood_height() - wood_well_height())/2;
+  offset_top = startswith(surface, "blank-") ? 0 : off;
+  offset_bottom = endswith(surface, "-blank") ? 0 : off;
+  height = wood_height() - offset_top - offset_bottom;
+
   intersection() {
     children(0); // part="gutter-body"
-    translate([0,0,wood_height()/2])
-      cube([2*basic_radius, 2*basic_radius, wood_well_height()], center=true);
+    translate([-radius, -radius, offset_bottom])
+      cube([2*radius, 2*radius, height]);
   }
-  difference() {
+  if (height < wood_height()) difference() {
     children(0); // part="gutter-body"
     minkowski() {
       cylinder(r=2, h=2*wood_height(), center=true, $fn=6);
@@ -1075,7 +1080,7 @@ module dbl_straight60(radius, surface="road-rail", part="all", trim_ties=true) {
       dbl_straight60(radius, surface, "ties", trim_ties=false);
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       dbl_straight60(radius, surface, "gutter-body");
       dbl_straight60(radius, surface, "body");
     }
@@ -1128,7 +1133,7 @@ module dbl_curve60_left(radius, surface="road-rail", part="all", trim_ties=true)
     translate([-radius, -straight_length(radius)/2, 0])
       ring(radius, 60, wood_height(), double_gutter() + epsilon);
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       dbl_curve60_left(radius, surface, "gutter-body");
       dbl_curve60_left(radius, surface, "body");
     }
@@ -1203,7 +1208,7 @@ module dbl_sway60_left(radius, surface="road-rail", part="all",
                       sway_far=sway_far, offset=offset);
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       dbl_sway60_left(radius, surface=surface, part="gutter-body",
                       sway_far=sway_far, offset=offset);
       dbl_sway60_left(radius, surface=surface, part="body",
@@ -1372,7 +1377,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
                             just_curve=just_curve, far_side=far_side);
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       dbl_curve_sway60_left(radius, surface=surface, part="gutter-body",
                             just_curve=just_curve, far_side=far_side);
       dbl_curve_sway60_left(radius, surface=surface, part="body",
@@ -2042,7 +2047,7 @@ module firehouse60(radius, surface="road-rail", part="all", mirrored=false, trim
       firehouse60(radius, surface, part="body", mirrored=mirrored);
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       firehouse60(radius, surface, part="gutter-body", mirrored=mirrored);
       firehouse60(radius, surface, part="body", mirrored=mirrored);
     }
@@ -2448,7 +2453,7 @@ module thomas_crossing60(radius, surface="road-rail", part="all", trim_ties=true
       thomas_crossing60(radius, surface, part="body");
     }
   } else if (part=="gutter") {
-    trim_gutter60() {
+    trim_gutter60(radius, surface) {
       thomas_crossing60(radius, surface, part="gutter-body");
       thomas_crossing60(radius, surface, part="body");
     }
