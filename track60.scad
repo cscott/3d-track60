@@ -677,7 +677,10 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
                       road_height() : wood_well_height()) - ramp_min_thick,
                      buflen - ramp_start);
   // ensure surface ends in '-blank'
-  nsurface = str(substr(surface, 0, indexof(surface, "-")), "-blank");
+  nsurface = let (sp=split(surface, "-"))
+    sp[0] == "blank" ? str(sp[1], "-", sp[0]) :
+    str(sp[0], "-", "blank");
+  mirror_connector = is_double && startswith(nsurface, "rail-");
 
   if (part=="all") {
     difference() {
@@ -701,6 +704,7 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
     difference() {
       translate([0,-straight_length(radius)/2 + buflen/2, 0]) {
         if (is_double) {
+          scale([mirror_connector?-1:1,1,1])
           dbl_straight60(newr, surface=nsurface, part=part);
         } else {
           straight60(newr, surface=nsurface, part=part);
@@ -760,8 +764,14 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
          cube([zigzag_width, 2*zigzag_depth, 2*buffer_total_height],
               center=true);
     }
-  } else if (part=="connector" && !is_double) {
-    bogus60(radius); /* nothing! */
+  } else if (part=="connector") {
+    if (is_double) {
+      scale([mirror_connector?-1:1,1,1])
+        dbl_straight60(radius, surface=nsurface, part=part,
+                       trim_ties=trim_ties);
+    } else {
+      bogus60(radius); /* nothing! */
+    }
   } else {
     // hole and ties are unscaled to preserve consistent spacing.
     // but make this single-sided (ie, use nsurface)
