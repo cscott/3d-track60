@@ -481,69 +481,6 @@ module decode_shortname(s, i, radius, surface, part, flip_mask=0) {
   }
 }
 
-module union_or_intersection(is_intersection=false, nchildren=undef) {
-  num = (nchildren!=undef) ? nchildren : $children;
-  if (is_intersection) {
-    for(i=[0:1:num-2]) {
-      for(j=[i+1:1:num-1]) {
-        intersection() { children(i); children(j); }
-      }
-    }
-  } else {
-    union() children();
-  }
-}
-
-module bogus60(radius) {
-  // something guaranteed to have an empty intersection with the core hex
-  translate([10*radius,10*radius,10*wood_height()]) cube([.1,.1,.1]);
-}
-
-module with_bogus60(radius, disable=false) {
-  children();
-  if (!disable) bogus60(radius);
-}
-
-// module gantlet(...)?
-
-// Most crossings are mirror symmetric, but the `dir` parameter is used for
-// those which aren't.
-module crossing60(radius, which, dir="left", surface="road-rail", part="all") {
-  if (which==1) {
-    shortname60(radius=radius, name="CS", surface=surface, part=part);
-  } else if (which==2) {
-    shortname60(radius=radius, name="BV", surface=surface, part=part);
-  } else if (which==3) {
-    shortname60(radius=radius, name="AW", surface=surface, part=part);
-  } else if (which==4) {
-    shortname60(radius=radius, name="EV", surface=surface, part=part);
-  } else if (which==5) {
-    shortname60(radius=radius, name="AZ", surface=surface, part=part);
-  } else if (which==6) {
-    // double crossover
-    shortname60(radius=radius, name="00", surface=surface, part=part);
-  } else if (which==7) {
-    // double-to-single crossover (crossing #7 is technically a gantlet)
-    // one straight, one curved.
-    shortname60(radius=radius, name=(dir=="left"?"24":"12"), surface=surface, part=part);
-  } else if (which==8) {
-    // double-to-single crossover (crossing #7 is technically a gantlet)
-    // one straight, one curved.
-    shortname60(radius=radius, name=(dir=="left"?"42":"21"), surface=surface, part=part);
-  } else if (which==9) {
-    // double-to-single crossover (crossing #9 is technically a gantlet)
-    // both curved
-    shortname60(radius=radius, name="14", surface=surface, part=part);
-  } else if (which==10) {
-    // double-to-single crossover (crossing #9 is technically a gantlet)
-    // both curved
-    shortname60(radius=radius, name="41", surface=surface, part=part);
-  }
-}
-
-// compute gutter cutout here, rather than in individual modules
-// subtract body from cutout, subtract body+2mm from top of gutter
-// compute road crossing cutouts of hole
 module shortname60(radius=basic_radius, name="BS", surface="road-rail",
                    part="all", is_intersection=false) {
   if (part=="all") {
@@ -617,6 +554,64 @@ module trim_gutter60(radius, surface) {
       cylinder(r=2, h=2*wood_height(), center=true, $fn=6);
       children(1); // part="body"
     }
+  }
+}
+
+module union_or_intersection(is_intersection=false, nchildren=undef) {
+  num = (nchildren!=undef) ? nchildren : $children;
+  if (is_intersection) {
+    for(i=[0:1:num-2]) {
+      for(j=[i+1:1:num-1]) {
+        intersection() { children(i); children(j); }
+      }
+    }
+  } else {
+    union() children();
+  }
+}
+
+module bogus60(radius) {
+  // something guaranteed to have an empty intersection with the core hex
+  translate([10*radius,10*radius,10*wood_height()]) cube([.1,.1,.1]);
+}
+
+module with_bogus60(radius, disable=false) {
+  children();
+  if (!disable) bogus60(radius);
+}
+
+// Most crossings are mirror symmetric, but the `dir` parameter is used for
+// those which aren't.
+module crossing60(radius, which, dir="left", surface="road-rail", part="all") {
+  if (which==1) {
+    shortname60(radius=radius, name="CS", surface=surface, part=part);
+  } else if (which==2) {
+    shortname60(radius=radius, name="BV", surface=surface, part=part);
+  } else if (which==3) {
+    shortname60(radius=radius, name="AW", surface=surface, part=part);
+  } else if (which==4) {
+    shortname60(radius=radius, name="EV", surface=surface, part=part);
+  } else if (which==5) {
+    shortname60(radius=radius, name="AZ", surface=surface, part=part);
+  } else if (which==6) {
+    // double crossover
+    shortname60(radius=radius, name="00", surface=surface, part=part);
+  } else if (which==7) {
+    // double-to-single crossover (crossing #7 is technically a gantlet)
+    // one straight, one curved.
+    shortname60(radius=radius, name=(dir=="left"?"24":"12"), surface=surface, part=part);
+  } else if (which==8) {
+    // double-to-single crossover (crossing #7 is technically a gantlet)
+    // one straight, one curved.
+    shortname60(radius=radius, name=(dir=="left"?"42":"21"), surface=surface, part=part);
+  } else if (which==9) {
+    // double-to-single crossover (crossing #9 is technically a gantlet)
+    // both curved
+    shortname60(radius=radius, name="14", surface=surface, part=part);
+  } else if (which==10) {
+    // double-to-single crossover (crossing #9 is technically a gantlet)
+    // both curved
+    shortname60(radius=radius, name="41", surface=surface, part=part);
   }
 }
 
