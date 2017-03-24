@@ -205,44 +205,9 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (base=="roundabout") {
     track60_demo(part=str("roundabout-inner-straight",suffix),r=r);
     track60_demo(part=str("roundabout-outer",suffix),r=r);
-  } else if (base=="roundabout-inner-straight" ||
-             base=="roundabout-inner-crossing4" ||
-             base=="roundabout-outer") {
-      is_outer = (base=="roundabout-outer");
-      is_inner_straight = (base=="roundabout-inner-straight");
-      ring=45; // just enough for a female connector
-      difference() {
-        rotate([0,0,90])
-        roundabout_custom(outer=ring, inner=straight_length(r)-ring,
-          num=3, rails=false, inner_num=(is_inner_straight?1:3),
-          hub_height=(wood_well_height() - well_tie_height() - 1.2),
-          clearance=0.8,
-          inner_piece=!is_outer, outer_piece=is_outer);
-        // Add our own rails
-        difference() {
-          for (p=startswith(surface, "road-")?["hole"]:["hole","ties"]) {
-            if (!is_outer) {
-              intersection() {
-                if (is_inner_straight) {
-                  straight60(radius=r, surface=surface, part=p);
-                } else {
-                  adjr = (straight_length(r)-ring)*sqrt(3)/2;
-                  crossing60(radius=adjr, which=4, surface=surface, part=p);
-                }
-                if (p=="ties")
-                  cylinder(d=straight_length(r)-ring-10,h=wood_height()*3,center=true);
-              }
-            } else if (is_outer) {
-              difference() {
-                crossing60(radius=r, which=5, surface=surface, part=p);
-                if (p=="ties")
-                  cylinder(d=straight_length(r)-ring+10,h=wood_height()*3,center=true);
-              }
-            }
-          }
-          cube([2*r,2*r,wood_height()], center=true);
-        }
-      }
+  } else if (startswith(base, "roundabout-")) {
+    // roundabout-inner-straight, roundabout-inner-crossing4, roundabout-outer
+    roundabout60(r, part=substr(base, len("roundabout-")), surface=surface);
   } else if (part=="dogbone") {
     // scale to account for roadway depth
     scale([1,1,road_height()/wood_height()]) dogbone(true);
@@ -1788,6 +1753,42 @@ module rect45(x, y, h, x_only=false, y_only=false) {
         polygon(points=[[0,-y/2],[y/2,0],[0,y/2]]);
     translate([-x/2,-y/2,0])
       cube([x, y, h]);
+  }
+}
+
+module roundabout60(radius, part="outer", surface="rail-blank") {
+  is_outer = (part=="outer");
+  is_inner_straight = (part=="inner-straight");
+  ring=45; // just enough for a female connector
+  nsurface = str(split(surface, "-")[0], "-blank");
+  difference() {
+    rotate([0,0,90])
+    roundabout_custom(outer=ring, inner=straight_length(radius)-ring,
+      num=3, rails=false, inner_num=(is_inner_straight?1:3),
+      hub_height=(wood_well_height() - well_tie_height() - 1.2),
+      clearance=0.8,
+      inner_piece=!is_outer, outer_piece=is_outer);
+    // Add our own rails
+    for (p=startswith(nsurface, "road-")?["hole"]:["hole","ties"]) {
+      if (!is_outer) {
+        intersection() {
+          if (is_inner_straight) {
+            straight60(radius=radius, surface=nsurface, part=p);
+          } else {
+            adjr = (straight_length(radius)-ring)*sqrt(3)/2;
+            crossing60(radius=adjr, which=4, surface=nsurface, part=p);
+          }
+          if (p=="ties")
+            cylinder(d=straight_length(radius)-ring-10,h=wood_height()*3,center=true);
+        }
+      } else if (is_outer) {
+        difference() {
+          crossing60(radius=radius, which=5, surface=nsurface, part=p);
+          if (p=="ties")
+            cylinder(d=straight_length(radius)-ring+10,h=wood_height()*3,center=true);
+        }
+      }
+    }
   }
 }
 
