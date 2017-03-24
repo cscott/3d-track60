@@ -153,10 +153,18 @@ $fn = 120;
 
 track60_demo(part);
 
+function is_surface(s) = (s=="road") || (s=="rail") || (s=="blank");
 function track60_parse_suffix(part) =
-  let(n=len(part), suf5=substr(part, n-5, 5), suf6=substr(part, n-6, 6))
-  (suf5=="-left" || suf5=="-road" || suf5=="-rail") ? substr(part, 0, n-5) :
-  (suf6=="-right") ? substr(part, 0, n-6) : part;
+  let(n=len(part), pos=rindexof(part, "-"))
+  pos < 0 ? part :
+  let (suffix=substr(part, pos+1, n-pos-1))
+  is_surface(suffix) ?
+  let(pos2=rindexof(part, "-", pos))
+  (pos2 >= 0 && is_surface(substr(part, pos2+1, pos-pos2-1)) ?
+   substr(part, 0, pos2) : substr(part, 0, pos)) :
+  (suffix=="left"||suffix=="right"||suffix=="mirror") ?
+  track60_parse_suffix(substr(part, 0, pos)) :
+  part;
 
 // Sample instantiations
 module track60_demo(part="curve_rail",r=basic_radius) {
@@ -165,10 +173,13 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   base = track60_parse_suffix(part);
   suffix = substr(part, len(base), len(part)-len(base));
 
-  dir=(suffix=="-right") ? "right" : "left";
-  surface = // "<top>-<bottom>"
-    suffix=="-rail" ? "rail-rail" :
-    suffix=="-road" ? "road-road" :
+  dir=(endswith(suffix, "-right") || endswith(suffix, "-mirror")) ?
+    "right" : "left";
+  surface = let (s=split(substr(suffix,1),"-")) // "<top>-<bottom>"
+    len(s) >= 2 && is_surface(s[0]) && is_surface(s[1]) ?
+    str(s[0], "-", s[1]) :
+    s[0] == "rail" ? "rail-rail" :
+    s[0] == "road" ? "road-road" :
     "road-rail";
 
   if (base=="curve") {
