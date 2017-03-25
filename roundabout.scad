@@ -55,7 +55,8 @@ module roundabout(size="medium", num=3, which="both") {
 // 'stubs' reaching out from the roundabout
 module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
                   inner_piece=true, outer_piece=true, rails=true,
-                  hub_height=wood_height(), inner_num=1) {
+                  hub_height=wood_height(), inner_num=1,
+                  spin_knob=0, full_custom=false) {
   // Dimensions
   total = inner + outer;
   base_height = 2.5;
@@ -79,21 +80,29 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
       // Start with `num` tracks and a cylinder around them, then
       // carve away stuff.
       union() {
-        for ( i = [0:num-1] ) {
-          rotate( [0, 0, i * 180 / num ]) {
-            wood_track_centered( total, rails=false );
+        if (full_custom) {
+          children(0);
+        } else {
+          for ( i = [0:num-1] ) {
+            rotate( [0, 0, i * 180 / num ]) {
+              wood_track_centered( total, rails=false );
+            }
           }
         }
         cylinder(h=wood_height(), d=inner + outer_rim*2);
       }
       // Carve away the rails, and female connectors
-      for ( i = [0:num-1] ) {
-        rotate( [0, 0, i * 180 / num ]) {
-          if (rails) wood_rails_centered( total );
-          translate([-total/2,0,0])
-            wood_cutout();
-          translate([total/2,0,0]) rotate([0,0,180])
-            wood_cutout();
+      if (full_custom) {
+        children(1);
+      } else {
+        for ( i = [0:num-1] ) {
+          rotate( [0, 0, i * 180 / num ]) {
+            if (rails) wood_rails_centered( total );
+            translate([-total/2,0,0])
+              wood_cutout();
+            translate([total/2,0,0]) rotate([0,0,180])
+              wood_cutout();
+          }
         }
       }
       // Carve away the central cutout (less the hub)
@@ -152,7 +161,11 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
           cylinder(h=wood_height() - (base_height + clearance),
                    d=inner, $fn=res);
         // Rails down the center
-        if (rails) wood_rails_centered(inner);
+        if (full_custom) {
+          children(3);
+        } else if (rails) {
+          wood_rails_centered(inner);
+        }
         // Central hub
         cylinder(h=hub_height + clearance,
                  d=hub_diam + clearance*2, $fn=res);
@@ -184,13 +197,18 @@ module roundabout_custom(inner=95, outer=46, clearance=1, num=3, snap_fit=true,
             cylinder(h=guard_height + clearance/2, d=inner, $fn=res);
           cylinder(h=guard_height + clearance*2, d=inner - guard_width*2, $fn=res);
           // protect the track
-          for ( i = [0:1:inner_num-1] ) rotate( [0, 0, i * 180 / num ])
-            cube([inner + clearance,
-                  wood_width() + clearance*2,
-                  2*(guard_height + clearance*2)], center=true);
+          if (full_custom) {
+            children(2);
+          } else {
+            for ( i = [0:1:inner_num-1] ) rotate( [0, 0, i * 180 / num ])
+              cube([inner + clearance,
+                    wood_width() + clearance*2,
+                    2*(guard_height + clearance*2)], center=true);
+          }
         }
       }
       // now add knob
+      rotate([0,0,spin_knob])
       translate([0, inner/2 - knob_diam, wood_height() - clearance]) {
         // shaft
         cylinder(h=knob_height + clearance, d=knob_diam, $fn=knob_res);

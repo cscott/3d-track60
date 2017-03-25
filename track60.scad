@@ -208,6 +208,11 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (startswith(base, "roundabout-")) {
     // roundabout-inner-straight, roundabout-inner-crossing4, roundabout-outer
     roundabout60(r, part=substr(base, len("roundabout-")), surface=surface);
+  } else if (base=="dbl_roundabout") {
+    track60_demo(part=str("dbl_roundabout-inner",suffix),r=r);
+    track60_demo(part=str("dbl_roundabout-outer",suffix),r=r);
+  } else if (startswith(base, "dbl_roundabout-")) {
+    dbl_roundabout60(r, part=substr(base, len("dbl_roundabout-")), surface=surface);
   } else if (part=="dogbone") {
     // scale to account for roadway depth
     scale([1,1,road_height()/wood_height()]) dogbone(true);
@@ -477,11 +482,13 @@ module shortname60(radius=basic_radius, name="BS", surface="road-rail",
         }
       }
       shortname60(radius, name, nsurface, "connector");
-      difference() {
-        with_bogus60(radius)
-          shortname60(radius, name, nsurface, "ties");
-        shortname60(radius, name, nsurface, "body", is_intersection=true);
-      }
+      shortname60(radius, name, nsurface, "ties-nonoverlapping");
+    }
+  } else if (part=="ties-nonoverlapping") {
+    difference() {
+      with_bogus60(radius)
+        shortname60(radius, name, surface, "ties");
+      shortname60(radius, name, surface, "body", is_intersection=true);
     }
   } else if (part=="gutter") {
     trim_gutter60(radius, surface) {
@@ -1753,6 +1760,33 @@ module rect45(x, y, h, x_only=false, y_only=false) {
         polygon(points=[[0,-y/2],[y/2,0],[0,y/2]]);
     translate([-x/2,-y/2,0])
       cube([x, y, h]);
+  }
+}
+
+module dbl_roundabout60(radius, part="outer", surface="rail-blank") {
+  is_outer = (part=="outer");
+  ring=45; // just enough for a female connector
+  nsurface = str(split(surface, "-")[0], "-blank");
+  echo(pt1=[-(wood_width()+double_gutter())/2, -straight_length(radius)/2],
+       pt2=let(inner=(straight_length(radius)-ring)/2) [-inner*sin(15),-inner*cos(15)],
+       inner_r=(straight_length(radius)-ring)/2, edge=radius/1.5);
+  roundabout_custom(outer=ring, inner=straight_length(radius)-ring,
+                    num=6, inner_piece=!is_outer, outer_piece=is_outer,
+                    hub_height=(wood_well_height() - well_tie_height() - 1.2),
+                    clearance=0.8, rails=false, snap_fit=true, spin_knob=-30,
+                    full_custom=true) {
+    /* outer tracks */
+    for (part=["body","gutter"])
+      shortname60(radius, name="az", surface=nsurface, part=part);
+    /* outer rails */
+    for (part=["hole","connector","ties-nonoverlapping"])
+      shortname60(radius, name="az", surface=nsurface, part=part);
+    /* inner body */
+    for (part=["body","gutter"])
+      shortname60(radius, name="atAU", surface=nsurface, part=part);
+    /* inner rails, etc */
+    for (part=["hole","connector","ties-nonoverlapping"])
+      shortname60(radius, name="atAU", surface=nsurface, part=part);
   }
 }
 
