@@ -890,7 +890,7 @@ module half_dbl_straight60(radius, surface="road-rail", part="all") {
 }
 
 module half_straight60(radius, surface="road-rail", part="all", trim_ties=true,
-                       double=false) {
+                       double=false, converter=false) {
 
   if (part=="all") {
     difference() {
@@ -909,6 +909,17 @@ module half_straight60(radius, surface="road-rail", part="all", trim_ties=true,
                         trim_ties=false, double=double);
       half_straight60(radius, surface=surface, part="body", double=double);
     }
+  } else if (part=="connector" && converter) {
+    // hacky converter from two single tracks to double track.
+    // used as an adapter for a long bridge piece I have, which is
+    // otherwise a multiple of straight_length long and already has the
+    // correct track spacing.
+    for (i=[1,-1]) translate([i*(wood_width()+double_gutter())/2,0,0])
+      straight60(radius, surface=surface, part=part);
+    translate([0,-straight_length(radius),0])
+      cube([radius, straight_length(radius), 3*wood_height()], center=true);
+    rotate([0,0,180])
+      dbl_connector(surface=surface, part=part);
   } else if (part=="body" || part=="connector" ||
              part=="gutter" || part=="gutter-body") {
     translate([0,-straight_length(radius)/4,0])
