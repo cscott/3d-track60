@@ -238,7 +238,13 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (base=="recycling-split") {
     recycling60(r, dir=dir, surface=surface, split_surface=true);
   } else if (base=="gas-station") {
-    gas_station60(r, dir=dir, surface=surface);
+    difference() {
+      gas_station60(r, dir=dir, surface=surface);
+      for (i=[0,180])
+        translate([0,0,wood_height()/2]) rotate([0,i,0])
+        translate([0,0,-wood_height()/2])
+          gas_station60(r, part="gas-station-cutout");
+    }
     *gas_station60(r, surface=surface, part="gas-station");
   } else if (base=="post-office" ||
              base=="post-office-top" || base == "post-office-bottom") {
@@ -2572,8 +2578,8 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
                  0];
   end_point = start_point + [transition_length, -2*transition_y];
 
-  if (dir=="right") {
-    scale([-1,1,1]) gas_station60(radius, "left", surface, part);
+  if (dir=="left" && !startswith(part, "gas-station")) {
+    scale([-1,1,1]) gas_station60(radius, "right", surface, part);
   } else track_parts(radius, surface, part) {
     // body
     gas_station60(radius, dir, surface, "body-mirror");
@@ -2587,15 +2593,26 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
     // roads
     gas_station60(radius, dir, surface, "roads-mirror");
     // connector
-    gas_station60(radius, dir, surface, "connector-mirror");
+    union() {
+      translate(start_point) rotate([0,0,-90]) scale([-1,1,1])
+        loose_wood_cutout(extra_trim=2*gas_station_height);
+      translate(end_point)  scale([-1,1,1]) rotate([0,0,-90])
+        loose_wood_cutout(extra_trim=2*gas_station_height);
+    }
     // everything else
     if (endswith(part, "-mirror")) {
       translate(start_point) rotate([0,0,-90]) scale([-1,1,1])
-        translate([-transition_radius,0,0])
+        translate([-transition_radius,0,0]) intersection() {
           gas_station60(radius, dir, surface, str(part, "ed"));
+          pie_centered(transition_radius + wood_width(),
+                       transition_angle + epsilon, 3*wood_height());
+        }
       translate(end_point)  scale([-1,1,1]) rotate([0,0,-90])
-        translate([-transition_radius,0,0])
+        translate([-transition_radius,0,0]) intersection() {
           gas_station60(radius, dir, surface, str(part, "ed"));
+          pie_centered(transition_radius + wood_width(),
+                       transition_angle + epsilon, 3*wood_height());
+        }
     } else if (part=="body-mirrored") {
       wood_track_arc(transition_radius - (wood_width()/2),
                      transition_angle + epsilon, false);
@@ -2610,14 +2627,17 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
                                 angle=transition_angle+epsilon,
                                 basic_radius=radius,
                                 stripes_from_end=true, $fn=myfn);
-    } else if (part=="connector-mirrored") {
-      translate([transition_radius,0,0])
-        loose_wood_cutout(extra_trim=2*gas_station_height);
+    } else if (part=="gas-station-cutout") {
+      translate([gas_station_width/2 - 15, -gas_station_height/2 + 29,
+                 wood_height() - 3])
+        cube([15+15, 44.3, 5]);
     } else if (part=="gas-station") {
       difference() {
         translate([0,0,wood_height()/2])
           cube([gas_station_width, gas_station_height, wood_height()],
                center=true);
+        gas_station60(radius, dir, surface, "gas-station-cutout");
+        // connectors
         for (i=[1,-1]) scale([i,1,1])
           translate(start_point)
             rotate([0,0,180]) wood_cutout();
