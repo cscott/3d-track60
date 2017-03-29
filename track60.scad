@@ -2639,7 +2639,7 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
                                 basic_radius=radius,
                                 stripes_from_end=true, $fn=myfn);
     } else if (part=="gas-station-cutout") {
-      translate([gas_station_width/2 - 15, -gas_station_height/2 + 29,
+      translate([gas_station_width/2 - 15, -gas_station_height/2 + 29 - 2.2,
                  wood_height() - 3])
         cube([15+15, 44.3, 5]);
     } else if (part=="gas-station") {
