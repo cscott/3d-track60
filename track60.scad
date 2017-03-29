@@ -2698,7 +2698,7 @@ module post_office60(radius, surface, part="all", which="both") {
   hexr = radius/1.5;
   epsilon = .1;
   post_office_width = 136;
-  post_office_height = straight_length(radius) + 28;
+  post_office_height = 204;
   conn1_offset = 33.5;
   conn1_length = straight_length(radius) - post_office_width;
   conn1a_pos = [-straight_length(radius)/2 + post_office_width, 0, 0];
@@ -2729,15 +2729,51 @@ module post_office60(radius, surface, part="all", which="both") {
     // body
     post_office60(radius, surface, "split-body", which);
     // gutter-body
-    union() {
-      for(i=[conn1a_pos,[conn2_pos.x,-2*hexr+conn1_offset,0]]) translate(i)
-        pie(radius=conn1_offset, angle=180, height=wood_height(), spin=-90);
-      translate([conn2_pos.x, -2*hexr+conn1_offset, 0])
-        cube([conn1_offset, 2*hexr-conn1_offset, wood_height()]);
-      translate([-straight_length(radius)/2, -2*hexr, 0])
+    difference() {
+      rounded = 5;
+      trim_straight = true;
+      trim_curve = false;
+      union() {
+      // gutter goes to edge of hex so we can butt this up against
+      // over hometown roadway buildings w/o a gap
+      gutter_width = (conn1b_pos.x - conn1a_pos.x);
+      for(i=[[conn1a_pos.x + gutter_width - rounded, conn1_offset - rounded, 0],
+             [conn2_pos.x + gutter_width - rounded, -2*hexr + rounded, 0]])
+        translate(i)
+          if (rounded > 0)
+            pie(radius=rounded, angle=180, height=wood_height(), spin=-90);
+      translate([conn2_pos.x, -2*hexr, 0]) {
+        cube([gutter_width - rounded, conn1_offset - -2*hexr, wood_height()]);
+        if (rounded > 0)
+          translate([gutter_width - rounded - epsilon, rounded, 0])
+            cube([rounded + epsilon,
+                  (conn1_offset - rounded) - (-2*hexr + rounded),
+                  wood_height()]);
+      }
+      translate([-straight_length(radius)/2, -2*hexr + rounded, 0]) {
         cube([post_office_width + epsilon,
-              2*hexr - (post_office_height - conn1_offset),
+              2*hexr - (post_office_height - conn1_offset) - rounded,
               wood_height()]);
+        if (rounded > 0) translate([rounded,0,0]) {
+          pie(radius=rounded, angle=180, height=wood_height(), spin=180);
+          translate([0,-rounded,0])
+            cube([post_office_width - rounded + epsilon,
+                  rounded + epsilon,
+                  wood_height()]);
+        }
+      }
+      }
+      // Make sure we can fit a straight (or curve) next to this piece
+      if (trim_straight||trim_curve) minkowski() {
+        translate([straight_length(radius)/2,-hexr*(1+sin(30)),0])
+          rotate([0,0,-30]) {
+            if (trim_curve) curve60_right(radius, "blank-blank", "body");
+            if (trim_straight) straight60(radius, "blank-blank", "body");
+            translate([wood_width()-epsilon,0,0])
+              straight60(radius, "blank-blank", "body");
+        }
+        cube(size=2, center=true);
+      }
     }
     // rails
     post_office60(radius, surface, "split-rails", which);
