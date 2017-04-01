@@ -1088,39 +1088,33 @@ module wood_rails_and_ties_arc(radius, angle, part="both", bevel_ends=false,
 
 // Double-track pieces.
 // centered on the hex center
-module dbl_straight60(radius, surface="road-rail", part="all", trim_ties=true) {
+module dbl_straight60(radius, surface="road-rail", part="all") {
   epsilon=.1;
 
-  if (part=="all") {
-    difference() {
-      union() {
-        dbl_straight60(radius, surface, "body");
-        dbl_straight60(radius, surface, "gutter");
-      }
-      dbl_straight60(radius, surface, "hole");
-      dbl_straight60(radius, surface, "connector");
-      dbl_straight60(radius, surface, "ties", trim_ties=false);
-    }
-  } else if (part=="gutter") {
-    trim_gutter60(radius, surface) {
-      dbl_straight60(radius, surface, "gutter-body");
-      dbl_straight60(radius, surface, "body");
-    }
-  } else if (part=="gutter-body") {
+  track_parts(radius, surface, part, mirror_symmetric=true) {
+    dbl_straight60(radius, surface, "split-body");
+    // gutter-body
     translate([0,0,wood_height()/2]) {
       cube([double_gutter()+epsilon, straight_length(radius),
             wood_height()], center=true);
     }
-  } else if (part=="connector") {
+    dbl_straight60(radius, surface, "split-hole-rails");
+    dbl_straight60(radius, surface, "split-hole-ties");
+    dbl_straight60(radius, surface, "split-hole-roads");
+    // connector
     for (i=[0,180]) rotate([0,0,i])
       translate([0,-straight_length(radius)/2,0])
-        dbl_connector(surface=surface, part=part);
-  } else {
-    for (i=[0,180]) rotate([0,0,i]) {
-      translate([(wood_width()+double_gutter())/2, 0, 0])
-        straight60(radius, surface=surface, part=part, trim_ties=trim_ties);
-      translate([0,-straight_length(radius)/2,0])
-        dbl_connector(surface=surface, part=part);
+        dbl_connector(surface=surface, part="connector");
+    // other
+    if (startswith(part, "split-")) {
+      base = substr(part, len("split-"));
+      echo(part=part,base=base);
+      for (i=[0,180]) rotate([0,0,i]) {
+        translate([(wood_width()+double_gutter())/2, 0, 0])
+          straight60(radius, surface=surface, part=base);
+        translate([0,-straight_length(radius)/2,0])
+          dbl_connector(surface=surface, part=base);
+      }
     }
   }
 }
