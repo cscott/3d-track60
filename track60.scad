@@ -1946,9 +1946,9 @@ module slope60(radius, surface="road-rail", part="all") {
   track_parts(radius, nsurface, part, gutter=false, mirror_symmetric=true) {
     slope60(radius, nsurface, "flip-body");
     slope60(radius, nsurface, "flip-gutter-body");
-    slope60(radius, nsurface, "flip-rails");
-    slope60(radius, nsurface, "flip-ties");
-    slope60(radius, nsurface, "flip-roads");
+    slope60(radius, nsurface, "flip-hole-rails");
+    slope60(radius, nsurface, "flip-hole-ties");
+    slope60(radius, nsurface, "flip-hole-roads");
     slope60(radius, nsurface, "flip-connector");
     if (p == "flip") {
       pp = substr(part, len("flip-"));
@@ -1979,12 +1979,13 @@ module slope60(radius, surface="road-rail", part="all") {
         /* scale cutout in z direction to account for track curvature */
         scale([1,1,2]) translate([0,0,-wood_height()/2])
           loose_wood_cutout();
-    } else if (p=="rails" || p=="ties") {
+    } else if (startswith(part,"hole-rails") || startswith(part,"hole-ties")) {
+      pp = split(part, "-")[1];
       for (which=["rails","ties"]) {
         which_height = (which=="rails" ? 0 : -well_tie_height());
         difference() {
           with_bogus60(radius) {
-            if (p=="rails") {
+            if (pp=="rails") {
               translate([-wood_width()/2, -slope_length/2,
                          i*(rise/2) + which_height])
                 wood_rails_slope(slope_radius + wood_height()/2 +
@@ -1995,7 +1996,7 @@ module slope60(radius, surface="road-rail", part="all") {
                 translate([wood_width()/2,-length/2,i*(rise/2) + which_height])
                   rotate([0,0,90]) wood_rails(stub_length+epsilon, false);
             }
-            if (p=="ties" && which=="ties") {
+            if (pp=="ties" && which=="ties") {
               translate([-wood_width()/2, -slope_length/2,
                          i*(rise/2) + wood_height() - tie_height()])
                 wood_track_slope(slope_radius + wood_height()/2 +
@@ -2021,7 +2022,7 @@ module slope60(radius, surface="road-rail", part="all") {
           }
         }
       }
-    } else if (p=="roads") {
+    } else if (startswith(part, "hole-roads")) {
       /* roads */
       for (which=["road","stripe"]) {
         which_width = (which=="road") ? road_width() : stripe_width();
@@ -2552,16 +2553,16 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
     scale([-1,1,1]) gas_station60(radius, "right", surface, part);
   } else track_parts(radius, surface, part) {
     // body
-    gas_station60(radius, dir, surface, "body-mirror");
+    gas_station60(radius, dir, surface, "mirror-body");
     // gutter-body
     translate([gas_station_width/2, 0,0])
       scale([transition_length/(gas_station_height/2),1,1])
       pie(radius=gas_station_height/2, angle=180, height=wood_height(), spin=-90);
     // rails
-    gas_station60(radius, dir, surface, "rails-mirror"); // rails
-    gas_station60(radius, dir, surface, "ties-mirror"); // ties
+    gas_station60(radius, dir, surface, "mirror-hole-rails"); // rails
+    gas_station60(radius, dir, surface, "mirror-hole-ties"); // ties
     // roads
-    gas_station60(radius, dir, surface, "roads-mirror");
+    gas_station60(radius, dir, surface, "mirror-hole-roads");
     // connector
     union() {
       translate(start_point) rotate([0,0,-90]) scale([-1,1,1])
@@ -2570,29 +2571,30 @@ module gas_station60(radius, dir="left", surface="road-rail", part="all") {
         loose_wood_cutout(extra_trim=2*gas_station_height);
     }
     // everything else
-    if (endswith(part, "-mirror")) {
+    if (startswith(part, "mirror-")) {
+      p = substr(part, len("mirror-"));
       translate(start_point) rotate([0,0,-90]) scale([-1,1,1])
         translate([-transition_radius,0,0]) intersection() {
-          gas_station60(radius, dir, surface, str(part, "ed"));
+          gas_station60(radius, dir, surface, str(p, "-mirrored"));
           pie_centered(transition_radius + wood_width(),
                        transition_angle + epsilon, 3*wood_height());
         }
       translate(end_point)  scale([-1,1,1]) rotate([0,0,-90])
         translate([-transition_radius,0,0]) intersection() {
-          gas_station60(radius, dir, surface, str(part, "ed"));
+          gas_station60(radius, dir, surface, str(p, "-mirrored"));
           pie_centered(transition_radius + wood_width(),
                        transition_angle + epsilon, 3*wood_height());
         }
     } else if (part=="body-mirrored") {
       wood_track_arc(transition_radius - (wood_width()/2),
                      transition_angle + epsilon, false);
-    } else if (part=="rails-mirrored" || part=="ties-mirrored") {
-      p = split(part, "-")[0];
+    } else if (part=="hole-rails-mirrored" || part=="hole-ties-mirrored") {
+      p = split(part, "-")[1];
       wood_rails_and_ties_arc(transition_radius,
                               angle=transition_angle+epsilon,
                               part=p, basic_radius=radius,
                               ties_from_end=true, $fn=myfn);
-    } else if (part=="roads-mirrored") {
+    } else if (part=="hole-roads-mirrored") {
       wood_road_and_stripes_arc(transition_radius,
                                 angle=transition_angle+epsilon,
                                 basic_radius=radius,
@@ -3070,9 +3072,15 @@ module track_parts(radius, surface, part="all", gutter=true,
     children(0);
   } else if (part=="gutter-body") {
     children(1);
+  } else if (part=="hole-rails") {
+    children(2);
+  } else if (part=="hole-ties") {
+    children(3);
+  } else if (part=="hole-roads") {
+    children(4);
   } else if (part=="hole" || part=="ties-untrimmed") {
     p = split(part, "-")[0];
-    do_rails_or_roads(surface=surface, part=p, mirror_symmetric=false) {
+    do_rails_or_roads(surface=surface, part=p, mirror_symmetric=mirror_symmetric) {
       if (part=="hole") { children(2); } else { children(3); } // rails
       children(4); // roads
     }
