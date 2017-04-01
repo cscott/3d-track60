@@ -855,42 +855,33 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
 }
 
 // centered on the hex center
-module straight60(radius, surface="road-rail", part="all", trim_ties=true) {
-
-  if (part=="all") {
-    difference() {
-      straight60(radius, surface, "body");
-      straight60(radius, surface, "hole");
-      straight60(radius, surface, "connector");
-      straight60(radius, surface, "ties", trim_ties=false);
-    }
-  } else if (part=="ties" && trim_ties) {
-    intersection() {
-      with_bogus60(radius)
-        straight60(radius, surface=surface, part="ties", trim_ties=false);
-      straight60(radius, surface=surface, part="body");
-    }
-  } else if (part=="body") {
+module straight60(radius, surface="road-rail", part="all") {
+  track_parts(radius, surface, part, gutter=false, mirror_symmetric=true) {
+    // body
     translate([wood_width()/2,-straight_length(radius)/2,0])
       rotate([0,0,90]) wood_track(straight_length(radius), false);
-  } else if (part=="body-well") {
-    translate([0,0,wood_height()/2])
-      cube([wood_well_spacing(), straight_length(radius), wood_height()],
-           center=true);
-  } else if (part=="connector") {
-      translate([0,-straight_length(radius)/2,0])
+    // gutter-body
+    straight60(radius, surface, "gutter-body-nope");
+    // rails
+    translate([0,-straight_length(radius)/2,0])
+      wood_rails_and_ties(radius, part="rails");
+    // ties
+    translate([0,-straight_length(radius)/2,0])
+      wood_rails_and_ties(radius, part="ties");
+    // roads
+    translate([0,-straight_length(radius)/2,0])
+      wood_road_and_stripes(radius);
+    // connector
+    for (i=[1,-1]) {
+      translate([0,i*straight_length(radius)/2,0]) rotate([0,0,(i+1)*90])
         loose_wood_cutout();
-      translate([0,straight_length(radius)/2,0])
-        rotate([0,0,180]) loose_wood_cutout();
-  } else if (part=="hole" || part=="ties") {
-      do_rails_or_roads(surface=surface, part=part) {
-        /* rails */
-        translate([0,-straight_length(radius)/2,0])
-        wood_rails_and_ties(radius, part=(part=="hole"?"rails":part));
-        /* roads */
-        translate([0,-straight_length(radius)/2,0])
-        wood_road_and_stripes(radius);
-      }
+    }
+    // other
+    if (part=="body-well") {
+      translate([0,0,wood_height()/2])
+        cube([wood_well_spacing(), straight_length(radius), wood_height()],
+             center=true);
+    }
   }
 }
 
