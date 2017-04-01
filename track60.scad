@@ -938,58 +938,34 @@ module half_straight60(radius, surface="road-rail", part="all", trim_ties=true,
   }
 }
 
-module curve60(radius, dir, surface="road-rail", part="all",
-               trim_ties=true) {
-  if (dir=="right") { curve60_right(radius, surface, part, trim_ties); }
-  else if (dir=="left") { curve60_left(radius, surface, part, trim_ties); }
-  else { echo("bad direction", dir); }
-}
-
 // centered on the hex center
-module curve60_right(radius, surface="road-rail", part="all",
-                     trim_ties=true) {
-  scale([-1,1,1]) curve60_left(radius, surface, part, trim_ties);
-}
-
-// centered on the hex center
-module curve60_left(radius, surface="road-rail", part="all",
-                    trim_ties=true) {
+module curve60(radius, dir, surface="road-rail", part="all") {
+  norigin = [-radius,-straight_length(radius)/2,0];
   inner_radius = radius - (wood_width()/2);
 
-  if (part=="all") {
-    difference() {
-      curve60_left(radius, surface, "body");
-      curve60_left(radius, surface, "hole");
-      curve60_left(radius, surface, "connector");
-      curve60_left(radius, surface, "ties", trim_ties=false);
+  if (dir=="right") {
+    scale([-1,1,1]) curve60(radius, "left", surface, part);
+  } else translate(norigin) track_parts(radius, surface, part, gutter=false) {
+    // body
+    wood_track_arc(inner_radius, 60, false);
+    // gutter-body
+    curve60(radius, dir, surface, "gutter-body-nope");
+    // rails
+    wood_rails_and_ties_arc(radius, angle=60, part="rails", basic_radius=radius);
+    // ties
+    wood_rails_and_ties_arc(radius, angle=60, part="ties", basic_radius=radius);
+    // roads
+    wood_road_and_stripes_arc(radius, angle=60, basic_radius=radius);
+    // connector
+    union() {
+      translate([radius,0,0])
+        loose_wood_cutout();
+      rotate([0,0,60]) translate([radius,0,0]) rotate([0,0,180])
+        loose_wood_cutout();
     }
-  } else if (part=="ties" && trim_ties) {
-    intersection() {
-      with_bogus60(radius)
-        curve60_left(radius, surface=surface, part="ties", trim_ties=false);
-      curve60_left(radius, surface=surface, part="body");
-    }
-  } else {
-    translate([-radius,-straight_length(radius)/2,0]) {
-      if (part=="body") {
-        wood_track_arc(inner_radius, 60, false);
-      } else if (part=="body-well") {
-        ring(radius, 60, wood_height(), wood_well_spacing());
-      } else if (part=="connector") {
-        translate([radius,0,0])
-          loose_wood_cutout();
-        rotate([0,0,60]) translate([radius,0,0]) rotate([0,0,180])
-          loose_wood_cutout();
-      } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(surface=surface, part=part, mirror_symmetric=false) {
-          /* rails */
-          wood_rails_and_ties_arc(radius, angle=60,
-                                  part=(part=="hole"?"rails":part),
-                                  basic_radius=radius);
-          /* roads */
-          wood_road_and_stripes_arc(radius, angle=60, basic_radius=radius);
-        }
-      }
+    // other
+    if (part=="body-well") {
+      ring(radius, 60, wood_height(), wood_well_spacing());
     }
   }
 }
@@ -1150,38 +1126,27 @@ module dbl_straight60(radius, surface="road-rail", part="all", trim_ties=true) {
 }
 
 module dbl_curve60(radius, dir, surface="road-rail", part="all", trim_ties=true) {
-  if (dir=="right") {
-    dbl_curve60_right(radius, surface, part, trim_ties);
-  } else if (dir=="left") {
-    dbl_curve60_left(radius, surface, part, trim_ties);
-  } else { echo("bad direction", dir); }
-}
-
-module dbl_curve60_right(radius, surface="road-rail", part="all", trim_ties=true) {
-  rotate([0,0,120])
-    dbl_curve60_left(radius, surface, part, trim_ties);
-}
-
-module dbl_curve60_left(radius, surface="road-rail", part="all", trim_ties=true) {
   epsilon=.1;
 
-  if (part=="all") {
+  if (dir=="right") {
+    scale([-1,1,1]) dbl_curve60(radius, "left", surface, part, trim_ties);
+  } else if (part=="all") {
     difference() {
       union() {
-        dbl_curve60_left(radius, surface, "body");
-        dbl_curve60_left(radius, surface, "gutter");
+        dbl_curve60(radius, dir, surface, "body");
+        dbl_curve60(radius, dir, surface, "gutter");
       }
-      dbl_curve60_left(radius, surface, "hole");
-      dbl_curve60_left(radius, surface, "connector");
-      dbl_curve60_left(radius, surface, "ties", trim_ties=false);
+      dbl_curve60(radius, dir, surface, "hole");
+      dbl_curve60(radius, dir, surface, "connector");
+      dbl_curve60(radius, dir, surface, "ties", trim_ties=false);
     }
   } else if (part=="gutter-body") {
     translate([-radius, -straight_length(radius)/2, 0])
       ring(radius, 60, wood_height(), double_gutter() + epsilon);
   } else if (part=="gutter") {
     trim_gutter60(radius, surface) {
-      dbl_curve60_left(radius, surface, "gutter-body");
-      dbl_curve60_left(radius, surface, "body");
+      dbl_curve60(radius, dir, surface, "gutter-body");
+      dbl_curve60(radius, dir, surface, "body");
     }
   } else if (part=="connector") {
     translate([-radius,-straight_length(radius)/2,0])
@@ -1194,8 +1159,7 @@ module dbl_curve60_left(radius, surface="road-rail", part="all", trim_ties=true)
         nr = radius + i*(wood_width()+double_gutter())/2;
         ns = 2*nr/sqrt(3);
         translate([nr,ns/2,0])
-          curve60_left(nr, surface=surface, part=part,
-                       trim_ties=trim_ties);
+          curve60(nr, "left", surface=surface, part=part, trim_ties=trim_ties);
       }
       for(i=[0,1]) rotate([0,0,i*60])
         translate([radius,0,0]) rotate([0,0,i*180])
@@ -1437,7 +1401,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
                             just_curve=just_curve, far_side=far_side);
     }
   } else if (part=="gutter-body") {
-    dbl_curve60_left(radius, surface=surface, part="gutter-body");
+    dbl_curve60(radius, dir, surface=surface, part="gutter-body");
     // Add a bit extra to connect to far_side curve (otherwise there
     // is a small gap, because far_side curve starts with straight segment)
     if (far_side) {
@@ -1446,7 +1410,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
              center=true);
     } else {
       // extra for smooth transition on near side curve
-      curve60_left(radius, surface, "body");
+      curve60(radius, "left", surface, "body");
     }
   } else {
     offset = (wood_width() + double_gutter())/2;
@@ -2762,7 +2726,7 @@ module post_office60(radius, surface, part="all", which="both") {
       if (trim_straight||trim_curve) minkowski() {
         translate([straight_length(radius)/2,-hexr*(1+sin(30)),0])
           rotate([0,0,-30]) {
-            if (trim_curve) curve60_right(radius, "blank-blank", "body");
+            if (trim_curve) curve60(radius, "right", "blank-blank", "body");
             if (trim_straight) straight60(radius, "blank-blank", "body");
             translate([wood_width()-epsilon,0,0])
               straight60(radius, "blank-blank", "body");
