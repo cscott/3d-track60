@@ -265,6 +265,8 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     thomas_crossing60(r, surface="rail-blank");
   } else if (base=="slope") {
     slope60(r, surface=surface);
+  } else if (base=="big-slope") {
+    slope60(2*r, surface=surface);
   } else if (base=="riser") {
     riser60();
   } else if (base=="dbl_dogbone") {
@@ -1963,7 +1965,7 @@ module riser60(part="all", dogbone=true, ncutouts=3) {
   }
 }
 
-module slope60(radius, surface="road-rail", part="all", trim_ties=true) {
+module slope60(radius, surface="road-rail", part="all") {
   // symmetric piece, having same thing on both sides makes no sense
   // and we can use a gentler slope (no stub) if one side is blank
   nsurface = (
@@ -1984,119 +1986,114 @@ module slope60(radius, surface="road-rail", part="all", trim_ties=true) {
   //hypo= sqrt(pow(rise/2,2) + pow(length/2,2));
   //echo(length=length,slope_length=slope_length,slope_angle=slope_angle,slope_radius=slope_radius,hypo=hypo);
 
-  if (part=="all") {
-    difference() {
-      slope60(radius, nsurface, "body");
-      slope60(radius, nsurface, "hole");
-      slope60(radius, nsurface, "connector");
-      slope60(radius, nsurface, "ties", trim_ties=false);
-    }
-  } else if (part=="ties" && trim_ties) {
-    intersection() {
-      with_bogus60(radius)
-        slope60(radius, surface=nsurface, part="ties", trim_ties=false);
-      slope60(radius, surface=nsurface, part="body");
-    }
-  } else {
-    for(i=[-1,1]) rotate([0,0,(i+1)*90]) {
-      if (part=="body") {
-        difference() {
-          union() {
-            translate([-wood_width()/2,-slope_length/2,i*(rise/2)])
-              wood_track_slope(slope_radius + wood_height()/2,
-                               -i*(2*slope_angle + epsilon),
-                               rails=false);
-            if (stub_length>0)
-              translate([wood_width()/2,-length/2,i*(rise/2)])
-                rotate([0,0,90]) wood_track(stub_length+epsilon, false);
-          }
-          // flatten concave side so it sits properly on riser
-          if ((i>0)?
-              (!startswith(nsurface, "blank-")) :
-              (!endswith(nsurface, "-blank"))) {
-            translate([0,-length/2,(i>0?0:wood_height())])
-              cube([wood_width()+epsilon, wood_width()+1/*clearance*/, rise],
-                    center=true);
-          }
+  p = split(part, "-")[0];
+  i = endswith(part, "-0") ? -1 : 1;
+  track_parts(radius, nsurface, part, gutter=false, mirror_symmetric=true) {
+    slope60(radius, nsurface, "flip-body");
+    slope60(radius, nsurface, "flip-gutter-body");
+    slope60(radius, nsurface, "flip-rails");
+    slope60(radius, nsurface, "flip-ties");
+    slope60(radius, nsurface, "flip-roads");
+    slope60(radius, nsurface, "flip-connector");
+    if (p == "flip") {
+      pp = substr(part, len("flip-"));
+      for(j=[-1,1]) rotate([0,0,(j+1)*90])
+        slope60(radius, nsurface, str(pp, "-flip-", (j+1)*90));
+    } else if (p=="body") {
+      difference() {
+        union() {
+          translate([-wood_width()/2,-slope_length/2,i*(rise/2)])
+            wood_track_slope(slope_radius + wood_height()/2,
+                             -i*(2*slope_angle + epsilon),
+                             rails=false);
+          if (stub_length>0)
+            translate([wood_width()/2,-length/2,i*(rise/2)])
+              rotate([0,0,90]) wood_track(stub_length+epsilon, false);
         }
-      } else if (part=="connector") {
-        translate([0, -length/2, i*(rise/2) + wood_height()/2])
-          /* scale cutout in z direction to account for track curvature */
-          scale([1,1,2]) translate([0,0,-wood_height()/2])
-            loose_wood_cutout();
-      } else if (part=="hole" || part=="ties") {
-        do_rails_or_roads(surface=nsurface, part=part) {
-          /* rails */
-          for (which=["rails","ties"]) {
-            which_height = (which=="rails" ? 0 : -well_tie_height());
-            difference() {
-              with_bogus60(radius) {
-                if (part=="hole") {
-                  translate([-wood_width()/2, -slope_length/2,
-                             i*(rise/2) + which_height])
-                    wood_rails_slope(slope_radius + wood_height()/2 +
-                                     i*which_height,
-                                     -i*(2*slope_angle + epsilon),
-                                     bevel_ends=false);
-                  if (stub_length>0)
-                    translate([wood_width()/2,-length/2,i*(rise/2) + which_height])
-                      rotate([0,0,90]) wood_rails(stub_length+epsilon, false);
-                }
-                if (part=="ties" && which=="ties") {
-                  translate([-wood_width()/2, -slope_length/2,
-                             i*(rise/2) + wood_height() - tie_height()])
-                    wood_track_slope(slope_radius + wood_height()/2 +
-                                     i*(wood_height() - tie_height()),
-                                     -i*(2*slope_angle + epsilon),
-                                     rails=false);
-                  if (stub_length>0)
-                    translate([wood_width()/2,-length/2,i*(rise/2) + wood_height() - tie_height()])
-                      rotate([0,0,90]) wood_track(stub_length+epsilon, false);
-                }
-              }
-              if (which=="ties") {
-                /* cut out ties */
-                spacing = tie_spacing(radius);
-                num=ceil((straight_length(radius)/2)/spacing);
-                for (j = [-num:1:0] ) {
-                  ypos = (j*spacing);
-                  translate([0,ypos,0])
-                    cube([2*wood_width(),
-                          spacing - tie_width(),
-                          rise + 4*wood_height()], center=true);
-                }
-              }
+        // flatten concave side so it sits properly on riser
+        if ((i>0)?
+            (!startswith(nsurface, "blank-")) :
+            (!endswith(nsurface, "-blank"))) {
+          translate([0,-length/2,(i>0?0:wood_height())])
+            cube([wood_width()+epsilon, wood_width()+1/*clearance*/, rise],
+                  center=true);
+        }
+      }
+    } else if (p=="connector") {
+      translate([0, -length/2, i*(rise/2) + wood_height()/2])
+        /* scale cutout in z direction to account for track curvature */
+        scale([1,1,2]) translate([0,0,-wood_height()/2])
+          loose_wood_cutout();
+    } else if (p=="rails" || p=="ties") {
+      for (which=["rails","ties"]) {
+        which_height = (which=="rails" ? 0 : -well_tie_height());
+        difference() {
+          with_bogus60(radius) {
+            if (p=="rails") {
+              translate([-wood_width()/2, -slope_length/2,
+                         i*(rise/2) + which_height])
+                wood_rails_slope(slope_radius + wood_height()/2 +
+                                 i*which_height,
+                                 -i*(2*slope_angle + epsilon),
+                                 bevel_ends=false);
+              if (stub_length>0)
+                translate([wood_width()/2,-length/2,i*(rise/2) + which_height])
+                  rotate([0,0,90]) wood_rails(stub_length+epsilon, false);
+            }
+            if (p=="ties" && which=="ties") {
+              translate([-wood_width()/2, -slope_length/2,
+                         i*(rise/2) + wood_height() - tie_height()])
+                wood_track_slope(slope_radius + wood_height()/2 +
+                                 i*(wood_height() - tie_height()),
+                                 -i*(2*slope_angle + epsilon),
+                                 rails=false);
+              if (stub_length>0)
+                translate([wood_width()/2,-length/2,i*(rise/2) + wood_height() - tie_height()])
+                  rotate([0,0,90]) wood_track(stub_length+epsilon, false);
             }
           }
-          /* roads */
-          for (which=["road","stripe"]) {
-            which_width = (which=="road") ? road_width() : stripe_width();
-            which_height = road_height() - (which=="road" ? 0 : stripe_height());
-            difference() {
-              union() {
-                scale([which_width/wood_width(),1,1]) {
-                  translate([-wood_width()/2, -slope_length/2,
-                             i*(rise/2) + which_height])
-                    wood_track_slope(slope_radius + wood_height()/2 +
-                                     i*which_height,
-                                     -i*(2*slope_angle + epsilon),
-                                     rails=false);
-                  if (stub_length>0)
-                    translate([wood_width()/2,-length/2,i*(rise/2) + which_height])
-                      rotate([0,0,90]) wood_track(stub_length+epsilon, false);
-                }
-              }
-              if (which=="stripe") {
-                /* cut out stripes */
-                spacing = tie_spacing(radius)*2;
-                num=ceil((straight_length(radius)/spacing)/2);
-                for (j = [-num:1:0] ) {
-                  ypos = (j*spacing);
-                  translate([0,ypos,0])
-                    cube([2*wood_width(),spacing/2, rise + 4*wood_height()],
-                          center=true);
-                }
-              }
+          if (which=="ties") {
+            /* cut out ties */
+            spacing = tie_spacing(radius);
+            num=ceil((straight_length(radius)/2)/spacing);
+            for (j = [-num:1:0] ) {
+              ypos = (j*spacing);
+              translate([0,ypos,0])
+                cube([2*wood_width(),
+                      spacing - tie_width(),
+                      rise + 4*wood_height()], center=true);
+            }
+          }
+        }
+      }
+    } else if (p=="roads") {
+      /* roads */
+      for (which=["road","stripe"]) {
+        which_width = (which=="road") ? road_width() : stripe_width();
+        which_height = road_height() - (which=="road" ? 0 : stripe_height());
+        difference() {
+          union() {
+            scale([which_width/wood_width(),1,1]) {
+              translate([-wood_width()/2, -slope_length/2,
+                         i*(rise/2) + which_height])
+                wood_track_slope(slope_radius + wood_height()/2 +
+                                 i*which_height,
+                                 -i*(2*slope_angle + epsilon),
+                                 rails=false);
+              if (stub_length>0)
+                translate([wood_width()/2,-length/2,i*(rise/2) + which_height])
+                  rotate([0,0,90]) wood_track(stub_length+epsilon, false);
+            }
+          }
+          if (which=="stripe") {
+            /* cut out stripes */
+            spacing = tie_spacing(radius)*2;
+            num=ceil((straight_length(radius)/spacing)/2);
+            for (j = [-num:1:0] ) {
+              ypos = (j*spacing);
+              translate([0,ypos,0])
+                cube([2*wood_width(),spacing/2, rise + 4*wood_height()],
+                      center=true);
             }
           }
         }
