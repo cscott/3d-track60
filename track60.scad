@@ -361,12 +361,14 @@ module decode_shortname(s, i, radius, surface, part, flip_mask=0) {
     intersection() {
       with_bogus60(radius)
         decode_shortname(s, i, radius, surface, "body-well", flip_mask);
-      if (surf[0] == which) {
-        translate([0,0,wood_height()])
+      with_bogus60(radius) {
+        if (surf[0] == which) {
+          translate([0,0,wood_height()])
+            cube([2*radius, 2*radius, wood_height()], center=true);
+        }
+        if (surf[1] == which) {
           cube([2*radius, 2*radius, wood_height()], center=true);
-      }
-      if (surf[1] == which) {
-        cube([2*radius, 2*radius, wood_height()], center=true);
+        }
       }
     }
   } else if (
