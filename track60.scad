@@ -89,6 +89,7 @@ basic_radius = 154;
 // the standard brio "E" curve has a centerline radius of 202mm
 // and the tighter brio "E1" curve has a centerline radius of 110mm
 // and the typical straights are 4.5in, 5.5in, and 8.5in (compared to our 7in)
+function track60_basic_radius() = basic_radius;
 
 // 64mm is brio standard; some other sets have 62mm risers.
 // Split the difference, so we're more or less compatible with either.
