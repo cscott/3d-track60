@@ -1406,7 +1406,7 @@ module dbl_curve_sway60_left(radius, surface="road-rail", part="all",
                             just_curve=just_curve, far_side=far_side);
     }
   } else if (part=="gutter-body") {
-    dbl_curve60(radius, dir, surface=surface, part="gutter-body");
+    dbl_curve60(radius, dir="left", surface=surface, part="gutter-body");
     // Add a bit extra to connect to far_side curve (otherwise there
     // is a small gap, because far_side curve starts with straight segment)
     if (far_side) {
