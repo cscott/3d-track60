@@ -5,8 +5,8 @@ part = "base"; // [base,swing]
 surface = "rail-road"; // [road-road,rail-rail,road-rail,rail-road]
 
 /* [Hidden] */
-use <./track60.scad>;
-use <../trains/tracklib.scad>;
+use <track60.scad>;
+use <trains/tracklib.scad>;
 use <common/strutil.scad>
 
 basic_radius = track60_basic_radius();

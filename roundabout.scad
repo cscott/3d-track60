@@ -6,7 +6,7 @@
 part = "6_assembled"; // [4_assembled:Four-way roundabout (assembly),4_inner:Four-way roundabout (inner piece),4_outer:Four-way roundabout (outer piece),6_assembled:Six-way roundabout (assembly),6_inner:Six-way roundabout (inner piece),6_outer:Six-way roundabout (outer piece),8_assembled:Eight-way roundabout (assembly),8_inner:Eight-way roundabout (inner piece),8_outer:Eight-way roundabout (outer piece)]
 
 /* [Hidden] */
-use <../trains/tracklib.scad>;
+use <trains/tracklib.scad>;
 
 roundabout_demo(part);
 

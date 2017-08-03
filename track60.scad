@@ -64,10 +64,10 @@ part = "straight"; // [curve:Basic 60 degree curve,straight:Straight,half_straig
 
 /* [Hidden] */
 use <common/pie.scad>;
-use <../trains/tracklib.scad>;
-use <../trains/track-wooden/dog-bone.scad>;
-use <../trains/track-wooden/track-standard.scad>;
-use <./roundabout.scad>
+use <trains/tracklib.scad>;
+use <trains/track-wooden/dog-bone.scad>;
+use <trains/track-wooden/track-standard.scad>;
+use <roundabout.scad>
 use <common/strutil.scad>
 use <common/extrude.scad>
 use <common/arch.scad>

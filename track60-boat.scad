@@ -4,8 +4,8 @@
 part = "all"; // [bottom,side-left,side-right,top,end]
 
 /* [Hidden] */
-use <./track60.scad>
-use <../trains/tracklib.scad>;
+use <track60.scad>
+use <trains/tracklib.scad>;
 use <common/arch.scad>;
 basic_radius = 154;
 $fn = 120;
