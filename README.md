@@ -5,6 +5,8 @@ https://cscott.github.io/thing-tracker/#/thing/4b2b1909-8ae7-4448-a28f-22e28d4b5
 
 ## Description
 
+<img src="./imgs/IMG_20160326_113257090_TOP.jpg" width=150 align="right"/>
+
 These files contain a set of wooden-train-compatible track pieces in
 the [sixty-degree system described by Dave
 Barber](http://tamivox.org/dave/train/index60.html).  Unlike the
@@ -46,6 +48,8 @@ We like the ["clickity-clack track that Learning Curve abandoned years ago"](htt
 in order to make that audible clack as trains are rolled over it.
 Most of our pieces have road on one side and rail on the other, so you
 can play with cars or trains or both.
+
+<br clear="both" />
 
 ## Related
 
