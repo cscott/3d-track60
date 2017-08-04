@@ -1,7 +1,11 @@
 /* Swinging draw bridge */
 
 /* [Global] */
+
+// Which part.
 part = "base"; // [base,swing]
+
+// What surface to put on the lower and upper levels (respectively)
 surface = "rail-road"; // [road-road,rail-rail,road-rail,rail-road]
 
 /* [Hidden] */

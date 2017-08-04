@@ -1119,7 +1119,6 @@ module dbl_straight60(radius, surface="road-rail", part="all") {
     // other
     if (startswith(part, "split-")) {
       base = substr(part, len("split-"));
-      echo(part=part,base=base);
       for (i=[0,180]) rotate([0,0,i]) {
         translate([(wood_width()+double_gutter())/2, 0, 0])
           straight60(radius, surface=surface, part=base);
