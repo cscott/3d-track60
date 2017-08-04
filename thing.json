@@ -1,0 +1,54 @@
+{
+    "id":"4b2b1909-8ae7-4448-a28f-22e28d4b5b43",
+    "title":"Track for wooden trains (Brio, Lillabo, Thomas, etc) using 60° system",
+    "url":"https://github.com/cscott/3d-track60",
+    "downloadUrl":"https://github.com/cscott/3d-track60/zipball/master",
+    "authors":[
+       {
+          "name":"C. Scott Ananian",
+          "url":"https://cscott.net",
+          "email":"things@cscott.net"
+       }
+    ],
+    "created": "2017-08-03T18:03:51-04:00",
+    "licenses":[
+       "GPL-2.0+"
+    ],
+    "thumbnailUrls":[
+    ],
+    "media":[
+       "PLA"
+    ],
+    "categories":[
+       "FFM"
+    ],
+    "tags":[
+        "wooden track", "wooden train", "train", "brio", "lillabo", "thomas"
+    ],
+    "billOfMaterials":[
+       {
+          "partNumber":"1",
+          "description":"Track pieces (OpenSCAD source)",
+          "url":"track60.scad",
+          "type":"source"
+       },
+       {
+          "partNumber":"2",
+          "description":"Roundabouts and turntables (OpenSCAD source)",
+          "url":"roundabout.scad",
+          "type":"source"
+       },
+       {
+          "partNumber":"3",
+          "description":"Ferry boat (OpenSCAD source)",
+          "url":"track60-boat.scad",
+          "type":"source"
+       },
+       {
+          "partNumber":"4",
+          "description":"Swing bridge (OpenSCAD source)",
+          "url":"track60-swing-bridge.scad",
+          "type":"source"
+       }
+    ]
+}
