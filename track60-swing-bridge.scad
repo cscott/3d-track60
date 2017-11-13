@@ -45,6 +45,7 @@ module track60_swing_bridge(radius=basic_radius, part="all", surface="rail-rail"
 
 module swing_bridge_base(radius=basic_radius, surface="rail-rail", style="ES") {
   type_is_gantlet = (style == "ES");
+  dogbone_clearance = 0.5;
   // basic gantlet
   if (type_is_gantlet) {
     shortname60(radius, "ES", base_surface(surface));
@@ -63,7 +64,9 @@ module swing_bridge_base(radius=basic_radius, surface="rail-rail", style="ES") {
       translate([0,0,riser_height()])
         shortname60(radius, "AV", swing_surface(surface));
       translate([0,0,riser_height()/2]) rotate([0,0,-60])
-        cube([wood_width(), straight_length(radius)-1, riser_height()],
+        cube([wood_width(),
+              straight_length(radius) - 2*dogbone_clearance,
+              riser_height()],
           center=true);
     }
     // cut out gantlet arc so swing part can rest of protrusion.
@@ -121,15 +124,20 @@ module swing_bridge_base(radius=basic_radius, surface="rail-rail", style="ES") {
   // center pivot
   swing_bridge_pivot(clear=false);
   // extra support for raised track
-  ledge = 2*wood_plug_radius();
+  ledge = wood_plug_radius() * (type_is_gantlet ? 2 : 1);
   ledge_thick = 2; // thickness before arch cutout starts
   for (i=[0,180]) rotate([0,0,-60 + i]) difference() {
     epsilon = 0.05;
-    translate([-wood_width()/2, straight_length(radius)/2 - epsilon, wood_height()])
-      cube([wood_width(), ledge + epsilon, riser_height() - wood_height()]);
+    translate([-wood_width()/2,
+               straight_length(radius)/2 - dogbone_clearance - epsilon,
+               wood_height()])
+      cube([wood_width(),
+            ledge + dogbone_clearance + epsilon,
+            riser_height() - wood_height()]);
     translate([0, straight_length(radius)/2 + ledge, 0])
       rotate([90,0,90])
-        arch2(2*ledge + 3*epsilon, riser_height() - ledge_thick,
+        arch2(2*(ledge + dogbone_clearance) + 3*epsilon,
+              riser_height() - ledge_thick,
               wood_width() + epsilon, center=true);
   }
 }
