@@ -8,9 +8,13 @@ part = "base"; // [base,swing]
 // What surface to put on the lower and upper levels (respectively)
 surface = "rail-road"; // [road-road,rail-rail,road-rail,rail-road]
 
+// What style (gantlet or straight crossing)
+style = "ES"; // [ES, AT]
+
 /* [Hidden] */
 use <track60.scad>;
 use <trains/tracklib.scad>;
+use <common/arch.scad>
 use <common/strutil.scad>
 
 basic_radius = track60_basic_radius();
@@ -24,23 +28,35 @@ function swing_radius(radius) = (straight_length(radius) - radius) +
 
 function base_surface(surface) = str(split(surface, "-")[0], "-blank");
 function swing_surface(surface)= str(split(surface, "-")[1], "-blank");
+function flip_surface(surface) = str(split(surface, "-")[1], "-", split(surface, "-")[0]);
 
-track60_swing_bridge(part=part, surface=surface);
+track60_swing_bridge(part=part, surface=surface, style=style);
 
-module track60_swing_bridge(radius=basic_radius, part="all", surface="rail-rail") {
+module track60_swing_bridge(radius=basic_radius, part="all", surface="rail-rail", style="ES") {
   if (part == "all") {
-    track60_swing_bridge(radius, "base", surface);
-    track60_swing_bridge(radius, "swing", surface);
+    track60_swing_bridge(radius, "base", surface, style);
+    track60_swing_bridge(radius, "swing", surface, style);
   } else if (part == "base") {
-    swing_bridge_base(radius, surface);
+    swing_bridge_base(radius, surface, style);
   } else if (part == "swing") {
     swing_bridge_swing(radius, surface);
   }
 }
 
-module swing_bridge_base(radius=basic_radius, surface="rail-rail") {
+module swing_bridge_base(radius=basic_radius, surface="rail-rail", style="ES") {
+  type_is_gantlet = (style == "ES");
   // basic gantlet
-  shortname60(radius, "ES", base_surface(surface));
+  if (type_is_gantlet) {
+    shortname60(radius, "ES", base_surface(surface));
+  } else {
+    bsurface = base_surface(surface);
+    if (bsurface == "road-blank") {
+      shortname60(radius, "at", bsurface);
+    } else {
+      translate([0,0,wood_height()/2]) rotate([0,180,0]) translate([0,0,-wood_height()/2])
+        shortname60(radius, "av", flip_surface(bsurface));
+    }
+  }
   // ends of swing
   difference() {
     union() {
@@ -51,16 +67,34 @@ module swing_bridge_base(radius=basic_radius, surface="rail-rail") {
           center=true);
     }
     // cut out gantlet arc so swing part can rest of protrusion.
-    difference() {
-      translate([0,0,wood_height()/2 + wood_well_height()/2])
-        cylinder(r=swing_radius(radius), h=2*riser_height());
-      for (i=[1,-1]) rotate([0,0,-60]) scale([1,i,1])
-        translate([0,-straight_length(radius),0])
-        cylinder(r=radius - wood_width()/2 - swing_margin(), h=riser_height());
+    if (type_is_gantlet) {
+      difference() {
+        translate([0,0,wood_height()/2 + wood_well_height()/2])
+          cylinder(r=swing_radius(radius), h=2*riser_height());
+        for (i=[1,-1]) rotate([0,0,-60]) scale([1,i,1])
+          translate([0,-straight_length(radius),0])
+          cylinder(r=radius - wood_width()/2 - swing_margin(),
+                   h=riser_height());
+      }
+    } else {
+      translate([0,0,riser_height()])
+        cylinder(r=swing_radius(radius), h=riser_height());
+       rotate([0,0,60])
+         translate([0,0,wood_height()/2 + wood_well_height()/2])
+         rotate([90,0,0])
+         arch2(2*wood_width() + double_gutter() + 2*swing_margin(),
+               1.5*riser_height(), 2*radius, center=true);
     }
-    for (i=[0,180]) rotate([0,0,i])
-      translate([-radius,-straight_length(radius)/2,-1])
-        ring(radius, 60, wood_height() + 2, wood_width() - 0.1);
+    // clear roadway
+    if (type_is_gantlet) {
+      for (i=[0,180]) rotate([0,0,i])
+        translate([-radius,-straight_length(radius)/2,-1])
+          ring(radius, 60, wood_height() + 2, wood_width() - 0.1);
+    } else {
+      rotate([0,0,60])
+        cube([2*wood_width() + double_gutter() - 0.1,
+              2*radius, 2*wood_height() + 2], center=true);
+    }
     // cutout dogbone at bottom
     for (i=[1,-1]) rotate([0,0,-60])
       scale([1,i,1]) translate([0,straight_length(radius)/2,0]) intersection() {
@@ -72,7 +106,7 @@ module swing_bridge_base(radius=basic_radius, surface="rail-rail") {
     }
   }
   // center support pillar
-  rotate([0,0,-60]) difference() {
+  rotate([0,0,type_is_gantlet ? -60 : -30]) difference() {
     translate([0,0,riser_height()/2])
       cube([wood_width(), 2*(straight_length(radius) - radius), riser_height()],
          center=true);
@@ -86,6 +120,18 @@ module swing_bridge_base(radius=basic_radius, surface="rail-rail") {
   }
   // center pivot
   swing_bridge_pivot(clear=false);
+  // extra support for raised track
+  ledge = 2*wood_plug_radius();
+  ledge_thick = 2; // thickness before arch cutout starts
+  for (i=[0,180]) rotate([0,0,-60 + i]) difference() {
+    epsilon = 0.05;
+    translate([-wood_width()/2, straight_length(radius)/2 - epsilon, wood_height()])
+      cube([wood_width(), ledge + epsilon, riser_height() - wood_height()]);
+    translate([0, straight_length(radius)/2 + ledge, 0])
+      rotate([90,0,90])
+        arch2(2*ledge + 3*epsilon, riser_height() - ledge_thick,
+              wood_width() + epsilon, center=true);
+  }
 }
 
 module swing_bridge_pivot(clear=false) {
