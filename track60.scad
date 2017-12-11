@@ -169,6 +169,19 @@ function track60_parse_suffix(part) =
   track60_parse_suffix(substr(part, 0, pos)) :
   part;
 
+function strip_prefix(s, prefix) =
+  strip_prefixes(s, [prefix]);
+
+function strip_prefixes(s, prefixes, i=0) =
+  let(l=len(prefixes))
+  i >= l ? s:
+  startswith(s, prefixes[i]) ?
+  substr(s, len(prefixes[i])) :
+  strip_prefixes(s, prefixes, i+1);
+
+function strip_dbl(s) =
+  strip_prefixes(s, ["dbl_right_", "dbl_left_", "dbl_"]);
+
 // Sample instantiations
 module track60_demo(part="curve_rail",r=basic_radius) {
   hex_edge = 2*r/3;
@@ -202,8 +215,7 @@ module track60_demo(part="curve_rail",r=basic_radius) {
   } else if (substr(base, 0, 4)=="misc") {
     which = numat(base, 4, intonly=true);
     misc60(r, which=which, surface=surface);
-  } else if (base=="buffer" || base=="dbl_buffer" ||
-             base=="ramp" || base=="dbl_ramp") {
+  } else if (strip_dbl(base)=="buffer" || strip_dbl(base)=="ramp") {
     buffer_or_ramp60(r, surface=surface, which=base);
   } else if (base=="roundabout") {
     track60_demo(part=str("roundabout-inner-straight",suffix),r=r);
@@ -706,9 +718,9 @@ module misc60(radius, which, surface="road-rail", part="all", is_intersection=fa
 module buffer_or_ramp60(radius, surface="road-rail", part="all",
                         which="buffer", trim_ties=true) {
   is_double = startswith(which, "dbl_");
-  double_dir = concat(startswith(which, "dbl_right_") ? [] : [1],
-                      startswith(which, "dbl_left_") ? [] : [-1],
-                      startswith(which, "dbl_") ? [] : [0]);
+  double_dir = (!is_double) ? [0] :
+    concat(startswith(which, "dbl_right_") ? [] : [1],
+           startswith(which, "dbl_left_") ? [] : [-1]);
   clearance = !is_double ? 1 :
     /* needs to clear double connector */ -8;
   half_width = wood_width()/2;
@@ -762,11 +774,12 @@ module buffer_or_ramp60(radius, surface="road-rail", part="all",
     newr = buflen*sqrt(3)/2;
     // short straight
     difference() {
+      with_bogus60(radius)
       translate([0,-straight_length(radius)/2 + buflen/2, 0]) {
         if (is_double) {
           scale([mirror_connector?-1:1,1,1])
           dbl_straight60(newr, surface=nsurface, part=part);
-        } else {
+        } else if (part=="body") {
           straight60(newr, surface=nsurface, part=part);
         }
       }
