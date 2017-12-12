@@ -1805,8 +1805,7 @@ module dbl_roundabout60(radius, part="outer", surface="rail-blank") {
   is_outer = (part=="outer");
   ring=37; // dbl female connector allows a narrower ring
   nsurface = str(split(surface, "-")[0], "-blank");
-  // XXX incomplete: the outer double tracks should be arc'ed to meet the
-  // ring at equally-spaced 30-degree intervals, and the inner double tracks
+  // XXX incomplete: the inner double tracks
   // should also have curves to allow entrance from the 30-degree points.
   roundabout_custom(outer=ring, inner=straight_length(radius)-ring,
                     num=6, inner_piece=!is_outer, outer_piece=is_outer,
@@ -1821,9 +1820,11 @@ module dbl_roundabout60(radius, part="outer", surface="rail-blank") {
       dbl_roundabout60_outer_curve(radius, ring, surface=nsurface, part=part);
     /* inner body */
     for (part=["body","gutter"])
-      shortname60(radius, name="atAU", surface=nsurface, part=part);
+      for (i=[-15,15]) rotate([0,0,i])
+      shortname60(radius, name="AT"/*"atAU"*/, surface=nsurface, part=part);
     /* inner rails, etc */
     for (part=["hole","connector","ties-nonoverlapping"]) union() {
+      //shortname60(radius, name="atAU", surface=nsurface, part=part);
       for (i=[-15,15]) rotate([0,0,i])
       shortname60(radius, name="AT"/*"AZ"*/, surface=nsurface, part=part);
     }
@@ -1834,12 +1835,20 @@ module dbl_roundabout60_outer_curve(radius, ring, part="body", surface="rail-bla
   innerr = (straight_length(radius)-ring)/2;
   ydist = (straight_length(radius)/2) - (innerr*cos(15));
   xdist = (wood_width()+double_gutter())/2 - (innerr*sin(15));
-  alpha = 15; c = cos(alpha); s = sin(alpha);
-  newr = (xdist - (ydist*s/c)) / (1-c-(s*s/c));
-  d2 = (ydist - newr*s) / c;
+  n = affine2(rotate_matz(-15),[ydist,xdist]);
+  beta = 15; // "extra" angle after sway
+  A = pow(1-cos(beta),2) - 4*(1-cos(beta)) + pow(sin(beta), 2);
+  B = 2*n.y*(1-cos(beta)) - 2*n.x*sin(beta) - 4*n.y;
+  C = pow(n.y, 2) + pow(n.x, 2);
+  newr = (-B - sqrt(B*B - 4*A*C)) / (2*A);
+  alpha = asin((n.x - newr*sin(beta)) / (2*newr));
+
   epsilon = .1;
   // a bit extra to ensure road edges make it past ring edge
-  d2_extra = innerr * (1 - sqrt(1 - pow((wood_width()/2)/innerr, 2))) + epsilon;
+  d_extra = innerr * (1 - sqrt(1 - pow((wood_width()/2)/innerr, 2))) + epsilon;
+  a_extra = (360 * d_extra) / (2*PI*newr);
+
+  //echo(newr=newr, alpha=alpha, beta=beta, d_extra=d_extra, a_extra=a_extra, surface=surface, part=part);
 
   norigin = [-newr + (wood_width()+double_gutter())/2,
              -straight_length(radius)/2, 0];
@@ -1850,9 +1859,10 @@ module dbl_roundabout60_outer_curve(radius, ring, part="body", surface="rail-bla
     // body
     union() {
       for (j=[1,-1]) scale([j,1,1]) translate(norigin) {
-        wood_track_arc(inner_radius, 15 + epsilon, false);
-        rotate([0,0,15]) translate([newr+wood_width()/2,0,0]) rotate([0,0,90])
-          wood_track(d2 + d2_extra, false);
+        wood_track_arc(inner_radius, alpha + beta + epsilon, false);
+        rotate([0,0,alpha + beta])
+          translate([2*newr,0,0]) scale([-1,1,1])
+          wood_track_arc(inner_radius, alpha + a_extra, false);
       }
       translate([0,-straight_length(radius)/2,0])
         dbl_connector(surface=surface, part="body");
@@ -1861,24 +1871,30 @@ module dbl_roundabout60_outer_curve(radius, ring, part="body", surface="rail-bla
     dbl_straight60(radius, surface=surface, part="gutter-body");
     // rails
     for (j=[1,-1]) scale([j,1,1]) translate(norigin) {
-      wood_rails_and_ties_arc(newr, angle=15 + epsilon, part="rails",
+      wood_rails_and_ties_arc(newr, angle=alpha + beta + epsilon, part="rails",
                               basic_radius=radius, ties_from_end=true);
-      rotate([0,0,15]) translate([newr,0,0])
-        wood_rails_and_ties(radius, part="rails", length=d2 + d2_extra);
+      rotate([0,0,alpha + beta])
+        translate([2*newr,0,0]) scale([-1,1,1])
+        wood_rails_and_ties_arc(newr, angle=alpha + a_extra, part="rails",
+                                basic_radius=radius, ties_from_start=true);
     }
     // ties
     for (j=[1,-1]) scale([j,1,1]) translate(norigin) {
-      wood_rails_and_ties_arc(newr, angle=15 + epsilon, part="ties",
+      wood_rails_and_ties_arc(newr, angle=alpha + beta + epsilon, part="ties",
                               basic_radius=radius, ties_from_end=true);
-      rotate([0,0,15]) translate([newr,0,0])
-        wood_rails_and_ties(radius, part="ties", length=d2 + d2_extra);
+      rotate([0,0,alpha + beta])
+        translate([2*newr,0,0]) scale([-1,1,1])
+        wood_rails_and_ties_arc(newr, angle=alpha + a_extra, part="ties",
+                                basic_radius=radius, ties_from_start=true);
     }
     // roads
     for (j=[1,-1]) scale([j,1,1]) translate(norigin) {
-      wood_road_and_stripes_arc(newr, angle=15 + epsilon,
+      wood_road_and_stripes_arc(newr, angle=alpha + beta + epsilon,
                                 basic_radius=radius, stripes_from_end=true);
-      rotate([0,0,15]) translate([newr,0,0])
-        wood_road_and_stripes(radius, length=d2 + d2_extra);
+      rotate([0,0,alpha + beta])
+        translate([2*newr,0,0]) scale([-1,1,1])
+        wood_road_and_stripes_arc(newr, angle=alpha + a_extra,
+                                  basic_radius=radius, stripes_from_start=true);
     }
     // connector
     translate([0,-straight_length(radius)/2,0])
