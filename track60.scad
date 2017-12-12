@@ -16,6 +16,8 @@
 // Added: > - like 2, but with offset = 1
 // Added: ! - like 1, but with just_curve=true
 // Added: $ - like 4, but with just_curve=true
+// Added: / - like T, but rotated +15 deg (for dbl_roundabout)
+// Added: \ - like T, but rotated -15 deg (for dbl_roundabout)
 
 // Translation between old and new names:
 // curve: BS
@@ -308,7 +310,8 @@ function num_tracks_for_letter(s) =
   (s == "A" || s == "S") ? 0 :
   (s == "B" || s == "O" || s == "R" || s == "T" || s == "U" || s == "V" ||
    s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ||
-   s == "<" || s == ">" || s == "!" || s == "$" ) ? 1 :
+   s == "<" || s == ">" || s == "!" || s == "$" ||
+   s == "/" || s == "\\" ) ? 1 :
   (s == "C" || s == "D" || s == "E" || s == "W" || s == "X" || s == "Y" ||
    s == "3" || s == "5" || s == "6" ) ? 2 :
   (s == "J" || s == "K" || s == "L") ? 4 :
@@ -511,6 +514,11 @@ module decode_shortname(s, i, radius, surface, part, flip_mask=0) {
       buffer_or_ramp60(radius, surface=surface, part=part, which=which);
   } else if ((c == "R" && i == 0)) {
     half_straight60(radius, surface=surface, part=part, double=is_double);
+  } else if (
+    (c == "/" && i == 0) ||
+    (c == "\\" && i == 0)) {
+    rotate([0,0,(c == "/" ? 15 : -15)])
+      straight60(radius, surface, part);
   }
 }
 
@@ -1016,7 +1024,7 @@ module wood_rails_and_ties(radius, part="both", length=undef) {
 
   // ties.
   intersection() {
-    translate([wood_width()/2-2*epsilon, -epsilon, 0])
+    translate([-wood_width()/2-2*epsilon, -epsilon, 0])
       cube([wood_width()+4*epsilon, sl + 2*epsilon, wood_height() + epsilon]);
     for (i = [start:1:start+num] ) {
       translate([0,(straight_length(radius)/2)+(i-.5)*spacing,0]) {
@@ -1810,7 +1818,7 @@ module dbl_roundabout60(radius, part="outer", surface="rail-blank") {
   roundabout_custom(outer=ring, inner=straight_length(radius)-ring,
                     num=6, inner_piece=!is_outer, outer_piece=is_outer,
                     hub_height=(wood_well_height() - well_tie_height() - 1.2),
-                    clearance=0.8, rails=false, snap_fit=true, spin_knob=-30,
+                    clearance=0.8, rails=false, snap_fit=true, spin_knob=90,
                     full_custom=true) {
     /* outer tracks */
     for (part=["body","gutter"])
@@ -1820,13 +1828,10 @@ module dbl_roundabout60(radius, part="outer", surface="rail-blank") {
       dbl_roundabout60_outer_curve(radius, ring, surface=nsurface, part=part);
     /* inner body */
     for (part=["body","gutter"])
-      for (i=[-15,15]) rotate([0,0,i])
-      shortname60(radius, name="AT"/*"atAU"*/, surface=nsurface, part=part);
+      shortname60(radius, name="\\/", surface=nsurface, part=part);
     /* inner rails, etc */
     for (part=["hole","connector","ties-nonoverlapping"]) union() {
-      //shortname60(radius, name="atAU", surface=nsurface, part=part);
-      for (i=[-15,15]) rotate([0,0,i])
-      shortname60(radius, name="AT"/*"AZ"*/, surface=nsurface, part=part);
+      shortname60(radius, name="\\/", surface=nsurface, part=part);
     }
   }
 }
