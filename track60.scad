@@ -1772,7 +1772,10 @@ module dbl_dogbone_plug(surface="road-rail") {
   }
 }
 
-module dbl_connector(surface="road-rail", part="all", mirror=false) {
+// the squeeze_hack adds normal wood_cutouts that you can glue a dbl_dogbone
+// into: that lets you squeeze the largest pieces onto a just-a-touch-too-small
+// printer bed.  Not generally used.
+module dbl_connector(surface="road-rail", part="all", mirror=false, squeeze_hack=false) {
   offsets = surface_offsets(surface);
   offset_top = offsets[0];
   offset_bottom = offsets[1];
@@ -1789,9 +1792,14 @@ module dbl_connector(surface="road-rail", part="all", mirror=false) {
         cube([2*wood_width() + double_gutter() + trim, trim,
               wood_height()+trim], center=true);
       translate([-(wood_width() + double_gutter())/2, trim, offset_bottom])
+        if (!squeeze_hack)
         rotate([0,0,-90]) dbl_wood_plug(height=height);
     }
-  } else if (part=="body") {
+    if (squeeze_hack) {
+      translate([-(wood_width() + double_gutter())/2, 0, offset_bottom])
+        loose_wood_cutout();
+    }
+  } else if (part=="body" && !squeeze_hack) {
     translate([-(wood_width() + double_gutter())/2,0,offset_bottom])
       rotate([0,0,-90]) dbl_wood_plug(height=height);
   }
@@ -1944,7 +1952,7 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
              -straight_length(radius)/2, 0];
   inner_radius = newr - (wood_width()/2);
 
-  for (i=[1:6]) rotate([0,0,i*60])
+  for (i=[1:6]) rotate([0,0,i*60]) { squeeze_hack=(i==1)||(i==4);
   track_parts(radius, surface, part) {
     // body
     union() {
@@ -1955,7 +1963,8 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
           wood_track_arc(inner_radius, alpha + a_extra, false);
       }
       translate([0,-straight_length(radius)/2,0])
-        dbl_connector(surface=surface, part="body");
+        dbl_connector(surface=surface, part="body",
+                      squeeze_hack=squeeze_hack);
     }
     // gutter-body
     dbl_straight60(radius, surface=surface, part="gutter-body");
@@ -1995,12 +2004,13 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
     }
     // connector
     translate([0,-straight_length(radius)/2,0])
-        dbl_connector(surface=surface, part="connector");
+        dbl_connector(surface=surface, part="connector",
+                      squeeze_hack=squeeze_hack);
     // other
     if (part=="ties-nonoverlapping") {
       // compatibility with "shortname60" part names
       dbl_roundabout60_outer_curve(radius, ring=ring, part="ties", surface=surface);
-    }
+    }}
   }
 }
 
