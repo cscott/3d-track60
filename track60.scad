@@ -7,6 +7,8 @@
 // Based on:
 //   http://tamivox.org/dave/train/sect14/gallery.pdf
 // Added: O - mirrored B
+// Added: p - one half of a double-track curve
+// Added: q - one half of a double-track straight
 // Added: R - half straight
 // Added: 0 - dbl crossover
 // Added: 1-7: combinations of double-to-single paths
@@ -22,7 +24,6 @@
 
 // Added: + - rotate remainder of the string by 60 degrees
 // Added: = - rotate remainder of the string by -60 degrees
-
 
 // Translation between old and new names:
 // curve: BS
@@ -67,7 +68,7 @@
 // grade-crossing3: AW-1
 
 /* [Global] */
-part = "straight"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),switch17:Switch #17 (crossing #1 with added straight),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout-rail:Roundabout (assembled; w/ rails),roundabout-inner-straight-rail:Roundabout (inner piece; straight; w/ rails),roundabout-inner-crossing4-rail:Roundabout (inner piece; three way crossing; w/ rails),roundabout-outer-rail:Roundabout (outer piece; w/ rails),roundabout-road:Roundabout (assembled; w/ road),roundabout-inner-straight-road:Roundabout (inner piece; straight; w/ road),roundabout-inner-crossing4-road:Roundabout (inner piece; three way crossing; w/ road),roundabout-outer-road:Roundabout (outer piece; w/ road),dbl_roundabout-rail:Double-track roundabout (assembled; w/ rails),dbl_roundabout-inner-straight-rail:Double-track roundabout (inner piece; straight; w/ rails),dbl_roundabout-inner-dbl_straight-rail:Double-track roundabout (inner piece; double-track straight; w/ rails),dbl_roundabout-inner-crossing-rail:Double-track roundabout (inner piece; single and double-track crossing; w/ rails),dbl_roundabout-outer-rail:Double-track roundabout (outer piece; w/ rail),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,slope:Straight slope,slope-rail:Straight slope (rail only),slope-road:Straight slope (road only),curved-slope:Curved slope,big-slope:Double-length straight slope,big-curved-slope:Double-length curved slope,curved-slope-with-base-rail,curved-slope-with-base-road,riser:Riser (print on its side),buffer-rail:Buffer for rail,buffer-road:Buffer for road,ramp-rail:Ramp for rail,ramp-road:Ramp for road,dbl_buffer-rail:Double-track buffer for rail,dbl_buffer-road:Double-track buffer for road,dbl_ramp-rail:Double-track ramp for rail,dbl_ramp-road:Double-track ramp for road,barn:John Deere Barn connector,barn-dogbone:Special dogbone to connect John Deere Barn connector track,pez:Pez factory/First Response station adapter,pez2:Pez factory/First Response station adapter (alternate),carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector,recycling-left:Recycling center adapter (left side),recycling-right:Recycling center adapter (right side),recycling-split-left:Recycling center adapter (left side/one road one rail),recycling-split-right:Recycling center adapter (right side/one road one rail),thomas-crossing:Adapter for Thomas' grade crossing,gas-station-left,gas-station-right,post-office-road-blank,post-office-top-road-blank,post-office-bottom-road-blank,mcdonalds-top-road-blank,mcdonalds-bottom-road-blank,grade-crossing:Grade crossing (straight),name-CS-1-rail:Grade crossing (crossing #1),name-BV-1:Grade crossing (crossing #2),name-AW-1-rail:Grade crossing (crossing #3),name-EV-1:Grade crossing (crossing #4),name-atAV-1:Grade crossing (single over double),name-AV11:Single-to-double left switch #1,name-AT44:Single-to-double right switch #1,name-JS-6-road-blank:Double-V crossing (misc-1),name-bt:Double-track switch (switch #1 right),name-bu:Double-track switch (switch #1 left),name-BS==14:Delta switch w/ double-track entrance]
+part = "straight"; // [curve:Basic 60 degree curve,straight:Straight,half_straight:Special half-length straight,half_dbl_straight:Special half-length double straight,crossing1:Crossing #1 (two curves),crossing2:Crossing #2 (one curve one straight),crossing3:Crossing #3 (two straights),crossing4:Crossing #4 (two curves one straight),crossing5:Crossing #5 (three straights),crossing6:Crossing #6 (double xover),crossing7-left:Crossing #7 (double to single; one left one straight),crossing7-right:Crossing #7 (double to single; one right one straight),crossing7-rail:Crossing #7 alternate (rails),crossing7-road:Crossing #7 alternate (road),crossing8-left:Crossing #8 (double to single xover; one left one straight),crossing8-right:Crossing #8 (double to single xover; one right one straight),crossing8-rail:Crossing #8 alternate (rails),crossing8-road:Crossing #8 alternate (road),crossing9:Crossing #9 (double to single; one left one right),crossing10:Crossing #10 (double to single xover; one left one right),switch1-left:Switch #1 (left hand),switch1-right:Switch #1 (right hand),switch1-rail:Switch #1 alternate (rails),switch1-road:Switch #1 alternate (road),switch2:Switch #2,switch3-left:Switch #3 (left hand),switch3-right:Switch #3 (right hand),switch3-rail:Switch #3 alternate (rails),switch3-road:Switch #3 alternate (road),switch4:Switch #4,switch5:Switch #5,switch6:Switch #6 (single to double),switch7-left:Switch #7 (left hand curved double to straight single wye),switch7-right:Switch #7 (right hand curved double to straight single wye),switch7-rail:Switch #7 alternate (rails),switch7-road:Switch #7 alternate (road),switch8-left:Switch #8 (left hand curved double to xover straight single wye),switch8-right:Switch #8 (right hand curved double to xover straight single wye),switch8-rail:Switch #8 alternate (rails),switch8-road:Switch #8 alternate (road),switch9-left:Switch #9 (straight double to left curved single wye),switch9-right:Switch #9 (straight double to right curved single wye),switch9-rail:Switch #9 alternate (rails),switch9-road:Switch #9 alternate (road),switch10-left:Switch #10 (straight double to xover left curved single wye),switch10-right:Switch #10 (straight double to xover right curved single wye),switch10-rail:Switch #10 alternate (rails),switch10-road:Switch #10 alternate (road),switch11-left:Switch #11 (left hand curved double to right hand curved single wye),switch11-right:Switch #11 (right hand curved double to left hand curved single wye),switch11-rail:Switch #11 alternate (rails),switch11-road:Switch #11 alternate (road),switch12-left:Switch #12 (left hand curved double to xover right hand curved single wye),switch12-right:Switch #12 (right hand curved double to xover left hand curved single wye),switch12-rail:Switch #12 alternate (rails),switch12-road:Switch #12 alternate (road),switch13-left:Switch #13 (double straight left xover),switch13-right:Switch #13 (double straight right xover),switch13-rail:Switch #13 alternate (rails),switch13-road:Switch #13 alternate (road),switch14-left:Switch #14 (left hand curved double to single),switch14-right:Switch #14 (right hand curved double to single),switch14-rail:Switch #14 alternate (rails),switch14-road:Switch #14 alternate (road),switch15-left:Switch #15 (single-to-double left curved switch with right single curve),switch15-right:Switch #15 (single-to-double right curved switch with left single curve),switch15-rail:Switch #15 alternate (rails),switch15-road:Switch #15 alternate (road),switch16-left:Switch #16 (single-to-double left curved switch with right xover single curve),switch16-right:Switch #16 (single-to-double right curved switch with left xover single curve),switch16-rail:Switch #16 alternate (rails),switch16-road:Switch #16 alternate (road),switch17:Switch #17 (crossing #1 with added straight),misc1:Mixed switch and crossing #1,misc2:Mixed switch and crossing #2,misc3:Mixed switch and crossing #3,misc4:Mixed switch and crossing #4,roundabout-rail:Roundabout (assembled; w/ rails),roundabout-inner-straight-rail:Roundabout (inner piece; straight; w/ rails),roundabout-inner-crossing4-rail:Roundabout (inner piece; three way crossing; w/ rails),roundabout-outer-rail:Roundabout (outer piece; w/ rails),roundabout-road:Roundabout (assembled; w/ road),roundabout-inner-straight-road:Roundabout (inner piece; straight; w/ road),roundabout-inner-crossing4-road:Roundabout (inner piece; three way crossing; w/ road),roundabout-outer-road:Roundabout (outer piece; w/ road),dbl_roundabout-rail:Double-track roundabout (assembled; w/ rails),dbl_roundabout-inner-straight-rail:Double-track roundabout (inner piece; straight; w/ rails),dbl_roundabout-inner-dbl_straight-rail:Double-track roundabout (inner piece; double-track straight; w/ rails),dbl_roundabout-inner-crossing-rail:Double-track roundabout (inner piece; single and double-track crossing; w/ rails),dbl_roundabout-outer-rail:Double-track roundabout (outer piece; w/ rail),dogbone:Male-male connector,dbl_straight:Double-track straight,dbl_curve:Double-track curve,slope:Straight slope,slope-rail:Straight slope (rail only),slope-road:Straight slope (road only),curved-slope:Curved slope,big-slope:Double-length straight slope,big-curved-slope:Double-length curved slope,curved-slope-with-base-rail,curved-slope-with-base-road,riser:Riser (print on its side),buffer-rail:Buffer for rail,buffer-road:Buffer for road,ramp-rail:Ramp for rail,ramp-road:Ramp for road,dbl_buffer-rail:Double-track buffer for rail,dbl_buffer-road:Double-track buffer for road,dbl_ramp-rail:Double-track ramp for rail,dbl_ramp-road:Double-track ramp for road,barn:John Deere Barn connector,barn-dogbone:Special dogbone to connect John Deere Barn connector track,pez:Pez factory/First Response station adapter,pez2:Pez factory/First Response station adapter (alternate),carwash:Texaco Carwash connector,firehouse:Thomas' Firehouse connector,recycling-left:Recycling center adapter (left side),recycling-right:Recycling center adapter (right side),recycling-split-left:Recycling center adapter (left side/one road one rail),recycling-split-right:Recycling center adapter (right side/one road one rail),thomas-crossing:Adapter for Thomas' grade crossing,gas-station-left,gas-station-right,post-office-road-blank,post-office-top-road-blank,post-office-bottom-road-blank,mcdonalds-top-road-blank,mcdonalds-bottom-road-blank,grade-crossing:Grade crossing (straight),name-CS-1-rail:Grade crossing (crossing #1),name-BV-1:Grade crossing (crossing #2),name-AW-1-rail:Grade crossing (crossing #3),name-EV-1:Grade crossing (crossing #4),name-atAV-1:Grade crossing (single over double),name-AV11:Single-to-double left switch #1,name-AT44:Single-to-double right switch #1,name-JS-6-road-blank:Double-V crossing (misc-1),name-bt:Double-track switch (switch #1 right),name-bu:Double-track switch (switch #1 left),name-BS==14:Double-track delta switch #1,name-pA+bs+pA:Double-track delta switch #2,name-pA++pA++pA:Double-track delta switch #3]
 
 /* [Hidden] */
 use <common/pie.scad>;
@@ -325,7 +326,7 @@ function num_tracks_for_letter(s) =
   (s == "A" || s == "S" || s == "+" || s == "=") ? 0 :
   (s == "B" || s == "O" || s == "R" || s == "T" || s == "U" || s == "V" ||
    s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ||
-   s == "<" || s == ">" || s == "!" || s == "$" ||
+   s == "<" || s == ">" || s == "!" || s == "$" || s == "P" || s == "Q" ||
    s == "/" || s == "\\"|| s == "(" || s == ")" ) ? 1 :
   (s == "C" || s == "D" || s == "E" || s == "W" || s == "X" || s == "Y" ||
    s == "3" || s == "5" || s == "6" ) ? 2 :
@@ -545,6 +546,12 @@ module decode_shortname(s, i, radius, surface, part, flip_mask=0, is_even=false)
     (c == ")" && i == 0)) {
     scale([(c=="(")?-1:1,1,1])
       dbl_roundabout60_inner_curve(radius, surface=surface, part=part);
+  } else if ((c == "P" && is_double && i == 0)) {
+    dbl_curve60(radius, dir="left", surface=surface, part=part,
+                   only_left=is_even, only_right=!is_even);
+  } else if ((c == "Q" && is_double && i == 0)) {
+    dbl_straight60(radius, surface, part,
+                   only_left=is_even, only_right=!is_even);
   }
 }
 
@@ -1175,19 +1182,24 @@ module wood_rails_and_ties_arc(radius, angle, part="both", bevel_ends=false,
 
 // Double-track pieces.
 // centered on the hex center
-module dbl_straight60(radius, surface="road-rail", part="all") {
+module dbl_straight60(radius, surface="road-rail", part="all",
+                      only_left=false, only_right=false) {
   epsilon=.1;
 
   track_parts(radius, surface, part, mirror_symmetric=true) {
-    dbl_straight60(radius, surface, "split-body");
+    dbl_straight60(radius, surface, "split-body",
+                   only_left=only_left, only_right=only_right);
     // gutter-body
     translate([0,0,wood_height()/2]) {
       cube([double_gutter()+epsilon, straight_length(radius),
             wood_height()], center=true);
     }
-    dbl_straight60(radius, surface, "split-hole-rails");
-    dbl_straight60(radius, surface, "split-hole-ties");
-    dbl_straight60(radius, surface, "split-hole-road");
+    dbl_straight60(radius, surface, "split-hole-rails",
+                   only_left=only_left, only_right=only_right);
+    dbl_straight60(radius, surface, "split-hole-ties",
+                   only_left=only_left, only_right=only_right);
+    dbl_straight60(radius, surface, "split-hole-road",
+                   only_left=only_left, only_right=only_right);
     // connector
     for (i=[0,180]) rotate([0,0,i])
       translate([0,-straight_length(radius)/2,0])
@@ -1195,30 +1207,38 @@ module dbl_straight60(radius, surface="road-rail", part="all") {
     // other
     if (startswith(part, "split-")) {
       base = substr(part, len("split-"));
-      for (i=[0,180]) rotate([0,0,i]) {
+      rots = only_right ? [0] : only_left ? [180] : [0,180];
+      for (i=rots) rotate([0,0,i]) {
         translate([(wood_width()+double_gutter())/2, 0, 0])
           straight60(radius, surface=surface, part=base);
-        translate([0,-straight_length(radius)/2,0])
-          dbl_connector(surface=surface, part=base);
+        translate([0,straight_length(radius)/2,0])
+          rotate([0,0,180])
+            dbl_connector(surface=surface, part=base);
       }
     }
   }
 }
 
-module dbl_curve60(radius, dir, surface="road-rail", part="all", trim_ties=true) {
+module dbl_curve60(radius, dir, surface="road-rail", part="all",
+                   trim_ties=true, only_left=false, only_right=false) {
   epsilon=.1;
 
   if (dir=="right") {
-    scale([-1,1,1]) dbl_curve60(radius, "left", surface, part, trim_ties);
+    scale([-1,1,1])
+      dbl_curve60(radius, "left", surface, part, trim_ties=trim_ties,
+                  only_left=only_right, only_right=only_left);
   } else if (part=="all") {
     difference() {
       union() {
-        dbl_curve60(radius, dir, surface, "body");
+        dbl_curve60(radius, dir, surface, "body",
+                    only_left=only_left, only_right=only_right);
         dbl_curve60(radius, dir, surface, "gutter");
       }
-      dbl_curve60(radius, dir, surface, "hole");
+      dbl_curve60(radius, dir, surface, "hole",
+                  only_left=only_left, only_right=only_right);
       dbl_curve60(radius, dir, surface, "connector");
-      dbl_curve60(radius, dir, surface, "ties", trim_ties=false);
+      dbl_curve60(radius, dir, surface, "ties", trim_ties=false,
+                  only_left=only_left, only_right=only_right);
     }
   } else if (part=="gutter-body") {
     translate([-radius, -straight_length(radius)/2, 0])
@@ -1235,15 +1255,16 @@ module dbl_curve60(radius, dir, surface="road-rail", part="all", trim_ties=true)
           dbl_connector(surface=surface, part=part);
   } else {
     translate([-radius,-straight_length(radius)/2,0]) {
-      for (i=[1,-1]) {
+      rots = only_right ? [1] : only_left ? [-1] : [1,-1];
+      for (i=rots) {
         nr = radius + i*(wood_width()+double_gutter())/2;
         ns = 2*nr/sqrt(3);
         translate([nr,ns/2,0])
           curve60(nr, "left", surface=surface, part=part, trim_ties=trim_ties);
+        rotate([0,0,(i+1)*30])
+          translate([radius,0,0]) rotate([0,0,(i+1)*90])
+            dbl_connector(surface=surface, part=part);
       }
-      for(i=[0,1]) rotate([0,0,i*60])
-        translate([radius,0,0]) rotate([0,0,i*180])
-          dbl_connector(surface=surface, part=part);
     }
   }
 }
