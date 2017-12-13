@@ -1930,6 +1930,7 @@ module dbl_roundabout60_inner_curve(radius, ring=dbl_roundabout_ring(), surface=
 }
 
 module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="body", surface="rail-blank") {
+  mirror_connector = (blank_dbl_surface(surface) == "blank-blank");
   innerr = (straight_length(radius)-ring)/2;
   ydist = (straight_length(radius)/2) - (innerr*cos(15));
   xdist = (wood_width()+double_gutter())/2 - (innerr*sin(15));
@@ -1964,6 +1965,7 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
       }
       translate([0,-straight_length(radius)/2,0])
         dbl_connector(surface=surface, part="body",
+                      mirror=mirror_connector,
                       squeeze_hack=squeeze_hack);
     }
     // gutter-body
@@ -2005,6 +2007,7 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
     // connector
     translate([0,-straight_length(radius)/2,0])
         dbl_connector(surface=surface, part="connector",
+                      mirror=mirror_connector,
                       squeeze_hack=squeeze_hack);
     // other
     if (part=="ties-nonoverlapping") {
