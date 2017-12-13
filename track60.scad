@@ -20,6 +20,8 @@
 // Added: \ - like T, but rotated -15 deg (for dbl_roundabout)
 // Added: )( - straight double for dbl_roundabout
 
+// Added: + - rotate remainder of the string by 30 degrees
+
 // Translation between old and new names:
 // curve: BS
 // dbl_curve: bs
@@ -318,7 +320,7 @@ module track60_demo(part="curve_rail",r=basic_radius) {
 // Based on http://tamivox.org/dave/train/sect14/gallery.pdf
 function num_tracks_for_letter(s) =
   (toupper(s) != s[0]) ? num_tracks_for_letter(toupper(s)[0]) :
-  (s == "A" || s == "S") ? 0 :
+  (s == "A" || s == "S" || s == "+") ? 0 :
   (s == "B" || s == "O" || s == "R" || s == "T" || s == "U" || s == "V" ||
    s == "0" || s == "1" || s == "2" || s == "4" || s == "8" || s == "9" ||
    s == "<" || s == ">" || s == "!" || s == "$" ||
@@ -340,7 +342,8 @@ function name_has_dbl(s) = let (n=len(s)) n == 0 ? false :
   (let (c=s[0]) toupper(c) != c ? true :
   (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" ||
    c == "5" || c == "6" || c == "7" || c == "8" || c == "9" ||
-   c == "<" || c == ">" || s == "!" || s == "$" ) ? true :
+   c == "<" || c == ">" || s == "!" || s == "$" ||
+   c == "(" || c == ")") ? true :
   name_has_dbl(substr(s, 1, n-1)));
 
 module maybe_dbl_curve60(radius, dir, surface, part, is_double) {
@@ -380,6 +383,10 @@ module decode_shortname(s, i, radius, surface, part, flip_mask=0) {
     nmask = numat(s, dash_pos+1, intonly=true);
     decode_shortname(substr(s, 0, dash_pos), i, radius, surface, part,
                      flip_mask=nmask);
+  } else if (c == "+") {
+    rotate([0,0,60])
+      decode_shortname(substr(s, 0, len(s)-1), i, radius, surface, part,
+                       flip_mask=flip_mask);
   } else if (i >= n) {
     decode_shortname(substr(s, 0, len(s)-1), i-n, radius, surface, part,
                      flip_mask=floor(flip_mask/pow(2, n)));
