@@ -305,6 +305,13 @@ module track60_demo(part="curve_rail",r=basic_radius) {
     dbl_dogbone(surface=surface);
   } else if (base=="dbl_dogbone_plug") {
     dbl_dogbone_plug(surface=surface);
+  } else if (base=="test-track") {
+    neck=23; // 1/2 dogbone length, plus a bit
+    intersection() {
+      translate([-wood_width(), -straight_length(r), -1])
+        cube([2*wood_width(), straight_length(r)/2 + neck, wood_height() + 2]);
+      straight60(r, surface=surface);
+    }
   }
 }
 
