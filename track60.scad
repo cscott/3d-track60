@@ -2620,7 +2620,7 @@ module slope60(radius, surface="road-rail", part="all") {
 
 // Pez factory and First Response Station
 module pez60(radius, surface="road-rail", part="all", trim_ties=true) {
-  connector_dist = 136;
+  connector_dist = 135.5;
   cut_length = 162;
 
   barn_width = 204;
