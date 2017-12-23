@@ -1984,7 +1984,11 @@ module dbl_roundabout60_outer_curve(radius, ring=dbl_roundabout_ring(), part="bo
              -straight_length(radius)/2, 0];
   inner_radius = newr - (wood_width()/2);
 
-  for (i=[1:6]) rotate([0,0,i*60]) { squeeze_hack=(i==1)||(i==4);
+  for (i=[1:6]) rotate([0,0,i*60]) {
+  // uncomment this if you have a ~200mm square bed and need to squeeze
+  // the outer part to make it fit.  you'll need to print a pair of
+  // dbl_dogbone pieces and glue them in place
+  squeeze_hack=false/*||(i==1)||(i==4)*/;
   track_parts(radius, surface, part) {
     // body
     union() {
